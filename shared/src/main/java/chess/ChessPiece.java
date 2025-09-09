@@ -1,6 +1,7 @@
 package chess;
 
 import java.util.Collection;
+import java.util.HashSet;
 
 /**
  * Represents a single chess piece
@@ -10,12 +11,13 @@ import java.util.Collection;
  */
 public class ChessPiece {
 
-    ChessPiece.PieceType type;
+    final private ChessPiece.PieceType type;
+    final private ChessGame.TeamColor pieceColor;
 
     public ChessPiece(ChessGame.TeamColor pieceColor, ChessPiece.PieceType type)
     {
         this.type = type;
-
+        this.pieceColor = pieceColor;
     }
 
     /**
@@ -34,7 +36,8 @@ public class ChessPiece {
      * @return Which team this chess piece belongs to
      */
     public ChessGame.TeamColor getTeamColor() {
-        throw new RuntimeException("Not implemented");
+
+        return this.pieceColor;
     }
 
     /**
@@ -44,6 +47,11 @@ public class ChessPiece {
         return this.type;
     }
 
+//    public void SetPieceType()
+//    {
+//
+//    }
+
     /**
      * Calculates all the positions a chess piece can move to
      * Does not take into account moves that are illegal due to leaving the king in
@@ -52,6 +60,59 @@ public class ChessPiece {
      * @return Collection of valid moves
      */
     public Collection<ChessMove> pieceMoves(ChessBoard board, ChessPosition myPosition) {
-        throw new RuntimeException("Not implemented");
+        Collection<ChessMove> moves = new HashSet<>();
+        if (type == PieceType.BISHOP)
+        {
+            moves = bishopMoves(board,myPosition);
+        }
+        return moves;
+    }
+
+    Collection<ChessMove> bishopMoves(ChessBoard board, ChessPosition myPosition)
+    {
+        Collection<ChessMove> moves = new HashSet<>();
+        if(myPosition.getRow() + 1 < 9 && myPosition.getColumn() + 1 < 9) {
+            ChessPosition newPos = new ChessPosition(myPosition.getRow() + 1, myPosition.getColumn() + 1);
+            if (board.getPiece(newPos) == null) {
+                //System.out.println(myPosition +" "+ newPos + " 1");
+                moves.addAll(followPath(board, myPosition, newPos, 1, 1));
+            }
+        }
+        if(myPosition.getRow() + 1 < 9 && myPosition.getColumn() - 1 >= 1) {
+            ChessPosition newPos = new ChessPosition(myPosition.getRow() + 1, myPosition.getColumn() - 1);
+            if (board.getPiece(newPos) == null) {
+                //System.out.println(myPosition +" "+ newPos + " 2");
+                moves.addAll(followPath(board, myPosition, newPos, 1, -1));
+            }
+        }
+        if(myPosition.getRow() - 1 >= 1 && myPosition.getColumn() + 1 < 9) {
+            ChessPosition newPos = new ChessPosition(myPosition.getRow() - 1, myPosition.getColumn() + 1);
+            if (board.getPiece(newPos) == null) {
+                //System.out.println(myPosition +" "+ newPos + " 3");
+                moves.addAll(followPath(board, myPosition, newPos, -1, 1));
+            }
+        }
+        if(myPosition.getRow() - 1 >= 1 && myPosition.getColumn() - 1 >= 1) {
+            ChessPosition newPos = new ChessPosition(myPosition.getRow() - 1, myPosition.getColumn() - 1);
+            if (board.getPiece(newPos) == null) {
+                //System.out.println(myPosition +" "+ newPos + " 4");
+                moves.addAll(followPath(board, myPosition, newPos, -1, -1));
+            }
+        }
+        return moves;
+    }
+
+    Collection<ChessMove> followPath(ChessBoard board, ChessPosition myPosition, ChessPosition pos, int Xpos, int Ypos)
+    {
+        Collection<ChessMove> moves = new HashSet<>();
+        ChessMove cm = new ChessMove(myPosition, pos, null);
+        moves.add(cm);
+        if(pos.getRow() + Xpos < 9 && pos.getColumn() + Ypos < 9 && pos.getRow() + Xpos >= 1 && pos.getColumn() + Ypos >= 1) {
+            ChessPosition newPos = new ChessPosition(pos.getRow() + Xpos, pos.getColumn() + Ypos);
+            if (board.getPiece(newPos) == null) {
+                moves.addAll(followPath(board, myPosition, newPos, Xpos, Ypos));
+            }
+        }
+        return moves;
     }
 }
