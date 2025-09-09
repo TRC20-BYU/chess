@@ -2,6 +2,7 @@ package chess;
 
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.Objects;
 
 /**
  * Represents a single chess piece
@@ -65,38 +66,48 @@ public class ChessPiece {
         {
             moves = bishopMoves(board,myPosition);
         }
+        if (type == PieceType.ROOK)
+        {
+            moves = rookMoves(board,myPosition);
+        }
         return moves;
     }
 
     Collection<ChessMove> bishopMoves(ChessBoard board, ChessPosition myPosition)
     {
         Collection<ChessMove> moves = new HashSet<>();
-        if(myPosition.getRow() + 1 < 9 && myPosition.getColumn() + 1 < 9) {
-            ChessPosition newPos = new ChessPosition(myPosition.getRow() + 1, myPosition.getColumn() + 1);
-            if (board.getPiece(newPos) == null) {
-                //System.out.println(myPosition +" "+ newPos + " 1");
-                moves.addAll(followPath(board, myPosition, newPos, 1, 1));
+        int[][] directions = {{1,1},{1,-1},{-1,1},{-1,-1}};
+
+        for(int[] dir : directions)
+        {
+            if(myPosition.getRow() + dir[0] < 9 && myPosition.getColumn() + dir[1] < 9 && myPosition.getRow() + dir[0] >= 1 && myPosition.getColumn() + dir[1] >= 1)
+            {
+                ChessPosition newPos = new ChessPosition(myPosition.getRow() + dir[0], myPosition.getColumn() + dir[1]);
+                if (board.getPiece(newPos) == null)
+                {
+                    //System.out.println(myPosition +" "+ newPos + " 1");
+                    moves.addAll(followPath(board, myPosition, newPos, dir[0], dir[1]));
+                }
             }
         }
-        if(myPosition.getRow() + 1 < 9 && myPosition.getColumn() - 1 >= 1) {
-            ChessPosition newPos = new ChessPosition(myPosition.getRow() + 1, myPosition.getColumn() - 1);
-            if (board.getPiece(newPos) == null) {
-                //System.out.println(myPosition +" "+ newPos + " 2");
-                moves.addAll(followPath(board, myPosition, newPos, 1, -1));
-            }
-        }
-        if(myPosition.getRow() - 1 >= 1 && myPosition.getColumn() + 1 < 9) {
-            ChessPosition newPos = new ChessPosition(myPosition.getRow() - 1, myPosition.getColumn() + 1);
-            if (board.getPiece(newPos) == null) {
-                //System.out.println(myPosition +" "+ newPos + " 3");
-                moves.addAll(followPath(board, myPosition, newPos, -1, 1));
-            }
-        }
-        if(myPosition.getRow() - 1 >= 1 && myPosition.getColumn() - 1 >= 1) {
-            ChessPosition newPos = new ChessPosition(myPosition.getRow() - 1, myPosition.getColumn() - 1);
-            if (board.getPiece(newPos) == null) {
-                //System.out.println(myPosition +" "+ newPos + " 4");
-                moves.addAll(followPath(board, myPosition, newPos, -1, -1));
+        return moves;
+    }
+
+    Collection<ChessMove> rookMoves(ChessBoard board, ChessPosition myPosition)
+    {
+        Collection<ChessMove> moves = new HashSet<>();
+        int[][] directions = {{1,0},{-1,0},{0,1},{0,-1}};
+
+        for(int[] dir : directions)
+        {
+            if(myPosition.getRow() + dir[0] < 9 && myPosition.getColumn() + dir[1] < 9 && myPosition.getRow() + dir[0] >= 1 && myPosition.getColumn() + dir[1] >= 1)
+            {
+                ChessPosition newPos = new ChessPosition(myPosition.getRow() + dir[0], myPosition.getColumn() + dir[1]);
+                if (board.getPiece(newPos) == null)
+                {
+                    //System.out.println(myPosition +" "+ newPos + " 1");
+                    moves.addAll(followPath(board, myPosition, newPos, dir[0], dir[1]));
+                }
             }
         }
         return moves;
@@ -114,5 +125,19 @@ public class ChessPiece {
             }
         }
         return moves;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        ChessPiece that = (ChessPiece) o;
+        return type == that.type && pieceColor == that.pieceColor;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(type, pieceColor);
     }
 }
