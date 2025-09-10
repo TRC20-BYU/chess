@@ -14,6 +14,7 @@ public class ChessPiece {
 
     final private ChessPiece.PieceType type;
     final private ChessGame.TeamColor pieceColor;
+    boolean moved = false;
 
     public ChessPiece(ChessGame.TeamColor pieceColor, ChessPiece.PieceType type)
     {
@@ -141,33 +142,82 @@ public class ChessPiece {
     Collection<ChessMove> PawnMoves(ChessBoard board, ChessPosition myPosition)
     {
         int dir = 1;
-//        if(pieceColor == )
+        if(pieceColor == ChessGame.TeamColor.BLACK){
+            dir = -1;
+        }
         Collection<ChessMove> moves = new HashSet<>();
-        if(myPosition.getRow() + 1 < 9) {
-            ChessPosition newPos = new ChessPosition(myPosition.getRow() + 1, myPosition.getColumn());
+        if((myPosition.getRow() + dir) < 9  && (myPosition.getRow() + dir) > 0) {
+            ChessPosition newPos = new ChessPosition(myPosition.getRow() + dir, myPosition.getColumn());
             if (board.getPiece(newPos) == null){
-                ChessMove cm = new ChessMove(myPosition, newPos, null);
-                moves.add(cm);
-            }
-            if(myPosition.getRow() + 1 < 9){
-                newPos = new ChessPosition(myPosition.getRow() + 1, myPosition.getColumn() + 1);
-                if(board.getPiece(newPos) != null) {
-                    if (board.getPiece(newPos).pieceColor != pieceColor) {
-                        ChessMove cm = new ChessMove(myPosition, newPos, null);
-                        moves.add(cm);
+                if(newPos.getRow() == 8){
+                    moves.addAll(pawmPromotions(myPosition,newPos));
+                } else if (newPos.getRow() == 1) {
+                    moves.addAll(pawmPromotions(myPosition,newPos));
+                } else {
+                    ChessMove cm = new ChessMove(myPosition, newPos, null);
+                    moves.add(cm);
+                }
+                if(!moved) {
+                    if ((myPosition.getRow() + (dir + dir)) < 9 && (myPosition.getRow() + (dir + dir)) > 0) {
+                        newPos = new ChessPosition(myPosition.getRow() + (dir*2), myPosition.getColumn());
+                        if (board.getPiece(newPos) == null) {
+                            if(myPosition.getRow() == 2 || myPosition.getRow() == 7) {
+                                ChessMove cm = new ChessMove(myPosition, newPos, null);
+                                moves.add(cm);
+                            }
+                        }
+                        else{
+                            moved = true;
+                        }
                     }
                 }
             }
-            if(myPosition.getRow() - 1 > 0){
-                newPos = new ChessPosition(myPosition.getRow() - 1, myPosition.getColumn() + 1);
+            if(myPosition.getColumn() + 1 < 9){
+                newPos = new ChessPosition(myPosition.getRow() + dir, myPosition.getColumn() + 1);
                 if(board.getPiece(newPos) != null) {
                     if (board.getPiece(newPos).pieceColor != pieceColor) {
-                        ChessMove cm = new ChessMove(myPosition, newPos, null);
-                        moves.add(cm);
+                        if(newPos.getRow() == 8){
+                            moves.addAll(pawmPromotions(myPosition,newPos));
+                        } else if (newPos.getRow() == 1) {
+                            moves.addAll(pawmPromotions(myPosition,newPos));
+                        } else {
+                            ChessMove cm = new ChessMove(myPosition, newPos, null);
+                            moves.add(cm);
+                        }
+                    }
+                }
+            }
+            if(myPosition.getColumn() - 1 > 0){
+                newPos = new ChessPosition(myPosition.getRow() + dir, myPosition.getColumn() - 1);
+                if(board.getPiece(newPos) != null) {
+                    if (board.getPiece(newPos).pieceColor != pieceColor) {
+                        if(newPos.getRow() == 8){
+                            moves.addAll(pawmPromotions(myPosition,newPos));
+                        } else if (newPos.getRow() == 1) {
+                            moves.addAll(pawmPromotions(myPosition,newPos));
+                        } else {
+                            ChessMove cm = new ChessMove(myPosition, newPos, null);
+                            moves.add(cm);
+                        }
                     }
                 }
             }
         }
+        return moves;
+    }
+
+    Collection<ChessMove> pawmPromotions(ChessPosition myPosition, ChessPosition newPos){
+        Collection<ChessMove> moves = new HashSet<>();
+        for(PieceType piece : PieceType.values())
+        {
+            if(piece != PieceType.PAWN) {
+                if (piece != PieceType.KING) {
+                    ChessMove cm = new ChessMove(myPosition, newPos, piece);
+                    moves.add(cm);
+                }
+            }
+        }
+
         return moves;
     }
 
