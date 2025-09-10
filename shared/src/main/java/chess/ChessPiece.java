@@ -86,6 +86,9 @@ public class ChessPiece {
             int[][] directions = {{1,2},{2,1},{-1,2},{-2,1},{1,-2},{2,-1},{-1,-2},{-2,-1}};
             moves = directional(directions,board,myPosition,false);
         }
+        if(type == PieceType.PAWN){
+            moves = PawnMoves(board,myPosition);
+        }
         return moves;
     }
 
@@ -130,6 +133,39 @@ public class ChessPiece {
             } else if (board.getPiece(newPos).pieceColor != pieceColor) {
                 ChessMove newCM = new ChessMove(myPosition, newPos, null);
                 moves.add(newCM);
+            }
+        }
+        return moves;
+    }
+
+    Collection<ChessMove> PawnMoves(ChessBoard board, ChessPosition myPosition)
+    {
+        int dir = 1;
+//        if(pieceColor == )
+        Collection<ChessMove> moves = new HashSet<>();
+        if(myPosition.getRow() + 1 < 9) {
+            ChessPosition newPos = new ChessPosition(myPosition.getRow() + 1, myPosition.getColumn());
+            if (board.getPiece(newPos) == null){
+                ChessMove cm = new ChessMove(myPosition, newPos, null);
+                moves.add(cm);
+            }
+            if(myPosition.getRow() + 1 < 9){
+                newPos = new ChessPosition(myPosition.getRow() + 1, myPosition.getColumn() + 1);
+                if(board.getPiece(newPos) != null) {
+                    if (board.getPiece(newPos).pieceColor != pieceColor) {
+                        ChessMove cm = new ChessMove(myPosition, newPos, null);
+                        moves.add(cm);
+                    }
+                }
+            }
+            if(myPosition.getRow() - 1 > 0){
+                newPos = new ChessPosition(myPosition.getRow() - 1, myPosition.getColumn() + 1);
+                if(board.getPiece(newPos) != null) {
+                    if (board.getPiece(newPos).pieceColor != pieceColor) {
+                        ChessMove cm = new ChessMove(myPosition, newPos, null);
+                        moves.add(cm);
+                    }
+                }
             }
         }
         return moves;
