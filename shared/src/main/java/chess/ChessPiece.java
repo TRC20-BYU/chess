@@ -82,6 +82,10 @@ public class ChessPiece {
             int[][] directions = {{1,0},{-1,0},{0,1},{0,-1},{1,1},{1,-1},{-1,1},{-1,-1}};
             moves = directional(directions,board,myPosition,false);
         }
+        if(type == PieceType.KNIGHT){
+            int[][] directions = {{1,2},{2,1},{-1,2},{-2,1},{1,-2},{2,-1},{-1,-2},{-2,-1}};
+            moves = directional(directions,board,myPosition,false);
+        }
         return moves;
     }
 
