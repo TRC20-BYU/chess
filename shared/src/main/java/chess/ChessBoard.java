@@ -11,7 +11,7 @@ import java.util.Objects;
  */
 public class ChessBoard {
 
-    final private ChessPiece[][] board;
+    private ChessPiece[][] board;
 
     public ChessBoard() {
          board = new ChessPiece[8][8];
@@ -45,9 +45,14 @@ public class ChessBoard {
      * (How the game of chess normally starts)
      */
     public void resetBoard() {
-
-        throw new RuntimeException("Not implemented");
+        board = new ChessPiece[8][8];
+        for(int x =0; x < 8; x++) {
+            for (int y = 0; y < 8; y++) {
+                board[x][5] = null;
+            }
+        }
     }
+
 
     @Override
     public boolean equals(Object o) {
