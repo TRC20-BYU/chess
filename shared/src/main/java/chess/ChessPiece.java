@@ -65,24 +65,28 @@ public class ChessPiece {
         if (type == PieceType.BISHOP)
         {
             int[][] directions = {{1,1},{1,-1},{-1,1},{-1,-1}};
-            moves = directional(directions,board,myPosition);
+            moves = directional(directions,board,myPosition, true);
             //moves = bishopMoves(board,myPosition);
         }
         if (type == PieceType.ROOK)
         {
             int[][] directions = {{1,0},{-1,0},{0,1},{0,-1}};
-            moves = directional(directions,board,myPosition);
+            moves = directional(directions,board,myPosition,true);
             //moves = rookMoves(board,myPosition);
         }
         if(type == PieceType.QUEEN) {
             int[][] directions = {{1,0},{-1,0},{0,1},{0,-1},{1,1},{1,-1},{-1,1},{-1,-1}};
-            moves = directional(directions,board,myPosition);
+            moves = directional(directions,board,myPosition,true);
+        }
+        if(type == PieceType.KING){
+            int[][] directions = {{1,0},{-1,0},{0,1},{0,-1},{1,1},{1,-1},{-1,1},{-1,-1}};
+            moves = directional(directions,board,myPosition,false);
         }
         return moves;
     }
 
 
-    Collection<ChessMove> directional(int[][] directions, ChessBoard board, ChessPosition myPosition)
+    Collection<ChessMove> directional(int[][] directions, ChessBoard board, ChessPosition myPosition, boolean follow)
     {
         Collection<ChessMove> moves = new HashSet<>();
         for(int[] dir : directions)
@@ -92,7 +96,13 @@ public class ChessPiece {
                 ChessPosition newPos = new ChessPosition(myPosition.getRow() + dir[0], myPosition.getColumn() + dir[1]);
                 if (board.getPiece(newPos) == null)
                 {
-                    moves.addAll(followPath(board, myPosition, newPos, dir[0], dir[1]));
+                    if(follow) {
+                        moves.addAll(followPath(board, myPosition, newPos, dir[0], dir[1]));
+                    }
+                    else{
+                        ChessMove cm = new ChessMove(myPosition, newPos, null);
+                        moves.add(cm);
+                    }
                 } else if (board.getPiece(newPos).pieceColor != pieceColor) {
                     ChessMove newCM = new ChessMove(myPosition, newPos, null);
                     moves.add(newCM);
