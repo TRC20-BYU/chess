@@ -64,20 +64,23 @@ public class ChessPiece {
         Collection<ChessMove> moves = new HashSet<>();
         if (type == PieceType.BISHOP)
         {
-            moves = bishopMoves(board,myPosition);
+            int[][] directions = {{1,1},{1,-1},{-1,1},{-1,-1}};
+            moves = directional(directions,board,myPosition);
+            //moves = bishopMoves(board,myPosition);
         }
         if (type == PieceType.ROOK)
         {
-            moves = rookMoves(board,myPosition);
+            int[][] directions = {{1,0},{-1,0},{0,1},{0,-1}};
+            moves = directional(directions,board,myPosition);
+            //moves = rookMoves(board,myPosition);
         }
         return moves;
     }
+    
 
-    Collection<ChessMove> bishopMoves(ChessBoard board, ChessPosition myPosition)
+    Collection<ChessMove> directional(int[][] directions, ChessBoard board, ChessPosition myPosition)
     {
         Collection<ChessMove> moves = new HashSet<>();
-        int[][] directions = {{1,1},{1,-1},{-1,1},{-1,-1}};
-
         for(int[] dir : directions)
         {
             if(myPosition.getRow() + dir[0] < 9 && myPosition.getColumn() + dir[1] < 9 && myPosition.getRow() + dir[0] >= 1 && myPosition.getColumn() + dir[1] >= 1)
@@ -85,33 +88,17 @@ public class ChessPiece {
                 ChessPosition newPos = new ChessPosition(myPosition.getRow() + dir[0], myPosition.getColumn() + dir[1]);
                 if (board.getPiece(newPos) == null)
                 {
-                    //System.out.println(myPosition +" "+ newPos + " 1");
                     moves.addAll(followPath(board, myPosition, newPos, dir[0], dir[1]));
+                } else if (board.getPiece(newPos).pieceColor != pieceColor) {
+                    ChessMove newCM = new ChessMove(myPosition, newPos, null);
+                    moves.add(newCM);
                 }
+
             }
         }
         return moves;
     }
 
-    Collection<ChessMove> rookMoves(ChessBoard board, ChessPosition myPosition)
-    {
-        Collection<ChessMove> moves = new HashSet<>();
-        int[][] directions = {{1,0},{-1,0},{0,1},{0,-1}};
-
-        for(int[] dir : directions)
-        {
-            if(myPosition.getRow() + dir[0] < 9 && myPosition.getColumn() + dir[1] < 9 && myPosition.getRow() + dir[0] >= 1 && myPosition.getColumn() + dir[1] >= 1)
-            {
-                ChessPosition newPos = new ChessPosition(myPosition.getRow() + dir[0], myPosition.getColumn() + dir[1]);
-                if (board.getPiece(newPos) == null)
-                {
-                    //System.out.println(myPosition +" "+ newPos + " 1");
-                    moves.addAll(followPath(board, myPosition, newPos, dir[0], dir[1]));
-                }
-            }
-        }
-        return moves;
-    }
 
     Collection<ChessMove> followPath(ChessBoard board, ChessPosition myPosition, ChessPosition pos, int Xpos, int Ypos)
     {
@@ -122,6 +109,9 @@ public class ChessPiece {
             ChessPosition newPos = new ChessPosition(pos.getRow() + Xpos, pos.getColumn() + Ypos);
             if (board.getPiece(newPos) == null) {
                 moves.addAll(followPath(board, myPosition, newPos, Xpos, Ypos));
+            } else if (board.getPiece(newPos).pieceColor != pieceColor) {
+                ChessMove newCM = new ChessMove(myPosition, newPos, null);
+                moves.add(newCM);
             }
         }
         return moves;
