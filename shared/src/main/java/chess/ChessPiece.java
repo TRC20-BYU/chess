@@ -74,9 +74,13 @@ public class ChessPiece {
             moves = directional(directions,board,myPosition);
             //moves = rookMoves(board,myPosition);
         }
+        if(type == PieceType.QUEEN) {
+            int[][] directions = {{1,0},{-1,0},{0,1},{0,-1},{1,1},{1,-1},{-1,1},{-1,-1}};
+            moves = directional(directions,board,myPosition);
+        }
         return moves;
     }
-    
+
 
     Collection<ChessMove> directional(int[][] directions, ChessBoard board, ChessPosition myPosition)
     {
