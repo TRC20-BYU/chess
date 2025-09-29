@@ -49,11 +49,6 @@ public class ChessPiece {
         return this.type;
     }
 
-//    public void SetPieceType()
-//    {
-//
-//    }
-
     /**
      * Calculates all the positions a chess piece can move to
      * Does not take into account moves that are illegal due to leaving the king in
@@ -88,7 +83,7 @@ public class ChessPiece {
             moves = directional(directions,board,myPosition,false);
         }
         if(type == PieceType.PAWN){
-            moves = PawnMoves(board,myPosition);
+            moves = pawnMoves(board,myPosition);
         }
         return moves;
     }
@@ -139,7 +134,7 @@ public class ChessPiece {
         return moves;
     }
 
-    Collection<ChessMove> PawnMoves(ChessBoard board, ChessPosition myPosition)
+    Collection<ChessMove> pawnMoves(ChessBoard board, ChessPosition myPosition)
     {
         int dir = 1;
         if(pieceColor == ChessGame.TeamColor.BLACK){
