@@ -89,7 +89,7 @@ public class ChessPiece {
     }
 
 
-    Collection<ChessMove> directional(int[][] directions, ChessBoard board, ChessPosition myPosition, boolean follow)
+    private Collection<ChessMove> directional(int[][] directions, ChessBoard board, ChessPosition myPosition, boolean follow)
     {
         Collection<ChessMove> moves = new HashSet<>();
         for(int[] dir : directions)
@@ -117,7 +117,7 @@ public class ChessPiece {
     }
 
 
-    Collection<ChessMove> followPath(ChessBoard board, ChessPosition myPosition, ChessPosition pos, int Xpos, int Ypos)
+    private Collection<ChessMove> followPath(ChessBoard board, ChessPosition myPosition, ChessPosition pos, int Xpos, int Ypos)
     {
         Collection<ChessMove> moves = new HashSet<>();
         ChessMove cm = new ChessMove(myPosition, pos, null);
@@ -134,7 +134,7 @@ public class ChessPiece {
         return moves;
     }
 
-    Collection<ChessMove> pawnMoves(ChessBoard board, ChessPosition myPosition)
+    private Collection<ChessMove> pawnMoves(ChessBoard board, ChessPosition myPosition)
     {
         int dir = 1;
         if(pieceColor == ChessGame.TeamColor.BLACK){
@@ -194,7 +194,7 @@ public class ChessPiece {
         }
     }
 
-    Collection<ChessMove> pawnPromotions(ChessPosition myPosition, ChessPosition newPos){
+    private Collection<ChessMove> pawnPromotions(ChessPosition myPosition, ChessPosition newPos){
         Collection<ChessMove> moves = new HashSet<>();
         for(PieceType piece : PieceType.values())
         {

@@ -40,6 +40,12 @@ public class ChessBoard {
 
     }
 
+    public void movePiece(ChessPosition start, ChessPosition end, ChessPiece piece)
+    {
+        addPiece(end,piece);
+        addPiece(start,null);
+    }
+
     /**
      * Sets the board to the default starting board
      * (How the game of chess normally starts)
