@@ -226,9 +226,14 @@ public class ChessPiece {
     @Override
     public String toString() {
         String s = String.format("%s",type.name().toCharArray()[0]);
+        if(type == PieceType.KNIGHT)
+        {
+            s = "N";
+        }
         if(pieceColor == ChessGame.TeamColor.BLACK){
             s = s.toLowerCase();
         }
+
         return s;
     }
 }

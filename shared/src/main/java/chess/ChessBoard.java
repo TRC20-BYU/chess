@@ -46,6 +46,17 @@ public class ChessBoard {
         addPiece(start,null);
     }
 
+//    public void undoPiece(ChessPosition start, ChessPosition end, ChessPiece piece)
+//    {
+//        addPiece(start,piece);
+//        addPiece(end,null);
+//    }
+
+    public void setBoard(ChessBoard chessBoard){
+        chessBoard.board = board.clone();
+    }
+
+
     /**
      * Sets the board to the default starting board
      * (How the game of chess normally starts)
@@ -93,8 +104,8 @@ public class ChessBoard {
     @Override
     public String toString() {
         String boardState = "";
-        for(int x = 0; x < board.length; x++) {
-            for(int y =0; y < board[x].length; y++){
+        for(int x = board.length - 1; x >= 0; x--) {
+            for(int y = 0; y < board[x].length; y++){
                 ChessPiece piece = board[x][y];
                boardState +=  String.format("%s", piece == null ? "." : piece.toString() );
             }
@@ -102,4 +113,8 @@ public class ChessBoard {
         }
         return boardState;
     }
+
+
+
+
 }

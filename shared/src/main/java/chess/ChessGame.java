@@ -58,7 +58,10 @@ public class ChessGame {
         if(piece == null){
             return null;
         }
-        return piece.pieceMoves(board,startPosition);
+
+        Collection<ChessMove> moves = piece.pieceMoves(board,startPosition);
+        moves.removeIf(move -> !hypotheticalCheck(move));
+        return moves;
     }
 
     /**
@@ -149,6 +152,21 @@ public class ChessGame {
         return spots;
     }
 
+    private boolean hypotheticalCheck(ChessMove move)
+    {
+        ChessBoard newBoard = new ChessBoard();
+        board.setBoard(newBoard);
+        System.out.print(newBoard);
+        System.out.print("\n Old");
+        System.out.print(board);
+        System.out.print("\n New");
+        ChessPiece piece = newBoard.getPiece(move.getStartPosition());
+        newBoard.movePiece(move.getStartPosition(), move.getEndPosition(), piece);
+        boolean valid = !isInCheck(piece.getTeamColor());
+//        System.out.print(newBoard);
+        return valid;
+    }
+
     /**
      * Determines if the given team is in checkmate
      *
@@ -187,6 +205,8 @@ public class ChessGame {
     public ChessBoard getBoard() {
         return board;
     }
+
+
 
 
     @Override
