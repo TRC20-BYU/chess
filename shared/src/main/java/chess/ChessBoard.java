@@ -46,16 +46,22 @@ public class ChessBoard {
         addPiece(start,null);
     }
 
-//    public void undoPiece(ChessPosition start, ChessPosition end, ChessPiece piece)
-//    {
-//        addPiece(start,piece);
-//        addPiece(end,null);
-//    }
 
-    public void setBoard(ChessBoard chessBoard){
-        chessBoard.board = board.clone();
+    public ChessPiece[][] getBoard(){
+        ChessPiece[][] boardCopy = new ChessPiece[8][8];
+        for(int x =0; x< board.length; x++){
+            boardCopy[x] = board[x].clone();
+        }
+        return boardCopy;
     }
 
+    public void setBoard(ChessPiece[][] board) {
+        ChessPiece[][] boardCopy = new ChessPiece[8][8];
+        for(int x =0; x< board.length; x++){
+            boardCopy[x] = board[x].clone();
+        }
+        this.board = boardCopy;
+    }
 
     /**
      * Sets the board to the default starting board

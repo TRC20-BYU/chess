@@ -128,6 +128,11 @@ public class ChessGame {
 
     private boolean safeSpot(TeamColor teamColor, ChessPosition hotSpot)
     {
+        Collection<ChessPosition> spots = attackSpots(teamColor);
+        return spots.contains(hotSpot);
+    }
+
+    private Collection<ChessPosition> attackSpots(TeamColor teamColor){
         Collection<ChessMove> moves = new HashSet<>();
         for(int x = 1; x < 9; x++){
             for(int y = 1; y <9; y++){
@@ -140,11 +145,10 @@ public class ChessGame {
                 }
             }
         }
-        Collection<ChessPosition> spots = extractFirst(moves);
-        return spots.contains(hotSpot);
+        return extractEnds(moves);
     }
 
-    private Collection<ChessPosition> extractFirst(Collection<ChessMove> poses){
+    private Collection<ChessPosition> extractEnds(Collection<ChessMove> poses){
         Collection<ChessPosition> spots = new HashSet<>();
         for(ChessMove pos : poses){
             spots.add(pos.getEndPosition());
@@ -154,16 +158,12 @@ public class ChessGame {
 
     private boolean hypotheticalCheck(ChessMove move)
     {
-        ChessBoard newBoard = new ChessBoard();
-        board.setBoard(newBoard);
-        System.out.print(newBoard);
-        System.out.print("\n Old");
-        System.out.print(board);
-        System.out.print("\n New");
-        ChessPiece piece = newBoard.getPiece(move.getStartPosition());
-        newBoard.movePiece(move.getStartPosition(), move.getEndPosition(), piece);
+
+        ChessPiece[][] oldBoard = board.getBoard();
+        ChessPiece piece = board.getPiece(move.getStartPosition());
+        board.movePiece(move.getStartPosition(), move.getEndPosition(), piece);
         boolean valid = !isInCheck(piece.getTeamColor());
-//        System.out.print(newBoard);
+        board.setBoard(oldBoard);
         return valid;
     }
 
@@ -174,7 +174,24 @@ public class ChessGame {
      * @return True if the specified team is in checkmate
      */
     public boolean isInCheckmate(TeamColor teamColor) {
-        return isInCheck(teamColor);
+
+        ChessPosition hotSpot;
+        hotSpot = kingPos(teamColor);
+        return checkSpace(teamColor,hotSpot) && safeSpot(teamColor,hotSpot);
+    }
+
+    private boolean checkSpace(TeamColor teamColor, ChessPosition kingSpot){
+        int[][] directions = {{1,0},{-1,0},{0,1},{0,-1},{1,1},{1,-1},{-1,1},{-1,-1}};
+        boolean hayMove = false;
+        Collection<ChessPosition> attacks = attackSpots(teamColor);
+        for(int[] dir : directions){
+            ChessPosition newSpot = new ChessPosition(kingSpot.getRow()+dir[0], kingSpot.getColumn()+dir[1]);
+            if (attacks.contains(newSpot)) {
+                hayMove = true;
+                break;
+            }
+        }
+        return hayMove;
     }
 
     /**
@@ -185,7 +202,10 @@ public class ChessGame {
      * @return True if the specified team is in stalemate, otherwise false
      */
     public boolean isInStalemate(TeamColor teamColor) {
-        return false;
+        ChessPosition hotSpot;
+        hotSpot = kingPos(teamColor);
+        boolean something = checkSpace(teamColor,hotSpot);
+        return !something;
     }
 
     /**
