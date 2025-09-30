@@ -186,7 +186,7 @@ public class ChessGame {
         Collection<ChessPosition> attacks = attackSpots(teamColor);
         for(int[] dir : directions){
             ChessPosition newSpot = new ChessPosition(kingSpot.getRow()+dir[0], kingSpot.getColumn()+dir[1]);
-            if (attacks.contains(newSpot)) {
+            if (!attacks.contains(newSpot)) {
                 hayMove = true;
                 break;
             }
