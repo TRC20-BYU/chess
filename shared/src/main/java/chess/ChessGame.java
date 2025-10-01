@@ -75,6 +75,9 @@ public class ChessGame {
         if(piece == null){
             throw new InvalidMoveException("Can't move nothing");
         }
+        if(!hypotheticalCheck(move)){
+            throw new InvalidMoveException("You are in check");
+        }
         if(piece.getTeamColor() != turn){
             throw new InvalidMoveException("Not your turn");
         }
@@ -106,7 +109,7 @@ public class ChessGame {
 
         ChessPosition hotSpot;
         hotSpot = kingPos(teamColor);
-        return safeSpot(teamColor,hotSpot);
+        return !safeSpot(teamColor,hotSpot);
     }
 
     private ChessPosition kingPos(TeamColor teamColor){
@@ -129,7 +132,7 @@ public class ChessGame {
     private boolean safeSpot(TeamColor teamColor, ChessPosition hotSpot)
     {
         Collection<ChessPosition> spots = attackSpots(teamColor);
-        return spots.contains(hotSpot);
+        return !spots.contains(hotSpot);
     }
 
     private Collection<ChessPosition> attackSpots(TeamColor teamColor){
@@ -177,16 +180,35 @@ public class ChessGame {
 
         ChessPosition hotSpot;
         hotSpot = kingPos(teamColor);
-        return checkSpace(teamColor,hotSpot) && safeSpot(teamColor,hotSpot);
+        if(isInCheck(teamColor)) {
+            return !checkMate(teamColor);
+        }
+        return false;
     }
 
-    private boolean checkSpace(TeamColor teamColor, ChessPosition kingSpot){
-        int[][] directions = {{1,0},{-1,0},{0,1},{0,-1},{1,1},{1,-1},{-1,1},{-1,-1}};
+    private boolean checkMate(TeamColor teamColor){
+        boolean checkMated = false;
+        for(int x = 1; x < 9; x++){
+            for(int y = 1; y < 9; y++){
+                ChessPosition pos = new ChessPosition(x,y);
+                ChessPiece piece = board.getPiece(pos);
+                if(piece != null){
+                    if(piece.getTeamColor() == teamColor){
+                        Collection<ChessMove> moves = piece.pieceMoves(board,pos);
+                        if(checkSpace(teamColor,moves)){
+                           checkMated = true;
+                        }
+                    }
+                }
+            }
+        }
+        return checkMated;
+    }
+
+    private boolean checkSpace(TeamColor teamColor, Collection<ChessMove> moves){
         boolean hayMove = false;
-        Collection<ChessPosition> attacks = attackSpots(teamColor);
-        for(int[] dir : directions){
-            ChessPosition newSpot = new ChessPosition(kingSpot.getRow()+dir[0], kingSpot.getColumn()+dir[1]);
-            if (!attacks.contains(newSpot)) {
+        for(ChessMove move : moves){
+            if (hypotheticalCheck(move)) {
                 hayMove = true;
                 break;
             }
@@ -204,8 +226,11 @@ public class ChessGame {
     public boolean isInStalemate(TeamColor teamColor) {
         ChessPosition hotSpot;
         hotSpot = kingPos(teamColor);
-        boolean something = checkSpace(teamColor,hotSpot);
-        return !something;
+        if(!isInCheck(teamColor)) {
+            boolean something = checkMate(teamColor);
+            return !something;
+        }
+        return false;
     }
 
     /**
