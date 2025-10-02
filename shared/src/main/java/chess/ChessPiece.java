@@ -14,7 +14,7 @@ public class ChessPiece {
 
     final private ChessPiece.PieceType type;
     final private ChessGame.TeamColor pieceColor;
-    private boolean moved = false;
+    boolean special = false;
 
     public ChessPiece(ChessGame.TeamColor pieceColor, ChessPiece.PieceType type)
     {
@@ -152,34 +152,29 @@ public class ChessPiece {
                     ChessMove cm = new ChessMove(myPosition, newPos, null);
                     moves.add(cm);
                 }
-                if(!moved) {
+                if(myPosition.getRow() == 2 || myPosition.getRow() == 7) {
                     if ((myPosition.getRow() + (dir + dir)) < 9 && (myPosition.getRow() + (dir + dir)) > 0) {
                         newPos = new ChessPosition(myPosition.getRow() + (dir*2), myPosition.getColumn());
                         if (board.getPiece(newPos) == null) {
-                            if(myPosition.getRow() == 2 || myPosition.getRow() == 7) {
-                                ChessMove cm = new ChessMove(myPosition, newPos, null);
-                                moves.add(cm);
-                            }
-                        }
-                        else{
-                            moved = true;
+                            ChessMove cm = new ChessMove(myPosition, newPos, null);
+                            moves.add(cm);
                         }
                     }
                 }
             }
             if(myPosition.getColumn() + 1 < 9){
                 newPos = new ChessPosition(myPosition.getRow() + dir, myPosition.getColumn() + 1);
-                checkPawnMove(board, myPosition, moves, newPos);
+                checkPawnAttack(board, myPosition, moves, newPos);
             }
             if(myPosition.getColumn() - 1 > 0){
                 newPos = new ChessPosition(myPosition.getRow() + dir, myPosition.getColumn() - 1);
-                checkPawnMove(board, myPosition, moves, newPos);
+                checkPawnAttack(board, myPosition, moves, newPos);
             }
         }
         return moves;
     }
 
-    private void checkPawnMove(ChessBoard board, ChessPosition myPosition, Collection<ChessMove> moves, ChessPosition newPos) {
+    private void checkPawnAttack(ChessBoard board, ChessPosition myPosition, Collection<ChessMove> moves, ChessPosition newPos) {
         if(board.getPiece(newPos) != null) {
             if (board.getPiece(newPos).pieceColor != pieceColor) {
                 if(newPos.getRow() == 8){
