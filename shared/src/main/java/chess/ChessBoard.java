@@ -1,7 +1,11 @@
 package chess;
 
 import java.util.Arrays;
+import java.util.Collection;
+import java.util.HashSet;
 import java.util.Objects;
+
+import static java.lang.Math.abs;
 
 /**
  * A chessboard that can hold and rearrange chess pieces.
@@ -12,6 +16,7 @@ import java.util.Objects;
 public class ChessBoard {
 
     private ChessPiece[][] board;
+    private Collection<ChessPiece> EnPassantables = new HashSet<>();
 
     public ChessBoard() {
          board = new ChessPiece[8][8];
@@ -25,6 +30,9 @@ public class ChessBoard {
      */
     public void addPiece(ChessPosition position, ChessPiece piece) {
         this.board[position.getRow()-1][position.getColumn()-1] = piece;
+        if(piece.getPieceType() == ChessPiece.PieceType.KING || piece.getPieceType() == ChessPiece.PieceType.ROOK){
+            piece.special =true;
+        }
     }
 
     /**
@@ -35,15 +43,22 @@ public class ChessBoard {
      * position
      */
     public ChessPiece getPiece(ChessPosition position) {
-
         return this.board[position.getRow()-1][position.getColumn()-1];
-
     }
 
     public void movePiece(ChessPosition start, ChessPosition end, ChessPiece piece)
     {
+        for(ChessPiece pawn : EnPassantables){
+            if(pawn.getTeamColor() == piece.getTeamColor()){
+                pawn.special = false;
+                EnPassantables.remove(pawn);
+            }
+        }
         addPiece(end,piece);
         addPiece(start,null);
+        if(piece.getPieceType() == ChessPiece.PieceType.PAWN && abs(start.getRow()-end.getRow()) > 1) {
+            EnPassantables.add(piece);
+        }
     }
 
 
