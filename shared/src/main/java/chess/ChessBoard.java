@@ -31,8 +31,15 @@ public class ChessBoard {
     public void addPiece(ChessPosition position, ChessPiece piece) {
         this.board[position.getRow()-1][position.getColumn()-1] = piece;
         if(piece != null) {
-            if (piece.getPieceType() == ChessPiece.PieceType.KING || piece.getPieceType() == ChessPiece.PieceType.ROOK) {
-                piece.hasMoved = false;
+            if (piece.getPieceType() == ChessPiece.PieceType.KING) {
+                if(position.getColumn() == 5) {
+                    piece.hasMoved = false;
+                }
+            }
+            if(piece.getPieceType() == ChessPiece.PieceType.ROOK){
+                if(position.getColumn() == 1 || position.getColumn() == 8) {
+                    piece.hasMoved = false;
+                }
             }
         }
     }

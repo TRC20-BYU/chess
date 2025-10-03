@@ -67,14 +67,16 @@ public class ChessGame {
             if(isInCheck(piece.getTeamColor())){
                 moves.removeIf(move -> abs(move.getStartPosition().getColumn() - move.getEndPosition().getColumn()) > 1);
             }
-            if(moves.contains(new ChessMove(startPosition,new ChessPosition(startPosition.getRow(),7),null))){
-                if(!moves.contains(new ChessMove(startPosition,new ChessPosition(startPosition.getRow(),6),null))){
-                    moves.remove(new ChessMove(startPosition,new ChessPosition(startPosition.getRow(),7),null));
+            if(piece.hasMoved == false) {
+                if (moves.contains(new ChessMove(startPosition, new ChessPosition(startPosition.getRow(), 7), null))) {
+                    if (!moves.contains(new ChessMove(startPosition, new ChessPosition(startPosition.getRow(), 6), null))) {
+                        moves.remove(new ChessMove(startPosition, new ChessPosition(startPosition.getRow(), 7), null));
+                    }
                 }
-            }
-            if(moves.contains(new ChessMove(startPosition,new ChessPosition(startPosition.getRow(),3),null))){
-                if(!moves.contains(new ChessMove(startPosition,new ChessPosition(startPosition.getRow(),4),null))){
-                    moves.remove(new ChessMove(startPosition,new ChessPosition(startPosition.getRow(),3),null));
+                if (moves.contains(new ChessMove(startPosition, new ChessPosition(startPosition.getRow(), 3), null))) {
+                    if (!moves.contains(new ChessMove(startPosition, new ChessPosition(startPosition.getRow(), 4), null))) {
+                        moves.remove(new ChessMove(startPosition, new ChessPosition(startPosition.getRow(), 3), null));
+                    }
                 }
             }
         }
