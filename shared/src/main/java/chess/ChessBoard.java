@@ -37,6 +37,18 @@ public class ChessBoard {
         }
     }
 
+    public void addDelete(ChessPosition start, ChessPosition end, ChessPiece piece, boolean hypothetical) {
+        this.board[end.getRow()-1][end.getColumn()-1] = piece;
+        this.board[start.getRow()-1][start.getColumn()-1] = null;
+        if(piece != null) {
+            if (piece.getPieceType() == ChessPiece.PieceType.KING || piece.getPieceType() == ChessPiece.PieceType.ROOK) {
+               if(!hypothetical) {
+                   piece.hasMoved = true;
+               }
+            }
+        }
+    }
+
     /**
      * Gets a chess piece on the chessboard
      *
@@ -48,7 +60,7 @@ public class ChessBoard {
         return this.board[position.getRow()-1][position.getColumn()-1];
     }
 
-    public void movePiece(ChessPosition start, ChessPosition end, ChessPiece piece)
+    public void movePiece(ChessPosition start, ChessPosition end, ChessPiece piece, boolean hypothetical)
     {
         Collection<ChessPiece> remover = new HashSet<>();
         for(ChessPiece pawn : enPassantables){
@@ -60,8 +72,7 @@ public class ChessBoard {
         for(ChessPiece pawn : remover){
                 enPassantables.remove(pawn);
         }
-        addPiece(end,piece);
-        addPiece(start,null);
+        addDelete(start,end,piece, hypothetical);
         if(piece.getPieceType() == ChessPiece.PieceType.PAWN && abs(start.getColumn()-end.getColumn()) > 0) {
             addPiece(new ChessPosition(start.getRow(), end.getColumn()),null);
         }
@@ -73,12 +84,12 @@ public class ChessBoard {
                 if(start.getColumn() - end.getColumn() > 0){
                     ChessPosition startPos = new ChessPosition( start.getRow(),1);
                     ChessPosition endPos = new ChessPosition(start.getRow(),4);
-                    movePiece(startPos,endPos,getPiece(startPos));
+                    movePiece(startPos,endPos,getPiece(startPos),hypothetical);
                 }
                 else{
                     ChessPosition startPos = new ChessPosition(start.getRow(),8);
                     ChessPosition endPos = new ChessPosition(start.getRow(),6);
-                    movePiece(startPos,endPos,getPiece(startPos));
+                    movePiece(startPos,endPos,getPiece(startPos),hypothetical);
                 }
             }
         }
