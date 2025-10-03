@@ -74,9 +74,9 @@ public class ChessPiece {
         if (type == PieceType.KING) {
             int[][] directions = {{1, 0}, {-1, 0}, {0, 1}, {0, -1}, {1, 1}, {1, -1}, {-1, 1}, {-1, -1}};
             moves = directional(directions, board, myPosition, false);
-//            if(!hasMoved){
-//                moves.addAll(checkCastling(board,myPosition));
-//            }
+            if(!hasMoved){
+                moves.addAll(checkCastling(board,myPosition));
+            }
         }
         if (type == PieceType.KNIGHT) {
             int[][] directions = {{1, 2}, {2, 1}, {-1, 2}, {-2, 1}, {1, -2}, {2, -1}, {-1, -2}, {-2, -1}};
@@ -145,15 +145,20 @@ public class ChessPiece {
         }
 
         if(board.getPiece(new ChessPosition(myPosition.getRow(),1)) != null){
+            if(board.getPiece(new ChessPosition(myPosition.getRow(),1)).hasMoved) {
+                ChessPiece piece = board.getPiece(new ChessPosition(myPosition.getRow(), 1));
+                System.out.print(piece);
+                System.out.print("\n");
+            }
             if(!board.getPiece(new ChessPosition(myPosition.getRow(),1)).hasMoved){
                 boolean clear = true;
-                for(int x = myPosition.getColumn() - 1; x > 0; x--){
+                for(int x = myPosition.getColumn() - 1; x > 1; x--){
                     if(board.getPiece(new ChessPosition(myPosition.getRow(),x)) != null){
                         clear = false;
                     }
                 }
                 if(clear){
-                    moves.add(new ChessMove(myPosition,new ChessPosition(myPosition.getRow(),2),null));
+                    moves.add(new ChessMove(myPosition,new ChessPosition(myPosition.getRow(),3),null));
                 }
             }
         }

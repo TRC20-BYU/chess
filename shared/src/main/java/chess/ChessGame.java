@@ -4,6 +4,8 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.Objects;
 
+import static java.lang.Math.abs;
+
 /**
  * For a class that can manage a chess game, making moves on a board
  * <p>
@@ -61,6 +63,11 @@ public class ChessGame {
 
         Collection<ChessMove> moves = piece.pieceMoves(board,startPosition);
         moves.removeIf(move -> !hypotheticalCheck(move));
+        if(piece.getPieceType() == ChessPiece.PieceType.KING){
+            if(isInCheck(piece.getTeamColor())){
+                moves.removeIf(move -> abs(move.getStartPosition().getColumn() - move.getEndPosition().getColumn()) > 1);
+            }
+        }
         return moves;
     }
 
@@ -84,8 +91,24 @@ public class ChessGame {
         if(piece.pieceMoves(board,move.getStartPosition()).contains(move)) {
             if (move.getPromotionPiece() != null) {
                 board.movePiece(move.getStartPosition(), move.getEndPosition(), new ChessPiece(piece.getTeamColor(), move.getPromotionPiece()));
+                board.getPiece(move.getEndPosition()).hasMoved =true;
             } else {
                 board.movePiece(move.getStartPosition(), move.getEndPosition(), piece);
+                piece.hasMoved = true;
+            }
+            if(piece.getPieceType() == ChessPiece.PieceType.KING){
+                if(move.getStartPosition().getColumn() - move.getEndPosition().getColumn() > 0){
+                    ChessPosition endPos = new ChessPosition(move.getStartPosition().getRow(),4);
+                    if(board.getPiece(endPos) != null) {
+                        board.getPiece(endPos).hasMoved = true;
+                    };
+                }
+                if(move.getStartPosition().getColumn() - move.getEndPosition().getColumn() > 0){
+                    ChessPosition endPos = new ChessPosition(move.getStartPosition().getRow(),6);
+                    if(board.getPiece(endPos) != null) {
+                        board.getPiece(endPos).hasMoved = true;
+                    }
+                }
             }
             if (turn == TeamColor.WHITE) {
                 turn = TeamColor.BLACK;

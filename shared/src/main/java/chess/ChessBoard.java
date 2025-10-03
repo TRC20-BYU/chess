@@ -72,7 +72,7 @@ public class ChessBoard {
             if(abs(start.getColumn() - end.getColumn()) > 1){
                 if(start.getColumn() - end.getColumn() > 0){
                     ChessPosition startPos = new ChessPosition( start.getRow(),1);
-                    ChessPosition endPos = new ChessPosition(start.getRow(),3);
+                    ChessPosition endPos = new ChessPosition(start.getRow(),4);
                     movePiece(startPos,endPos,getPiece(startPos));
                 }
                 else{
@@ -81,13 +81,7 @@ public class ChessBoard {
                     movePiece(startPos,endPos,getPiece(startPos));
                 }
             }
-            piece.hasMoved = true;
         }
-        if(piece.getPieceType() == ChessPiece.PieceType.ROOK){
-            piece.hasMoved = true;
-        }
-        System.out.print(this);
-        System.out.print("\n");
     }
 
     boolean checkEnPassantable(ChessPiece piece){
