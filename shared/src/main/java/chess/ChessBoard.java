@@ -16,7 +16,7 @@ import static java.lang.Math.abs;
 public class ChessBoard {
 
     private ChessPiece[][] board;
-    private Collection<ChessPiece> EnPassantables = new HashSet<>();
+    private Collection<ChessPiece> enPassantables = new HashSet<>();
 
     public ChessBoard() {
          board = new ChessPiece[8][8];
@@ -30,8 +30,10 @@ public class ChessBoard {
      */
     public void addPiece(ChessPosition position, ChessPiece piece) {
         this.board[position.getRow()-1][position.getColumn()-1] = piece;
-        if(piece.getPieceType() == ChessPiece.PieceType.KING || piece.getPieceType() == ChessPiece.PieceType.ROOK){
-            piece.special =true;
+        if(piece != null) {
+            if (piece.getPieceType() == ChessPiece.PieceType.KING || piece.getPieceType() == ChessPiece.PieceType.ROOK) {
+                piece.special = true;
+            }
         }
     }
 
@@ -48,17 +50,26 @@ public class ChessBoard {
 
     public void movePiece(ChessPosition start, ChessPosition end, ChessPiece piece)
     {
-        for(ChessPiece pawn : EnPassantables){
+        for(ChessPiece pawn : enPassantables){
             if(pawn.getTeamColor() == piece.getTeamColor()){
                 pawn.special = false;
-                EnPassantables.remove(pawn);
+                enPassantables.remove(pawn);
             }
         }
         addPiece(end,piece);
         addPiece(start,null);
-        if(piece.getPieceType() == ChessPiece.PieceType.PAWN && abs(start.getRow()-end.getRow()) > 1) {
-            EnPassantables.add(piece);
+        if(piece.getPieceType() == ChessPiece.PieceType.PAWN && abs(start.getColumn()-end.getColumn()) > 0) {
+            addPiece(new ChessPosition(start.getRow(), end.getColumn()),null);
         }
+        if(piece.getPieceType() == ChessPiece.PieceType.PAWN && abs(start.getRow()-end.getRow()) > 1) {
+            enPassantables.add(piece);
+        }
+        System.out.print(this);
+        System.out.print("\n");
+    }
+
+    boolean checkEnPassantable(ChessPiece piece){
+        return enPassantables.contains(piece);
     }
 
 
