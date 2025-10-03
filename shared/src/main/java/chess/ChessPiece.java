@@ -14,7 +14,7 @@ public class ChessPiece {
 
     final private ChessPiece.PieceType type;
     final private ChessGame.TeamColor pieceColor;
-    boolean special = false;
+    boolean hasMoved = true;
 
     public ChessPiece(ChessGame.TeamColor pieceColor, ChessPiece.PieceType type) {
         this.type = type;
@@ -60,12 +60,10 @@ public class ChessPiece {
         if (type == PieceType.BISHOP) {
             int[][] directions = {{1, 1}, {1, -1}, {-1, 1}, {-1, -1}};
             moves = directional(directions, board, myPosition, true);
-            //moves = bishopMoves(board,myPosition);
         }
         if (type == PieceType.ROOK) {
             int[][] directions = {{1, 0}, {-1, 0}, {0, 1}, {0, -1}};
             moves = directional(directions, board, myPosition, true);
-            //moves = rookMoves(board,myPosition);
         }
         if (type == PieceType.QUEEN) {
             int[][] directions = {{1, 0}, {-1, 0}, {0, 1}, {0, -1}, {1, 1}, {1, -1}, {-1, 1}, {-1, -1}};
@@ -74,6 +72,9 @@ public class ChessPiece {
         if (type == PieceType.KING) {
             int[][] directions = {{1, 0}, {-1, 0}, {0, 1}, {0, -1}, {1, 1}, {1, -1}, {-1, 1}, {-1, -1}};
             moves = directional(directions, board, myPosition, false);
+            if(!hasMoved){
+                moves.addAll(checkCastling(board,myPosition));
+            }
         }
         if (type == PieceType.KNIGHT) {
             int[][] directions = {{1, 2}, {2, 1}, {-1, 2}, {-2, 1}, {1, -2}, {2, -1}, {-1, -2}, {-2, -1}};
@@ -109,17 +110,49 @@ public class ChessPiece {
     }
 
 
-    private Collection<ChessMove> followPath(ChessBoard board, ChessPosition myPosition, ChessPosition pos, int Xpos, int Ypos) {
+    private Collection<ChessMove> followPath(ChessBoard board, ChessPosition myPosition, ChessPosition pos, int xpos, int ypos) {
         Collection<ChessMove> moves = new HashSet<>();
         ChessMove cm = new ChessMove(myPosition, pos, null);
         moves.add(cm);
-        if (pos.getRow() + Xpos < 9 && pos.getColumn() + Ypos < 9 && pos.getRow() + Xpos >= 1 && pos.getColumn() + Ypos >= 1) {
-            ChessPosition newPos = new ChessPosition(pos.getRow() + Xpos, pos.getColumn() + Ypos);
+        if (pos.getRow() + xpos < 9 && pos.getColumn() + ypos < 9 && pos.getRow() + xpos >= 1 && pos.getColumn() + ypos >= 1) {
+            ChessPosition newPos = new ChessPosition(pos.getRow() + xpos, pos.getColumn() + ypos);
             if (board.getPiece(newPos) == null) {
-                moves.addAll(followPath(board, myPosition, newPos, Xpos, Ypos));
+                moves.addAll(followPath(board, myPosition, newPos, xpos, ypos));
             } else if (board.getPiece(newPos).pieceColor != pieceColor) {
                 ChessMove newCM = new ChessMove(myPosition, newPos, null);
                 moves.add(newCM);
+            }
+        }
+        return moves;
+    }
+
+    private Collection<ChessMove> checkCastling(ChessBoard board, ChessPosition myPosition){
+        Collection<ChessMove> moves = new HashSet<>();
+        if(board.getPiece(new ChessPosition(myPosition.getRow(),8)) != null){
+            if(!board.getPiece(new ChessPosition(myPosition.getRow(),8)).hasMoved){
+                boolean clear = true;
+                for(int x = myPosition.getColumn() + 1; x < 8; x++){
+                    if(board.getPiece(new ChessPosition(myPosition.getRow(),x)) != null){
+                        clear = false;
+                    }
+                }
+                if(clear){
+                    moves.add(new ChessMove(myPosition,new ChessPosition(myPosition.getRow(),7),null));
+                }
+            }
+        }
+
+        if(board.getPiece(new ChessPosition(myPosition.getRow(),1)) != null){
+            if(!board.getPiece(new ChessPosition(myPosition.getRow(),1)).hasMoved){
+                boolean clear = true;
+                for(int x = myPosition.getColumn() - 1; x > 0; x--){
+                    if(board.getPiece(new ChessPosition(myPosition.getRow(),x)) != null){
+                        clear = false;
+                    }
+                }
+                if(clear){
+                    moves.add(new ChessMove(myPosition,new ChessPosition(myPosition.getRow(),2),null));
+                }
             }
         }
         return moves;

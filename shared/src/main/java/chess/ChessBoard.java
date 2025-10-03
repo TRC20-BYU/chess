@@ -32,7 +32,7 @@ public class ChessBoard {
         this.board[position.getRow()-1][position.getColumn()-1] = piece;
         if(piece != null) {
             if (piece.getPieceType() == ChessPiece.PieceType.KING || piece.getPieceType() == ChessPiece.PieceType.ROOK) {
-                piece.special = true;
+                piece.hasMoved = true;
             }
         }
     }
@@ -52,7 +52,7 @@ public class ChessBoard {
     {
         for(ChessPiece pawn : enPassantables){
             if(pawn.getTeamColor() == piece.getTeamColor()){
-                pawn.special = false;
+                pawn.hasMoved = false;
                 enPassantables.remove(pawn);
             }
         }
@@ -64,8 +64,6 @@ public class ChessBoard {
         if(piece.getPieceType() == ChessPiece.PieceType.PAWN && abs(start.getRow()-end.getRow()) > 1) {
             enPassantables.add(piece);
         }
-        System.out.print(this);
-        System.out.print("\n");
     }
 
     boolean checkEnPassantable(ChessPiece piece){
@@ -104,10 +102,10 @@ public class ChessBoard {
         board[7][0] = new ChessPiece(ChessGame.TeamColor.BLACK, ChessPiece.PieceType.ROOK);
         board[0][7] = new ChessPiece(ChessGame.TeamColor.WHITE, ChessPiece.PieceType.ROOK);
         board[7][7] = new ChessPiece(ChessGame.TeamColor.BLACK, ChessPiece.PieceType.ROOK);
-        getPiece(new ChessPosition(1,1)).special = true;
-        getPiece(new ChessPosition(8,1)).special = true;
-        getPiece(new ChessPosition(1,8)).special = true;
-        getPiece(new ChessPosition(8,8)).special = true;
+        getPiece(new ChessPosition(1,1)).hasMoved = false;
+        getPiece(new ChessPosition(8,1)).hasMoved = false;
+        getPiece(new ChessPosition(1,8)).hasMoved = false;
+        getPiece(new ChessPosition(8,8)).hasMoved = false;
         board[0][1] = new ChessPiece(ChessGame.TeamColor.WHITE, ChessPiece.PieceType.KNIGHT);
         board[7][1] = new ChessPiece(ChessGame.TeamColor.BLACK, ChessPiece.PieceType.KNIGHT);
         board[0][6] = new ChessPiece(ChessGame.TeamColor.WHITE, ChessPiece.PieceType.KNIGHT);
@@ -120,8 +118,8 @@ public class ChessBoard {
         board[7][3] = new ChessPiece(ChessGame.TeamColor.BLACK, ChessPiece.PieceType.QUEEN);
         board[0][4] = new ChessPiece(ChessGame.TeamColor.WHITE, ChessPiece.PieceType.KING);
         board[7][4] = new ChessPiece(ChessGame.TeamColor.BLACK, ChessPiece.PieceType.KING);
-        getPiece(new ChessPosition(1,5)).special = true;
-        getPiece(new ChessPosition(8,5)).special = true;
+        getPiece(new ChessPosition(1,5)).hasMoved = false;
+        getPiece(new ChessPosition(8,5)).hasMoved = false;
 
     }
 
