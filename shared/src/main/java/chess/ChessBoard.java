@@ -32,7 +32,7 @@ public class ChessBoard {
         this.board[position.getRow()-1][position.getColumn()-1] = piece;
         if(piece != null) {
             if (piece.getPieceType() == ChessPiece.PieceType.KING || piece.getPieceType() == ChessPiece.PieceType.ROOK) {
-                piece.hasMoved = true;
+                piece.hasMoved = false;
             }
         }
     }
@@ -50,11 +50,15 @@ public class ChessBoard {
 
     public void movePiece(ChessPosition start, ChessPosition end, ChessPiece piece)
     {
+        Collection<ChessPiece> remover = new HashSet<>();
         for(ChessPiece pawn : enPassantables){
             if(pawn.getTeamColor() == piece.getTeamColor()){
                 pawn.hasMoved = false;
-                enPassantables.remove(pawn);
+                remover.add(pawn);
             }
+        }
+        for(ChessPiece pawn : remover){
+                enPassantables.remove(pawn);
         }
         addPiece(end,piece);
         addPiece(start,null);
@@ -64,6 +68,26 @@ public class ChessBoard {
         if(piece.getPieceType() == ChessPiece.PieceType.PAWN && abs(start.getRow()-end.getRow()) > 1) {
             enPassantables.add(piece);
         }
+        if(piece.getPieceType() == ChessPiece.PieceType.KING){
+            if(abs(start.getColumn() - end.getColumn()) > 1){
+                if(start.getColumn() - end.getColumn() > 0){
+                    ChessPosition startPos = new ChessPosition( start.getRow(),1);
+                    ChessPosition endPos = new ChessPosition(start.getRow(),3);
+                    movePiece(startPos,endPos,getPiece(startPos));
+                }
+                else{
+                    ChessPosition startPos = new ChessPosition(start.getRow(),8);
+                    ChessPosition endPos = new ChessPosition(start.getRow(),6);
+                    movePiece(startPos,endPos,getPiece(startPos));
+                }
+            }
+            piece.hasMoved = true;
+        }
+        if(piece.getPieceType() == ChessPiece.PieceType.ROOK){
+            piece.hasMoved = true;
+        }
+        System.out.print(this);
+        System.out.print("\n");
     }
 
     boolean checkEnPassantable(ChessPiece piece){

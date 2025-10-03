@@ -60,10 +60,12 @@ public class ChessPiece {
         if (type == PieceType.BISHOP) {
             int[][] directions = {{1, 1}, {1, -1}, {-1, 1}, {-1, -1}};
             moves = directional(directions, board, myPosition, true);
+            //moves = bishopMoves(board,myPosition);
         }
         if (type == PieceType.ROOK) {
             int[][] directions = {{1, 0}, {-1, 0}, {0, 1}, {0, -1}};
             moves = directional(directions, board, myPosition, true);
+            //moves = rookMoves(board,myPosition);
         }
         if (type == PieceType.QUEEN) {
             int[][] directions = {{1, 0}, {-1, 0}, {0, 1}, {0, -1}, {1, 1}, {1, -1}, {-1, 1}, {-1, -1}};
@@ -72,9 +74,9 @@ public class ChessPiece {
         if (type == PieceType.KING) {
             int[][] directions = {{1, 0}, {-1, 0}, {0, 1}, {0, -1}, {1, 1}, {1, -1}, {-1, 1}, {-1, -1}};
             moves = directional(directions, board, myPosition, false);
-            if(!hasMoved){
-                moves.addAll(checkCastling(board,myPosition));
-            }
+//            if(!hasMoved){
+//                moves.addAll(checkCastling(board,myPosition));
+//            }
         }
         if (type == PieceType.KNIGHT) {
             int[][] directions = {{1, 2}, {2, 1}, {-1, 2}, {-2, 1}, {1, -2}, {2, -1}, {-1, -2}, {-2, -1}};
@@ -110,14 +112,14 @@ public class ChessPiece {
     }
 
 
-    private Collection<ChessMove> followPath(ChessBoard board, ChessPosition myPosition, ChessPosition pos, int xpos, int ypos) {
+    private Collection<ChessMove> followPath(ChessBoard board, ChessPosition myPosition, ChessPosition pos, int xpos, int Ypos) {
         Collection<ChessMove> moves = new HashSet<>();
         ChessMove cm = new ChessMove(myPosition, pos, null);
         moves.add(cm);
-        if (pos.getRow() + xpos < 9 && pos.getColumn() + ypos < 9 && pos.getRow() + xpos >= 1 && pos.getColumn() + ypos >= 1) {
-            ChessPosition newPos = new ChessPosition(pos.getRow() + xpos, pos.getColumn() + ypos);
+        if (pos.getRow() + xpos < 9 && pos.getColumn() + Ypos < 9 && pos.getRow() + xpos >= 1 && pos.getColumn() + Ypos >= 1) {
+            ChessPosition newPos = new ChessPosition(pos.getRow() + xpos, pos.getColumn() + Ypos);
             if (board.getPiece(newPos) == null) {
-                moves.addAll(followPath(board, myPosition, newPos, xpos, ypos));
+                moves.addAll(followPath(board, myPosition, newPos, xpos, Ypos));
             } else if (board.getPiece(newPos).pieceColor != pieceColor) {
                 ChessMove newCM = new ChessMove(myPosition, newPos, null);
                 moves.add(newCM);
