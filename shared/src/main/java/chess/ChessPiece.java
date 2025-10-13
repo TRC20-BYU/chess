@@ -112,14 +112,14 @@ public class ChessPiece {
     }
 
 
-    private Collection<ChessMove> followPath(ChessBoard board, ChessPosition myPosition, ChessPosition pos, int xpos, int Ypos) {
+    private Collection<ChessMove> followPath(ChessBoard board, ChessPosition myPosition, ChessPosition pos, int xPos, int yPos) {
         Collection<ChessMove> moves = new HashSet<>();
         ChessMove cm = new ChessMove(myPosition, pos, null);
         moves.add(cm);
-        if (pos.getRow() + xpos < 9 && pos.getColumn() + Ypos < 9 && pos.getRow() + xpos >= 1 && pos.getColumn() + Ypos >= 1) {
-            ChessPosition newPos = new ChessPosition(pos.getRow() + xpos, pos.getColumn() + Ypos);
+        if (pos.getRow() + xPos < 9 && pos.getColumn() + yPos < 9 && pos.getRow() + xPos >= 1 && pos.getColumn() + yPos >= 1) {
+            ChessPosition newPos = new ChessPosition(pos.getRow() + xPos, pos.getColumn() + yPos);
             if (board.getPiece(newPos) == null) {
-                moves.addAll(followPath(board, myPosition, newPos, xpos, Ypos));
+                moves.addAll(followPath(board, myPosition, newPos, xPos, yPos));
             } else if (board.getPiece(newPos).pieceColor != pieceColor) {
                 ChessMove newCM = new ChessMove(myPosition, newPos, null);
                 moves.add(newCM);
@@ -174,14 +174,7 @@ public class ChessPiece {
         if ((myPosition.getRow() + dir) < 9 && (myPosition.getRow() + dir) > 0) {
             ChessPosition newPos = new ChessPosition(myPosition.getRow() + dir, myPosition.getColumn());
             if (board.getPiece(newPos) == null) {
-                if (newPos.getRow() == 8) {
-                    moves.addAll(pawnPromotions(myPosition, newPos));
-                } else if (newPos.getRow() == 1) {
-                    moves.addAll(pawnPromotions(myPosition, newPos));
-                } else {
-                    ChessMove cm = new ChessMove(myPosition, newPos, null);
-                    moves.add(cm);
-                }
+                addMoves(myPosition, moves, newPos);
                 if (myPosition.getRow() == 2 || myPosition.getRow() == 7) {
                     if ((myPosition.getRow() + (dir + dir)) < 9 && (myPosition.getRow() + (dir + dir)) > 0) {
                         newPos = new ChessPosition(myPosition.getRow() + (dir * 2), myPosition.getColumn());
@@ -204,17 +197,21 @@ public class ChessPiece {
         return moves;
     }
 
+    private void addMoves(ChessPosition myPosition, Collection<ChessMove> moves, ChessPosition newPos) {
+        if (newPos.getRow() == 8) {
+            moves.addAll(pawnPromotions(myPosition, newPos));
+        } else if (newPos.getRow() == 1) {
+            moves.addAll(pawnPromotions(myPosition, newPos));
+        } else {
+            ChessMove cm = new ChessMove(myPosition, newPos, null);
+            moves.add(cm);
+        }
+    }
+
     private void checkPawnAttack(ChessBoard board, ChessPosition myPosition, Collection<ChessMove> moves, ChessPosition newPos) {
         if (board.getPiece(newPos) != null) {
             if (board.getPiece(newPos).pieceColor != pieceColor) {
-                if (newPos.getRow() == 8) {
-                    moves.addAll(pawnPromotions(myPosition, newPos));
-                } else if (newPos.getRow() == 1) {
-                    moves.addAll(pawnPromotions(myPosition, newPos));
-                } else {
-                    ChessMove cm = new ChessMove(myPosition, newPos, null);
-                    moves.add(cm);
-                }
+                addMoves(myPosition, moves, newPos);
             }
         }
         ChessPiece right = null;

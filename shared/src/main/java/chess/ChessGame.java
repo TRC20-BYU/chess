@@ -67,7 +67,7 @@ public class ChessGame {
             if(isInCheck(piece.getTeamColor())){
                 moves.removeIf(move -> abs(move.getStartPosition().getColumn() - move.getEndPosition().getColumn()) > 1);
             }
-            if(piece.hasMoved == false) {
+            if(!piece.hasMoved) {
                 if (moves.contains(new ChessMove(startPosition, new ChessPosition(startPosition.getRow(), 7), null))) {
                     if (!moves.contains(new ChessMove(startPosition, new ChessPosition(startPosition.getRow(), 6), null))) {
                         moves.remove(new ChessMove(startPosition, new ChessPosition(startPosition.getRow(), 7), null));
@@ -113,7 +113,7 @@ public class ChessGame {
                     ChessPosition endPos = new ChessPosition(move.getStartPosition().getRow(),4);
                     if(board.getPiece(endPos) != null) {
                         board.getPiece(endPos).hasMoved = true;
-                    };
+                    }
                 }
                 if(move.getStartPosition().getColumn() - move.getEndPosition().getColumn() > 0){
                     ChessPosition endPos = new ChessPosition(move.getStartPosition().getRow(),6);
@@ -218,9 +218,6 @@ public class ChessGame {
      * @return True if the specified team is in checkmate
      */
     public boolean isInCheckmate(TeamColor teamColor) {
-
-        ChessPosition hotSpot;
-        hotSpot = kingPos(teamColor);
         if(isInCheck(teamColor)) {
             return !checkMate(teamColor);
         }
@@ -236,7 +233,7 @@ public class ChessGame {
                 if(piece != null){
                     if(piece.getTeamColor() == teamColor){
                         Collection<ChessMove> moves = piece.pieceMoves(board,pos);
-                        if(checkSpace(teamColor,moves)){
+                        if(checkSpace(moves)){
                            checkMated = true;
                         }
                     }
@@ -246,7 +243,7 @@ public class ChessGame {
         return checkMated;
     }
 
-    private boolean checkSpace(TeamColor teamColor, Collection<ChessMove> moves){
+    private boolean checkSpace(Collection<ChessMove> moves){
         boolean hayMove = false;
         for(ChessMove move : moves){
             if (hypotheticalCheck(move)) {
@@ -265,8 +262,6 @@ public class ChessGame {
      * @return True if the specified team is in stalemate, otherwise false
      */
     public boolean isInStalemate(TeamColor teamColor) {
-        ChessPosition hotSpot;
-        hotSpot = kingPos(teamColor);
         if(!isInCheck(teamColor)) {
             boolean something = checkMate(teamColor);
             return !something;
