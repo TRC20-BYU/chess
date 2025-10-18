@@ -8,5 +8,7 @@ public class UserService {
 
     public RegistrationResult register(UserData userData) {
         return new RegistrationResult(userData.username(), "yzx");
+        
     }
+
 }

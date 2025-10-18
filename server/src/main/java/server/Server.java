@@ -12,15 +12,14 @@ import java.util.Map;
 public class Server {
 
     private final Javalin server;
-    private UserService userService;
+    private UserService userService = new UserService();
 
     public Server() {
         server = Javalin.create(config -> config.staticFiles.add("web"));
-
+        // Register your endpoints and exception handlers here.
         server.delete("db", ctx -> ctx.result("{}"));
         server.post("user", this::register);
 
-        // Register your endpoints and exception handlers here.
 
     }
 
