@@ -26,4 +26,16 @@ class UserServiceTest {
         res = userService.register(userData);
         Assertions.assertNull(res);
     }
+
+    @Test
+    void login() {
+        DataAccess dataAccess = new MemoryDataAccess();
+        UserService userService = new UserService(dataAccess);
+        UserData userData = new UserData("Joe", "password", "joe@joe");
+        RegistrationResult res = userService.login(userData);
+        Assertions.assertNull(res);
+        userService.register(userData);
+        res = userService.login(userData);
+        Assertions.assertNotNull(res);
+    }
 }

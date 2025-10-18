@@ -10,6 +10,7 @@ import java.util.HashMap;
 public class MemoryDataAccess implements DataAccess {
 
     private HashMap<String, UserData> users = new HashMap<>();
+    private HashMap<String, String> authTokens = new HashMap<>();
 
     @Override
     public boolean saveUser(UserData user) {
@@ -24,4 +25,21 @@ public class MemoryDataAccess implements DataAccess {
     public UserData getUser(String username) {
         return users.get(username);
     }
+
+    @Override
+    public void registerAuthToken(String authToken, String username) {
+        authTokens.put(authToken, username);
+    }
+
+    @Override
+    public boolean authenticate(String authToken) {
+        var res = authTokens.get(authToken);
+        return res != null;
+    }
+
+    @Override
+    public void removeAuthToken(String authToken) {
+        authTokens.remove(authToken);
+    }
+
 }
