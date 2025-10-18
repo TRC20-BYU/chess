@@ -12,12 +12,16 @@ public class MemoryDataAccess implements DataAccess {
     private HashMap<String, UserData> users = new HashMap<>();
 
     @Override
-    public void saveUser(UserData user) {
+    public boolean saveUser(UserData user) {
+        if (getUser(user.username()) != null) {
+            return false;
+        }
         users.put(user.username(), user);
+        return true;
     }
 
     @Override
-    public void getUser(String username) {
-        users.get(username);
+    public UserData getUser(String username) {
+        return users.get(username);
     }
 }

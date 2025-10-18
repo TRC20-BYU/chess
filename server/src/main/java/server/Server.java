@@ -2,6 +2,8 @@ package server;
 
 import com.google.gson.Gson;
 import dataModel.UserData;
+import dataaccess.DataAccess;
+import dataaccess.MemoryDataAccess;
 import io.javalin.*;
 import io.javalin.http.Context;
 import service.UserService;
@@ -12,10 +14,15 @@ import java.util.Map;
 public class Server {
 
     private final Javalin server;
-    private UserService userService = new UserService();
+    private UserService userService;
+    private DataAccess dataAccess;
 
     public Server() {
         server = Javalin.create(config -> config.staticFiles.add("web"));
+
+        dataAccess = new MemoryDataAccess();
+        userService = new UserService(dataAccess);
+
         // Register your endpoints and exception handlers here.
         server.delete("db", ctx -> ctx.result("{}"));
         server.post("user", this::register);

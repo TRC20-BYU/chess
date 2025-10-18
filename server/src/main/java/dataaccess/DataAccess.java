@@ -4,7 +4,7 @@ import dataModel.UserData;
 
 public interface DataAccess {
 
-    public void saveUser(UserData user);
+    public boolean saveUser(UserData user);
 
-    public void getUser(String username);
+    public UserData getUser(String username);
 }
