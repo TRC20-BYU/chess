@@ -14,4 +14,6 @@ public interface DataAccess {
 
     public void removeAuthToken(String authToken);
 
+    public void deleteDatabase();
+
 }

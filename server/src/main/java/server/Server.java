@@ -24,7 +24,7 @@ public class Server {
         userService = new UserService(dataAccess);
 
         // Register your endpoints and exception handlers here.
-        server.delete("db", ctx -> ctx.result("{}"));
+        server.delete("db", this::deleteDatabase);
         server.post("user", this::register);
 
 
@@ -36,9 +36,11 @@ public class Server {
         var req = serializer.fromJson(reqJson, UserData.class);
 
         var regResult = userService.register(req);
-
-
         ctx.result(serializer.toJson(regResult));
+    }
+
+    private void deleteDatabase(Context ctx) {
+        userService.deleteDatabase();
     }
 
     public int run(int desiredPort) {

@@ -42,4 +42,10 @@ public class MemoryDataAccess implements DataAccess {
         authTokens.remove(authToken);
     }
 
+    @Override
+    public void deleteDatabase() {
+        users = new HashMap<>();
+        authTokens = new HashMap<>();
+    }
+
 }

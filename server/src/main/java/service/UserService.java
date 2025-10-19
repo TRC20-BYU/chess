@@ -46,6 +46,9 @@ public class UserService {
         return false;
     }
 
+    public void deleteDatabase() {
+        dataAccess.deleteDatabase();
+    }
 
     public static String generateToken() {
         return UUID.randomUUID().toString();

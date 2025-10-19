@@ -38,4 +38,15 @@ class UserServiceTest {
         res = userService.login(userData);
         Assertions.assertNotNull(res);
     }
+
+    @Test
+    void logout() {
+        DataAccess dataAccess = new MemoryDataAccess();
+        UserService userService = new UserService(dataAccess);
+        UserData userData = new UserData("Joe", "password", "joe@joe");
+        userService.register(userData);
+        RegistrationResult res = userService.login(userData);
+        boolean passed = userService.logout(res.authToken());
+        Assertions.assertTrue(passed);
+    }
 }
