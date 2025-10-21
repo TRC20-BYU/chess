@@ -39,11 +39,11 @@ public class Server {
         String reqJson = ctx.body();
         var req = serializer.fromJson(reqJson, UserData.class);
         if (req.username() == null || req.password() == null || req.email() == null) {
-            exceptionHandler(new ResponseException(ResponseException.Code.requestError, ":"), ctx);
+            exceptionHandler(new ResponseException(ResponseException.Code.requestError), ctx);
         } else {
             var regResult = userService.register(req);
             if (regResult == null) {
-                exceptionHandler(new ResponseException(ResponseException.Code.takenError, ":"), ctx);
+                exceptionHandler(new ResponseException(ResponseException.Code.takenError), ctx);
             } else {
                 ctx.result(serializer.toJson(regResult));
             }
@@ -54,12 +54,12 @@ public class Server {
         var serializer = new Gson();
         String reqJson = ctx.body();
         var req = serializer.fromJson(reqJson, UserData.class);
-        if (req.username() == null && req.password() == null) {
-//            throw new ResponseException(ResponseException.Code.requestError, "bad request");
+        if (req.username() == null || req.password() == null) {
+            exceptionHandler(new ResponseException(ResponseException.Code.requestError), ctx);
         } else {
             var regResult = userService.login(req);
             if (regResult == null) {
-//                ctx.result("Error: unauthorized");
+                exceptionHandler(new ResponseException(ResponseException.Code.authError), ctx);
             } else {
                 ctx.result(serializer.toJson(regResult));
             }
@@ -72,8 +72,7 @@ public class Server {
         var req = serializer.fromJson(reqJson, RegistrationResult.class);
         boolean regResult = userService.logout(req.authToken());
         if (!regResult) {
-//            ctx.status(HttpStatus.UNAUTHORIZED);
-//            ctx.result("Error: unauthorized");
+            exceptionHandler(new ResponseException(ResponseException.Code.authError), ctx);
         }
     }
 

@@ -14,8 +14,7 @@ public class ResponseException extends Exception {
 
     final private Code code;
 
-    public ResponseException(Code code, String message) {
-        super(message);
+    public ResponseException(Code code) {
         this.code = code;
     }
 
@@ -26,7 +25,7 @@ public class ResponseException extends Exception {
     private String codeMessage() {
         return switch (code) {
             case requestError -> "Error: bad request";
-            case authError -> "unauthorized";
+            case authError -> "Error: unauthorized";
             case takenError -> "Error: already taken";
             default -> "unknown";
         };

@@ -5,6 +5,7 @@ import dataModel.UserData;
 import dataaccess.DataAccess;
 import jakarta.servlet.Registration;
 
+import java.util.Objects;
 import java.util.UUID;
 
 public class UserService {
@@ -31,6 +32,9 @@ public class UserService {
     public RegistrationResult login(UserData loginCred) {
         UserData userData = dataAccess.getUser(loginCred.username());
         if (userData == null) {
+            return null;
+        }
+        if (!Objects.equals(userData.password(), loginCred.password())) {
             return null;
         }
         String newAuthToken = generateToken();
