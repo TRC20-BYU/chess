@@ -1,14 +1,12 @@
 package server;
 
 import com.google.gson.Gson;
-import dataModel.RegistrationResult;
 import dataModel.UserData;
 import dataaccess.DataAccess;
 import dataaccess.MemoryDataAccess;
 import io.javalin.*;
 import io.javalin.http.Context;
 import service.UserService;
-//import json;
 
 public class Server {
 
@@ -67,13 +65,12 @@ public class Server {
     }
 
     private void logout(Context ctx) {
-        var serializer = new Gson();
-        String reqJson = ctx.body();
-        var req = serializer.fromJson(reqJson, RegistrationResult.class);
-        boolean regResult = userService.logout(req.authToken());
+        String authToken = ctx.header("authorization");
+        boolean regResult = userService.logout(authToken);
         if (!regResult) {
             exceptionHandler(new ResponseException(ResponseException.Code.authError), ctx);
         }
+        ctx.result();
     }
 
     private void exceptionHandler(ResponseException ex, Context ctx) {
