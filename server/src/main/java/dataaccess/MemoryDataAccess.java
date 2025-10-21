@@ -2,10 +2,8 @@ package dataaccess;
 
 import dataModel.GameData;
 import dataModel.UserData;
-import dataaccess.DataAccess;
 
 
-import javax.xml.crypto.Data;
 import java.util.HashMap;
 
 public class MemoryDataAccess implements DataAccess {
@@ -17,7 +15,7 @@ public class MemoryDataAccess implements DataAccess {
 
     @Override
     public boolean saveUser(UserData user) {
-        if (getUser(user.username()) != null) {
+        if (getUserData(user.username()) != null) {
             return false;
         }
         users.put(user.username(), user);
@@ -25,8 +23,14 @@ public class MemoryDataAccess implements DataAccess {
     }
 
     @Override
-    public UserData getUser(String username) {
+    public UserData getUserData(String username) {
         return users.get(username);
+    }
+
+    @Override
+    public UserData getUsername(String authToken) {
+        String username = authTokens.get(authToken);
+        return getUserData(username);
     }
 
     @Override
@@ -56,6 +60,11 @@ public class MemoryDataAccess implements DataAccess {
         gameNumbers++;
         games.put(gameNumbers, new GameData(gameNumbers, null, null, gameName));
         return gameNumbers;
+    }
+
+    @Override
+    public GameData getGame(int gameID) {
+        return games.get(gameID);
     }
 
 }

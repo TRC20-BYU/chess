@@ -3,7 +3,6 @@ package service;
 import dataModel.RegistrationResult;
 import dataModel.UserData;
 import dataaccess.DataAccess;
-import jakarta.servlet.Registration;
 
 import java.util.Objects;
 import java.util.UUID;
@@ -30,7 +29,7 @@ public class UserService {
     }
 
     public RegistrationResult login(UserData loginCred) {
-        UserData userData = dataAccess.getUser(loginCred.username());
+        UserData userData = dataAccess.getUserData(loginCred.username());
         if (userData == null) {
             return null;
         }
