@@ -16,4 +16,6 @@ public interface DataAccess {
 
     public void deleteDatabase();
 
+    public int createGame(String gameName);
+
 }
