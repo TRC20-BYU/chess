@@ -1,6 +1,6 @@
 package service;
 
-import dataModel.RegistrationResult;
+import dataModel.AuthData;
 import dataModel.UserData;
 import dataaccess.DataAccess;
 
@@ -16,19 +16,19 @@ public class UserService {
         this.dataAccess = dataAccess;
     }
 
-    public RegistrationResult register(UserData userData) {
+    public AuthData register(UserData userData) {
 
         boolean saved = dataAccess.saveUser(userData);
         if (saved) {
             String authToken = generateToken();
             dataAccess.registerAuthToken(authToken, userData.username());
-            return new RegistrationResult(userData.username(), authToken);
+            return new AuthData(userData.username(), authToken);
         }
         return null;
 
     }
 
-    public RegistrationResult login(UserData loginCred) {
+    public AuthData login(UserData loginCred) {
         UserData userData = dataAccess.getUserData(loginCred.username());
         if (userData == null) {
             return null;
@@ -38,7 +38,7 @@ public class UserService {
         }
         String newAuthToken = generateToken();
         dataAccess.registerAuthToken(newAuthToken, userData.username());
-        return new RegistrationResult(userData.username(), newAuthToken);
+        return new AuthData(userData.username(), newAuthToken);
     }
 
     public boolean logout(String authToken) {
