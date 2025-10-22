@@ -1,12 +1,10 @@
 package service;
 
-import com.google.gson.Gson;
-import dataModel.GameData;
+import data_model.GameData;
 import dataaccess.DataAccess;
 import server.Server;
 
 import java.util.List;
-import java.util.Map;
 
 public class GameService {
 

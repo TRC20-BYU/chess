@@ -1,6 +1,4 @@
-package dataModel;
-
-import server.Server;
+package data_model;
 
 public record JoinData(String playerColor, int gameID) {
 }

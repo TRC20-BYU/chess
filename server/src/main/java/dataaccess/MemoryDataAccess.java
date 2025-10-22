@@ -1,10 +1,9 @@
 package dataaccess;
 
-import dataModel.GameData;
-import dataModel.UserData;
+import data_model.GameData;
+import data_model.UserData;
 
 
-import java.awt.*;
 import java.util.ArrayList;
 import java.util.HashMap;
 

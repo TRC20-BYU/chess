@@ -1,14 +1,13 @@
 package server;
 
 import com.google.gson.Gson;
-import dataModel.GameData;
-import dataModel.JoinData;
-import dataModel.UserData;
+import data_model.GameData;
+import data_model.JoinData;
+import data_model.UserData;
 import dataaccess.DataAccess;
 import dataaccess.MemoryDataAccess;
 import io.javalin.*;
 import io.javalin.http.Context;
-import org.jetbrains.annotations.NotNull;
 import service.GameService;
 import service.UserService;
 

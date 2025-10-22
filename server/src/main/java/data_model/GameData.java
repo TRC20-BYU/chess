@@ -1,6 +1,4 @@
-package dataModel;
-
-import org.jetbrains.annotations.NotNull;
+package data_model;
 
 public class GameData {
     int gameID;

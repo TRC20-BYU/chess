@@ -1,8 +1,8 @@
 package service;
 
-import dataModel.GameData;
-import dataModel.AuthData;
-import dataModel.UserData;
+import data_model.GameData;
+import data_model.AuthData;
+import data_model.UserData;
 import dataaccess.DataAccess;
 import dataaccess.MemoryDataAccess;
 import org.junit.jupiter.api.Assertions;
