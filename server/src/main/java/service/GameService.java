@@ -1,8 +1,11 @@
 package service;
 
+import com.google.gson.Gson;
 import dataModel.GameData;
 import dataaccess.DataAccess;
 import server.Server;
+
+import java.util.Map;
 
 public class GameService {
 
@@ -43,5 +46,12 @@ public class GameService {
             }
         }
         return -2;
+    }
+
+    public String listGames(String authToken) {
+        if (dataAccess.authenticate(authToken)) {
+            return dataAccess.gamesList().toString();
+        }
+        return null;
     }
 }

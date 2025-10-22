@@ -40,6 +40,7 @@ public class Server {
         server.delete("session", this::logout);
         server.post("game", this::createGame);
         server.put("game", this::joinGame);
+        server.get("game", this::listGames);
     }
 
 
@@ -123,6 +124,11 @@ public class Server {
                 exceptionHandler(new ResponseException(ResponseException.Code.takenError), ctx);
             }
         }
+    }
+
+    private void listGames(Context ctx) {
+        String result = gameService.listGames(ctx.header("authorization"));
+        ctx.result(new Gson().toJson(Map.of("games", result)));
     }
 
     private void exceptionHandler(ResponseException ex, Context ctx) {

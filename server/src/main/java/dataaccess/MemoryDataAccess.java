@@ -4,6 +4,8 @@ import dataModel.GameData;
 import dataModel.UserData;
 
 
+import java.awt.*;
+import java.util.ArrayList;
 import java.util.HashMap;
 
 public class MemoryDataAccess implements DataAccess {
@@ -58,13 +60,21 @@ public class MemoryDataAccess implements DataAccess {
     @Override
     public int createGame(String gameName) {
         gameNumbers++;
-        games.put(gameNumbers, new GameData(gameNumbers, null, null, gameName));
+        games.put(gameNumbers, new GameData(gameNumbers, "", "", gameName));
         return gameNumbers;
     }
 
     @Override
     public GameData getGame(int gameID) {
         return games.get(gameID);
+    }
+
+    public ArrayList<GameData> gamesList() {
+        ArrayList<GameData> listOfGames = new ArrayList<>();
+        for (HashMap.Entry<Integer, GameData> entry : games.entrySet()) {
+            listOfGames.add(entry.getValue());
+        }
+        return listOfGames;
     }
 
 }

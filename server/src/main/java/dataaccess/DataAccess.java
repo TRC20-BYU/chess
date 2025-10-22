@@ -3,6 +3,8 @@ package dataaccess;
 import dataModel.GameData;
 import dataModel.UserData;
 
+import java.util.List;
+
 public interface DataAccess {
 
     public boolean saveUser(UserData user);
@@ -22,4 +24,6 @@ public interface DataAccess {
     public int createGame(String gameName);
 
     public GameData getGame(int gameID);
+
+    public List<GameData> gamesList();
 }
