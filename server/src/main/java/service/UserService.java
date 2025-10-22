@@ -1,7 +1,7 @@
 package service;
 
-import data_model.AuthData;
-import data_model.UserData;
+import datamodel.AuthData;
+import datamodel.UserData;
 import dataaccess.DataAccess;
 
 import java.util.Objects;

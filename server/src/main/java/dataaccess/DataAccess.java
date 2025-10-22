@@ -1,7 +1,7 @@
 package dataaccess;
 
-import data_model.GameData;
-import data_model.UserData;
+import datamodel.GameData;
+import datamodel.UserData;
 
 import java.util.List;
 

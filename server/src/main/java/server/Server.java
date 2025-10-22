@@ -1,9 +1,9 @@
 package server;
 
 import com.google.gson.Gson;
-import data_model.GameData;
-import data_model.JoinData;
-import data_model.UserData;
+import datamodel.GameData;
+import datamodel.JoinData;
+import datamodel.UserData;
 import dataaccess.DataAccess;
 import dataaccess.MemoryDataAccess;
 import io.javalin.*;

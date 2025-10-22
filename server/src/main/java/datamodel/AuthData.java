@@ -1,4 +1,4 @@
-package data_model;
+package datamodel;
 
 public record AuthData(String username, String authToken) {
 }

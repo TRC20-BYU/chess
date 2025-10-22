@@ -102,7 +102,8 @@ public class ChessGame {
         }
         if (piece.pieceMoves(board, move.getStartPosition()).contains(move)) {
             if (move.getPromotionPiece() != null) {
-                board.movePiece(move.getStartPosition(), move.getEndPosition(), new ChessPiece(piece.getTeamColor(), move.getPromotionPiece()), false);
+                board.movePiece(move.getStartPosition(), move.getEndPosition(),
+                        new ChessPiece(piece.getTeamColor(), move.getPromotionPiece()), false);
                 board.getPiece(move.getEndPosition()).hasMoved = true;
             } else {
                 board.movePiece(move.getStartPosition(), move.getEndPosition(), piece, false);

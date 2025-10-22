@@ -92,7 +92,8 @@ public class ChessPiece {
     private Collection<ChessMove> directional(int[][] directions, ChessBoard board, ChessPosition myPosition, boolean follow) {
         Collection<ChessMove> moves = new HashSet<>();
         for (int[] dir : directions) {
-            if (myPosition.getRow() + dir[0] < 9 && myPosition.getColumn() + dir[1] < 9 && myPosition.getRow() + dir[0] >= 1 && myPosition.getColumn() + dir[1] >= 1) {
+            if (myPosition.getRow() + dir[0] < 9 && myPosition.getColumn() + dir[1] < 9 &&
+                    myPosition.getRow() + dir[0] >= 1 && myPosition.getColumn() + dir[1] >= 1) {
                 ChessPosition newPos = new ChessPosition(myPosition.getRow() + dir[0], myPosition.getColumn() + dir[1]);
                 if (board.getPiece(newPos) == null) {
                     if (follow) {
@@ -112,14 +113,14 @@ public class ChessPiece {
     }
 
 
-    private Collection<ChessMove> followPath(ChessBoard board, ChessPosition myPosition, ChessPosition pos, int xpos, int Ypos) {
+    private Collection<ChessMove> followPath(ChessBoard board, ChessPosition myPosition, ChessPosition pos, int xpos, int ypos) {
         Collection<ChessMove> moves = new HashSet<>();
         ChessMove cm = new ChessMove(myPosition, pos, null);
         moves.add(cm);
-        if (pos.getRow() + xpos < 9 && pos.getColumn() + Ypos < 9 && pos.getRow() + xpos >= 1 && pos.getColumn() + Ypos >= 1) {
-            ChessPosition newPos = new ChessPosition(pos.getRow() + xpos, pos.getColumn() + Ypos);
+        if (pos.getRow() + xpos < 9 && pos.getColumn() + ypos < 9 && pos.getRow() + xpos >= 1 && pos.getColumn() + ypos >= 1) {
+            ChessPosition newPos = new ChessPosition(pos.getRow() + xpos, pos.getColumn() + ypos);
             if (board.getPiece(newPos) == null) {
-                moves.addAll(followPath(board, myPosition, newPos, xpos, Ypos));
+                moves.addAll(followPath(board, myPosition, newPos, xpos, ypos));
             } else if (board.getPiece(newPos).pieceColor != pieceColor) {
                 ChessMove newCM = new ChessMove(myPosition, newPos, null);
                 moves.add(newCM);
@@ -174,14 +175,7 @@ public class ChessPiece {
         if ((myPosition.getRow() + dir) < 9 && (myPosition.getRow() + dir) > 0) {
             ChessPosition newPos = new ChessPosition(myPosition.getRow() + dir, myPosition.getColumn());
             if (board.getPiece(newPos) == null) {
-                if (newPos.getRow() == 8) {
-                    moves.addAll(pawnPromotions(myPosition, newPos));
-                } else if (newPos.getRow() == 1) {
-                    moves.addAll(pawnPromotions(myPosition, newPos));
-                } else {
-                    ChessMove cm = new ChessMove(myPosition, newPos, null);
-                    moves.add(cm);
-                }
+                moves.addAll(possibleMoves(myPosition, newPos));
                 if (myPosition.getRow() == 2 || myPosition.getRow() == 7) {
                     if ((myPosition.getRow() + (dir + dir)) < 9 && (myPosition.getRow() + (dir + dir)) > 0) {
                         newPos = new ChessPosition(myPosition.getRow() + (dir * 2), myPosition.getColumn());
@@ -204,17 +198,23 @@ public class ChessPiece {
         return moves;
     }
 
+    private Collection<ChessMove> possibleMoves(ChessPosition myPosition, ChessPosition newPos) {
+        Collection<ChessMove> moves = new HashSet<>();
+        if (newPos.getRow() == 8) {
+            moves.addAll(pawnPromotions(myPosition, newPos));
+        } else if (newPos.getRow() == 1) {
+            moves.addAll(pawnPromotions(myPosition, newPos));
+        } else {
+            ChessMove cm = new ChessMove(myPosition, newPos, null);
+            moves.add(cm);
+        }
+        return moves;
+    }
+
     private void checkPawnAttack(ChessBoard board, ChessPosition myPosition, Collection<ChessMove> moves, ChessPosition newPos) {
         if (board.getPiece(newPos) != null) {
             if (board.getPiece(newPos).pieceColor != pieceColor) {
-                if (newPos.getRow() == 8) {
-                    moves.addAll(pawnPromotions(myPosition, newPos));
-                } else if (newPos.getRow() == 1) {
-                    moves.addAll(pawnPromotions(myPosition, newPos));
-                } else {
-                    ChessMove cm = new ChessMove(myPosition, newPos, null);
-                    moves.add(cm);
-                }
+                moves.addAll(possibleMoves(myPosition, newPos));
             }
         }
         ChessPiece right = null;

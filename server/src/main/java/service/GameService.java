@@ -1,6 +1,6 @@
 package service;
 
-import data_model.GameData;
+import datamodel.GameData;
 import dataaccess.DataAccess;
 import server.Server;
 

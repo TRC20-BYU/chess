@@ -1,4 +1,4 @@
-package data_model;
+package datamodel;
 
 public class GameData {
     int gameID;
