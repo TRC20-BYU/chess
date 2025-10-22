@@ -55,12 +55,14 @@ public class MemoryDataAccess implements DataAccess {
     public void deleteDatabase() {
         users = new HashMap<>();
         authTokens = new HashMap<>();
+        games = new HashMap<>();
+        gameNumbers = 0;
     }
 
     @Override
     public int createGame(String gameName) {
         gameNumbers++;
-        games.put(gameNumbers, new GameData(gameNumbers, "", "", gameName));
+        games.put(gameNumbers, new GameData(gameNumbers, null, null, gameName));
         return gameNumbers;
     }
 

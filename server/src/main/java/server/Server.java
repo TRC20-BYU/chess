@@ -12,7 +12,9 @@ import org.jetbrains.annotations.NotNull;
 import service.GameService;
 import service.UserService;
 
+import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 public class Server {
 
@@ -93,10 +95,10 @@ public class Server {
         var serializer = new Gson();
         String reqJson = ctx.body();
         var req = serializer.fromJson(reqJson, GameData.class);
-        if (req.gameName() == null) {
+        if (req.getGameName() == null) {
             exceptionHandler(new ResponseException(ResponseException.Code.requestError), ctx);
         } else {
-            int result = gameService.createGame(ctx.header("authorization"), req.gameName());
+            int result = gameService.createGame(ctx.header("authorization"), req.getGameName());
             if (result < 0) {
                 exceptionHandler(new ResponseException(ResponseException.Code.authError), ctx);
             } else {
@@ -109,7 +111,9 @@ public class Server {
         var serializer = new Gson();
         String reqJson = ctx.body();
         var req = serializer.fromJson(reqJson, JoinData.class);
-        if (req.gameID() == 0 || req.playerColor() == null) {
+        if (req.gameID() == 0) {
+            exceptionHandler(new ResponseException(ResponseException.Code.requestError), ctx);
+        } else if (!Objects.equals(req.playerColor(), "WHITE") && !Objects.equals(req.playerColor(), "BLACK")) {
             exceptionHandler(new ResponseException(ResponseException.Code.requestError), ctx);
         } else {
             PlayerColor color = PlayerColor.WHITE;
@@ -127,8 +131,12 @@ public class Server {
     }
 
     private void listGames(Context ctx) {
-        String result = gameService.listGames(ctx.header("authorization"));
-        ctx.result(new Gson().toJson(Map.of("games", result)));
+        List<GameData> result = gameService.listGames(ctx.header("authorization"));
+        if (result != null) {
+            ctx.result(new Gson().toJson(Map.of("games", result)));
+        } else {
+            exceptionHandler(new ResponseException(ResponseException.Code.authError), ctx);
+        }
     }
 
     private void exceptionHandler(ResponseException ex, Context ctx) {

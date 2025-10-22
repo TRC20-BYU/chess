@@ -5,6 +5,7 @@ import dataModel.GameData;
 import dataaccess.DataAccess;
 import server.Server;
 
+import java.util.List;
 import java.util.Map;
 
 public class GameService {
@@ -35,22 +36,22 @@ public class GameService {
 
     private int addColorToGame(String authToken, Server.PlayerColor playerColor, GameData game) {
         if (playerColor == Server.PlayerColor.WHITE) {
-            if (game.whiteUsername() == null) {
-                game = new GameData(game.gameID(), dataAccess.getUsername(authToken).username(), game.blackUsername(), game.gameName());
+            if (game.getWhiteUsername() == null) {
+                game.setWhiteUsername(dataAccess.getUsername(authToken).username());
                 return 1;
             }
         } else {
-            if (game.blackUsername() == null) {
-                game = new GameData(game.gameID(), game.whiteUsername(), dataAccess.getUsername(authToken).username(), game.gameName());
+            if (game.getBlackUsername() == null) {
+                game.setBlackUsername(dataAccess.getUsername(authToken).username());
                 return 1;
             }
         }
         return -2;
     }
 
-    public String listGames(String authToken) {
+    public List<GameData> listGames(String authToken) {
         if (dataAccess.authenticate(authToken)) {
-            return dataAccess.gamesList().toString();
+            return dataAccess.gamesList();
         }
         return null;
     }
