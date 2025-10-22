@@ -176,15 +176,7 @@ public class ChessPiece {
             ChessPosition newPos = new ChessPosition(myPosition.getRow() + dir, myPosition.getColumn());
             if (board.getPiece(newPos) == null) {
                 moves.addAll(possibleMoves(myPosition, newPos));
-                if (myPosition.getRow() == 2 || myPosition.getRow() == 7) {
-                    if ((myPosition.getRow() + (dir + dir)) < 9 && (myPosition.getRow() + (dir + dir)) > 0) {
-                        newPos = new ChessPosition(myPosition.getRow() + (dir * 2), myPosition.getColumn());
-                        if (board.getPiece(newPos) == null) {
-                            ChessMove cm = new ChessMove(myPosition, newPos, null);
-                            moves.add(cm);
-                        }
-                    }
-                }
+                getDoubleMoves(board, myPosition, dir, moves);
             }
             if (myPosition.getColumn() + 1 < 9) {
                 newPos = new ChessPosition(myPosition.getRow() + dir, myPosition.getColumn() + 1);
@@ -196,6 +188,19 @@ public class ChessPiece {
             }
         }
         return moves;
+    }
+
+    private static void getDoubleMoves(ChessBoard board, ChessPosition myPosition, int dir, Collection<ChessMove> moves) {
+        ChessPosition newPos;
+        if (myPosition.getRow() == 2 || myPosition.getRow() == 7) {
+            if ((myPosition.getRow() + (dir + dir)) < 9 && (myPosition.getRow() + (dir + dir)) > 0) {
+                newPos = new ChessPosition(myPosition.getRow() + (dir * 2), myPosition.getColumn());
+                if (board.getPiece(newPos) == null) {
+                    ChessMove cm = new ChessMove(myPosition, newPos, null);
+                    moves.add(cm);
+                }
+            }
+        }
     }
 
     private Collection<ChessMove> possibleMoves(ChessPosition myPosition, ChessPosition newPos) {
