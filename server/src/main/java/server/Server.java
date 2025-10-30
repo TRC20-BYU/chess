@@ -1,6 +1,8 @@
 package server;
 
 import com.google.gson.Gson;
+import dataaccess.DBMemoryAccess;
+import dataaccess.DataAccessException;
 import datamodel.GameData;
 import datamodel.JoinData;
 import datamodel.UserData;
@@ -28,9 +30,16 @@ public class Server {
     }
 
     public Server() {
+//        DataAccess dataAccessTry;
         server = Javalin.create(config -> config.staticFiles.add("web"));
 
-        dataAccess = new MemoryDataAccess();
+//        try {
+//            dataAccessTry = new DBMemoryAccess();
+//        } catch (DataAccessException e) {
+//            dataAccessTry = new MemoryDataAccess();
+//        }
+
+        dataAccess = new DBMemoryAccess();
         userService = new UserService(dataAccess);
         gameService = new GameService(dataAccess);
 
