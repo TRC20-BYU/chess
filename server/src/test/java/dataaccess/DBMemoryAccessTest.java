@@ -69,6 +69,19 @@ class DBMemoryAccessTest {
 
     @Test
     void authenticate() {
+        DBMemoryAccess db = new DBMemoryAccess();
+        resetDB(db);
+        db.registerAuthToken("auth123", "joe");
+        boolean result = db.authenticate("auth123");
+        Assertions.assertTrue(result);
+    }
+
+    @Test
+    void authenticateBad() {
+        DBMemoryAccess db = new DBMemoryAccess();
+        resetDB(db);
+        boolean result = db.authenticate("auth123");
+        Assertions.assertFalse(result);
     }
 
     @Test

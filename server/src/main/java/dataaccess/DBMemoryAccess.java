@@ -76,7 +76,7 @@ public class DBMemoryAccess implements DataAccess {
     @Override
     public boolean authenticate(String authToken) {
         try (Connection conn = DatabaseManager.getConnection()) {
-            var statement = "SELECT authToken FROM users WHERE authToken=?";
+            var statement = "SELECT authToken FROM authTokens WHERE authToken=?";
             try (PreparedStatement ps = conn.prepareStatement(statement)) {
                 ps.setString(1, authToken);
                 try (ResultSet rs = ps.executeQuery()) {
