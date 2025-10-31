@@ -3,6 +3,7 @@ package service;
 import datamodel.AuthData;
 import datamodel.UserData;
 import dataaccess.DataAccess;
+import org.mindrot.jbcrypt.BCrypt;
 import server.ResponseException;
 
 import java.util.Objects;
@@ -18,8 +19,9 @@ public class UserService {
     }
 
     public AuthData register(UserData userData) throws ResponseException {
-
-        boolean saved = dataAccess.saveUser(userData);
+        String securePassword = encrypt(userData.password());
+        UserData secureUser = new UserData(userData.username(), securePassword, userData.email());
+        boolean saved = dataAccess.saveUser(secureUser);
         if (saved) {
             String authToken = generateToken();
             dataAccess.registerAuthToken(authToken, userData.username());
@@ -34,7 +36,7 @@ public class UserService {
         if (userData == null) {
             throw new ResponseException(ResponseException.Code.authError);
         }
-        if (!Objects.equals(userData.password(), loginCred.password())) {
+        if (!checkEncryption(userData.password(), loginCred.password())) {
             throw new ResponseException(ResponseException.Code.authError);
         }
         String newAuthToken = generateToken();
@@ -59,5 +61,12 @@ public class UserService {
         return UUID.randomUUID().toString();
     }
 
+    private String encrypt(String string) {
+        return BCrypt.hashpw(string, BCrypt.gensalt());
+    }
+
+    private boolean checkEncryption(String encrypted, String password) {
+        return BCrypt.checkpw(password, encrypted);
+    }
 
 }
