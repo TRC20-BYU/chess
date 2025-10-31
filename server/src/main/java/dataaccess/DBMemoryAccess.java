@@ -59,6 +59,19 @@ public class DBMemoryAccess implements DataAccess {
 
     @Override
     public UserData getUsername(String authToken) {
+        try (Connection conn = DatabaseManager.getConnection()) {
+            var statement = "SELECT username FROM authTokens WHERE authToken=?";
+            try (PreparedStatement ps = conn.prepareStatement(statement)) {
+                ps.setString(1, authToken);
+                try (ResultSet rs = ps.executeQuery()) {
+                    if (rs.next()) {
+                        return getUserData(readAuthData(rs));
+                    }
+                }
+            }
+        } catch (SQLException | DataAccessException ex) {
+            return null;
+        }
         return null;
     }
 
@@ -292,6 +305,10 @@ public class DBMemoryAccess implements DataAccess {
         String password = rs.getString("password");
         String email = rs.getString("email");
         return new UserData(username, password, email);
+    }
+
+    private String readAuthData(ResultSet rs) throws SQLException {
+        return rs.getString("username");
     }
 
     private GameData readGameData(ResultSet rs) throws SQLException {
