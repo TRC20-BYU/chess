@@ -15,20 +15,27 @@ import java.util.List;
 
 public class DBMemoryAccess implements DataAccess {
 
-    public DBMemoryAccess() throws ResponseException {
-        configureDatabase();
-
+    public DBMemoryAccess() {
+        try {
+            configureDatabase();
+        } catch (DataAccessException e) {
+            System.out.print("here");
+        }
     }
 
     @Override
-    public boolean saveUser(UserData user) throws ResponseException {
+    public boolean saveUser(UserData user) {
         if (getUserData(user.username()) == null) {
             var statement = "INSERT INTO users (username, password, email) VALUES (?, ?, ?)";
             String username = user.username();
             String password = user.password();
             String email = user.email();
-            executeUpdate(statement, username, password, email);
-            return true;
+            try {
+                executeUpdate(statement, username, password, email);
+                return true;
+            } catch (DataAccessException e) {
+                return false;
+            }
         }
         return false;
     }
@@ -69,10 +76,16 @@ public class DBMemoryAccess implements DataAccess {
         throw new ResponseException(ResponseException.Code.authError);
     }
 
+    /// maybe changes this to be a bool for pass fail??????????????????????????
     @Override
-    public void registerAuthToken(String authToken, String username) throws ResponseException {
+    public void registerAuthToken(String authToken, String username) {
         var statement = "INSERT INTO authTokens (authToken, username) VALUES (?, ?)";
-        executeUpdate(statement, authToken, username);
+        try {
+            executeUpdate(statement, authToken, username);
+        } catch (DataAccessException e) {
+            System.out.print("here3");
+        }
+
     }
 
     @Override
@@ -107,17 +120,25 @@ public class DBMemoryAccess implements DataAccess {
     }
 
     @Override
-    public void deleteDatabase() throws ResponseException {
+    public void deleteDatabase() {
         var statement = "DROP DATABASE chess";
-        executeUpdate(statement);
-        configureDatabase();
+        try {
+            executeUpdate(statement);
+            configureDatabase();
+        } catch (DataAccessException e) {
+            System.out.print("here2");
+        }
 
     }
 
     @Override
-    public int createGame(String gameName) throws ResponseException {
+    public int createGame(String gameName) {
         var statement = "INSERT INTO games (gameName) VALUES (?)";
-        return executeUpdate(statement, gameName);
+        try {
+            return executeUpdate(statement, gameName);
+        } catch (DataAccessException e) {
+            return 0;
+        }
     }
 
     @Override
@@ -208,9 +229,10 @@ public class DBMemoryAccess implements DataAccess {
     }
 
 
-    private int executeUpdate(String statement, Object... params) throws ResponseException {
+    private int executeUpdate(String statement, Object... params) throws DataAccessException {
+
         try (Connection conn = DatabaseManager.getConnection()) {
-            try (PreparedStatement ps = conn.prepareStatement(statement)) {
+            try (PreparedStatement ps = conn.prepareStatement(statement, RETURN_GENERATED_KEYS)) {
                 for (int i = 0; i < params.length; i++) {
                     Object param = params[i];
                     if (param instanceof String p) {
@@ -227,9 +249,11 @@ public class DBMemoryAccess implements DataAccess {
                 if (rs.next()) {
                     return rs.getInt(1);
                 }
+
+                return 0;
             }
-        } catch (SQLException | DataAccessException ex) {
-            throw new ResponseException(ResponseException.Code.serverError);
+        } catch (SQLException ex) {
+//                throw new ResponseException(ResponseException.Code.ServerError, String.format("Unable to configure database: %s", ex.getMessage()));
         }
         return 0;
     }
@@ -262,19 +286,17 @@ public class DBMemoryAccess implements DataAccess {
             """
     };
 
-    private void configureDatabase() throws ResponseException {
-        try {
-            DatabaseManager.createDatabase();
-            try (Connection conn = DatabaseManager.getConnection()) {
-                for (String statement : createStatements) {
-                    try (var preparedStatement = conn.prepareStatement(statement)) {
-                        preparedStatement.executeUpdate();
-                    }
+    private void configureDatabase() throws DataAccessException {
+        DatabaseManager.createDatabase();
+        try (Connection conn = DatabaseManager.getConnection()) {
+            for (String statement : createStatements) {
+                try (var preparedStatement = conn.prepareStatement(statement)) {
+                    preparedStatement.executeUpdate();
                 }
-
             }
-        } catch (SQLException | DataAccessException ex) {
-            throw new ResponseException(ResponseException.Code.serverError, ex.getMessage());
+
+        } catch (SQLException ex) {
+//                throw new ResponseException(ResponseException.Code.ServerError, String.format("Unable to configure database: %s", ex.getMessage()));
         }
 
     }
