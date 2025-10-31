@@ -86,19 +86,15 @@ public class Server {
         ctx.result();
     }
 
-    private void createGame(Context ctx) {
+    private void createGame(Context ctx) throws ResponseException {
         var serializer = new Gson();
         String reqJson = ctx.body();
         var req = serializer.fromJson(reqJson, GameData.class);
         if (req.getGameName() == null) {
-            exceptionHandler(new ResponseException(ResponseException.Code.requestError), ctx);
+            throw new ResponseException(ResponseException.Code.requestError);
         } else {
             int result = gameService.createGame(ctx.header("authorization"), req.getGameName());
-            if (result < 0) {
-                exceptionHandler(new ResponseException(ResponseException.Code.authError), ctx);
-            } else {
-                ctx.result(new Gson().toJson(Map.of("gameID", result)));
-            }
+            ctx.result(new Gson().toJson(Map.of("gameID", result)));
         }
     }
 

@@ -2,6 +2,7 @@ package service;
 
 import datamodel.GameData;
 import dataaccess.DataAccess;
+import server.ResponseException;
 import server.Server;
 
 import java.util.List;
@@ -15,11 +16,11 @@ public class GameService {
         this.dataAccess = dataAccess;
     }
 
-    public int createGame(String authToken, String gameName) {
+    public int createGame(String authToken, String gameName) throws ResponseException {
         if (dataAccess.authenticate(authToken)) {
             return dataAccess.createGame(gameName);
         }
-        return -1;
+        throw new ResponseException(ResponseException.Code.authError);
     }
 
     public int joinGame(String authToken, Server.PlayerColor playerColor, int gameId) {

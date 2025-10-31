@@ -28,7 +28,7 @@ class GameServiceTest {
     }
 
     @Test
-    void createGameFail() {
+    void createGameFail() throws ResponseException {
 
         DataAccess dataAccess = new MemoryDataAccess();
         GameService gameService = new GameService(dataAccess);
