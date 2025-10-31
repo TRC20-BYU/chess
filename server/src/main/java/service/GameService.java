@@ -35,23 +35,11 @@ public class GameService {
         throw new ResponseException(ResponseException.Code.authError);
     }
 
-    private void addColorToGame(String authToken, Server.PlayerColor playerColor, GameData game) throws ResponseException {
-        if (playerColor == Server.PlayerColor.WHITE) {
-            if (game.getWhiteUsername() == null) {
-                game.setWhiteUsername(dataAccess.getUsername(authToken).username());
-            }
-        } else {
-            if (game.getBlackUsername() == null) {
-                game.setBlackUsername(dataAccess.getUsername(authToken).username());
-            }
-        }
-        throw new ResponseException(ResponseException.Code.takenError);
-    }
 
-    public List<GameData> listGames(String authToken) {
+    public List<GameData> listGames(String authToken) throws ResponseException {
         if (dataAccess.authenticate(authToken)) {
             return dataAccess.gamesList();
         }
-        return null;
+        throw new ResponseException(ResponseException.Code.authError);
     }
 }

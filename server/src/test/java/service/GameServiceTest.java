@@ -84,7 +84,7 @@ class GameServiceTest {
 
 
     @Test
-    void listGamesFail() {
+    void listGamesFail() throws ResponseException {
         DataAccess dataAccess = new MemoryDataAccess();
         GameService gameService = new GameService(dataAccess);
         List<GameData> gameList = gameService.listGames("cow");

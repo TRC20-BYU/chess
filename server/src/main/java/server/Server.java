@@ -115,13 +115,9 @@ public class Server {
         }
     }
 
-    private void listGames(Context ctx) {
+    private void listGames(Context ctx) throws ResponseException {
         List<GameData> result = gameService.listGames(ctx.header("authorization"));
-        if (result != null) {
-            ctx.result(new Gson().toJson(Map.of("games", result)));
-        } else {
-            exceptionHandler(new ResponseException(ResponseException.Code.authError), ctx);
-        }
+        ctx.result(new Gson().toJson(Map.of("games", result)));
     }
 
     private void exceptionHandler(ResponseException ex, Context ctx) {
