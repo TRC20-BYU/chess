@@ -98,26 +98,20 @@ public class Server {
         }
     }
 
-    private void joinGame(Context ctx) {
+    private void joinGame(Context ctx) throws ResponseException {
         var serializer = new Gson();
         String reqJson = ctx.body();
         var req = serializer.fromJson(reqJson, JoinData.class);
         if (req.gameID() == 0) {
-            exceptionHandler(new ResponseException(ResponseException.Code.requestError), ctx);
+            throw new ResponseException(ResponseException.Code.requestError);
         } else if (!Objects.equals(req.playerColor(), "WHITE") && !Objects.equals(req.playerColor(), "BLACK")) {
-            exceptionHandler(new ResponseException(ResponseException.Code.requestError), ctx);
+            throw new ResponseException(ResponseException.Code.requestError);
         } else {
             PlayerColor color = PlayerColor.WHITE;
             if (req.playerColor().equals("BLACK")) {
                 color = PlayerColor.BLACK;
             }
-            int result = gameService.joinGame(ctx.header("authorization"), color, req.gameID());
-            if (result == -1) {
-                exceptionHandler(new ResponseException(ResponseException.Code.authError), ctx);
-            }
-            if (result == -2) {
-                exceptionHandler(new ResponseException(ResponseException.Code.takenError), ctx);
-            }
+            gameService.joinGame(ctx.header("authorization"), color, req.gameID());
         }
     }
 

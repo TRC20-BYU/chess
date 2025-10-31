@@ -23,7 +23,7 @@ public class GameService {
         throw new ResponseException(ResponseException.Code.authError);
     }
 
-    public int joinGame(String authToken, Server.PlayerColor playerColor, int gameId) {
+    public int joinGame(String authToken, Server.PlayerColor playerColor, int gameId) throws ResponseException {
         if (dataAccess.authenticate(authToken)) {
             String username = dataAccess.getUsername(authToken).username();
             if (playerColor == Server.PlayerColor.WHITE) {
@@ -32,22 +32,20 @@ public class GameService {
                 dataAccess.setBlack(gameId, username);
             }
         }
-        return -1;
+        throw new ResponseException(ResponseException.Code.authError);
     }
 
-    private int addColorToGame(String authToken, Server.PlayerColor playerColor, GameData game) {
+    private void addColorToGame(String authToken, Server.PlayerColor playerColor, GameData game) throws ResponseException {
         if (playerColor == Server.PlayerColor.WHITE) {
             if (game.getWhiteUsername() == null) {
                 game.setWhiteUsername(dataAccess.getUsername(authToken).username());
-                return 1;
             }
         } else {
             if (game.getBlackUsername() == null) {
                 game.setBlackUsername(dataAccess.getUsername(authToken).username());
-                return 1;
             }
         }
-        return -2;
+        throw new ResponseException(ResponseException.Code.takenError);
     }
 
     public List<GameData> listGames(String authToken) {
