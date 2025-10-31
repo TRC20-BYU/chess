@@ -72,7 +72,7 @@ class UserServiceTest {
     }
 
     @Test
-    void logoutFail() {
+    void logoutFail() throws ResponseException {
         DataAccess dataAccess = new MemoryDataAccess();
         UserService userService = new UserService(dataAccess);
         boolean passed = userService.logout("cow");

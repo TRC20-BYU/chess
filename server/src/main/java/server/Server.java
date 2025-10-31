@@ -77,11 +77,11 @@ public class Server {
         }
     }
 
-    private void logout(Context ctx) {
+    private void logout(Context ctx) throws ResponseException {
         String authToken = ctx.header("authorization");
         boolean regResult = userService.logout(authToken);
         if (!regResult) {
-            exceptionHandler(new ResponseException(ResponseException.Code.authError), ctx);
+            throw new ResponseException(ResponseException.Code.authError);
         }
         ctx.result();
     }

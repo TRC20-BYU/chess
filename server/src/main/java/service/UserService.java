@@ -42,12 +42,12 @@ public class UserService {
         return new AuthData(userData.username(), newAuthToken);
     }
 
-    public boolean logout(String authToken) {
+    public boolean logout(String authToken) throws ResponseException {
         if (dataAccess.authenticate(authToken)) {
             dataAccess.removeAuthToken(authToken);
             return true;
         }
-        return false;
+        throw new ResponseException(ResponseException.Code.authError);
     }
 
     public void deleteDatabase() {
