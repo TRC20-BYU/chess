@@ -171,7 +171,7 @@ public class DBMemoryAccess implements DataAccess {
                 ps1.setInt(1, gameID);
                 try (ResultSet rs = ps1.executeQuery()) {
                     if (rs.next()) {
-                        statement = "UPDATE games Set whitePlayerName=? games WHERE gameID=?";
+                        statement = "UPDATE games Set whitePlayerName=? WHERE gameID=?";
                         try (PreparedStatement ps2 = conn.prepareStatement(statement)) {
                             ps2.setString(1, username);
                             ps2.setInt(2, gameID);
@@ -184,7 +184,7 @@ public class DBMemoryAccess implements DataAccess {
             }
 
         } catch (SQLException | DataAccessException ex) {
-            // something
+            System.out.print("here6");
         }
 
     }
@@ -197,7 +197,7 @@ public class DBMemoryAccess implements DataAccess {
                 ps1.setInt(1, gameID);
                 try (ResultSet rs = ps1.executeQuery()) {
                     if (rs.next()) {
-                        statement = "UPDATE games Set blackPlayerName=? games WHERE gameID=?";
+                        statement = "UPDATE games Set blackPlayerName=? WHERE gameID=?";
                         try (PreparedStatement ps2 = conn.prepareStatement(statement)) {
                             ps2.setString(1, username);
                             ps2.setInt(2, gameID);
@@ -210,7 +210,7 @@ public class DBMemoryAccess implements DataAccess {
             }
 
         } catch (SQLException | DataAccessException ex) {
-            // something
+            System.out.print("here5");
         }
     }
 
@@ -299,7 +299,7 @@ public class DBMemoryAccess implements DataAccess {
         String gameName = rs.getString("gameName");
         String whitePlayerName = rs.getString("whitePlayerName");
         String blackPlayerName = rs.getString("blackPlayerName");
-        return new GameData(gameID, gameName, whitePlayerName, blackPlayerName);
+        return new GameData(gameID, whitePlayerName, blackPlayerName, gameName);
     }
 
 

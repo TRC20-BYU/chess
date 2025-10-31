@@ -137,4 +137,24 @@ class DBMemoryAccessTest {
         List<GameData> games = db.gamesList();
         Assertions.assertNotEquals(0, games.size());
     }
+
+    @Test
+    void setWhite() {
+        DBMemoryAccess db = new DBMemoryAccess();
+        resetDB(db);
+        int gameID = db.createGame("chess123");
+        db.setWhite(gameID, "joe");
+        GameData result = db.getGame(gameID);
+        Assertions.assertEquals("joe", result.getWhiteUsername());
+    }
+
+    @Test
+    void setBlack() {
+        DBMemoryAccess db = new DBMemoryAccess();
+        resetDB(db);
+        int gameID = db.createGame("chess123");
+        db.setBlack(gameID, "robert");
+        GameData result = db.getGame(gameID);
+        Assertions.assertEquals("robert", result.getBlackUsername());
+    }
 }
