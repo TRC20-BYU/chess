@@ -30,14 +30,8 @@ public class Server {
     }
 
     public Server() {
-//        DataAccess dataAccessTry;
-        server = Javalin.create(config -> config.staticFiles.add("web"));
 
-//        try {
-//            dataAccessTry = new DBMemoryAccess();
-//        } catch (DataAccessException e) {
-//            dataAccessTry = new MemoryDataAccess();
-//        }
+        server = Javalin.create(config -> config.staticFiles.add("web"));
 
         dataAccess = new DBMemoryAccess();
         userService = new UserService(dataAccess);
