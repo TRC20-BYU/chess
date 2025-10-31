@@ -128,6 +128,19 @@ public class DBMemoryAccess implements DataAccess {
 
     @Override
     public GameData getGame(int gameID) {
+        try (Connection conn = DatabaseManager.getConnection()) {
+            var statement = "SELECT gameID gameName whitePlayerName blackPlayerName game FROM users WHERE gameID=?";
+            try (PreparedStatement ps = conn.prepareStatement(statement)) {
+                ps.setInt(1, gameID);
+                try (ResultSet rs = ps.executeQuery()) {
+                    if (rs.next()) {
+                        return readGameData(rs);
+                    }
+                }
+            }
+        } catch (SQLException | DataAccessException ex) {
+            return null;
+        }
         return null;
     }
 
@@ -213,5 +226,14 @@ public class DBMemoryAccess implements DataAccess {
         String password = rs.getString("password");
         String email = rs.getString("email");
         return new UserData(username, password, email);
+    }
+
+    private GameData readGameData(ResultSet rs) throws SQLException {
+        int gameID = rs.getInt("gameID");
+        String gameName = rs.getString("gameName");
+        String whitePlayerName = rs.getString("whitePlayerName");
+        String blackPlayerName = rs.getString("blackPlayerName");
+//        String game = String.valueOf(rs.getLong("game"));
+        return new GameData(gameID, gameName, whitePlayerName, blackPlayerName);
     }
 }

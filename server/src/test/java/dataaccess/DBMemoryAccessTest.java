@@ -90,7 +90,7 @@ class DBMemoryAccessTest {
         resetDB(db);
         db.registerAuthToken("auth123", "joe");
         db.removeAuthToken("auth123");
-        
+
     }
 
     @Test
@@ -101,6 +101,10 @@ class DBMemoryAccessTest {
 
     @Test
     void createGame() {
+        DBMemoryAccess db = new DBMemoryAccess();
+        resetDB(db);
+        int result = db.createGame("chess123");
+        Assertions.assertNotEquals(0, result);
     }
 
     @Test
