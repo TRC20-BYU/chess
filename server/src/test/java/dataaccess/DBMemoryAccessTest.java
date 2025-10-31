@@ -6,6 +6,7 @@ import datamodel.UserData;
 import org.junit.jupiter.api.Test;
 
 import org.junit.jupiter.api.Assertions;
+import server.ResponseException;
 
 import java.util.List;
 
@@ -13,7 +14,7 @@ import java.util.List;
 class DBMemoryAccessTest {
 
 
-    static void resetDB(DataAccess db) throws ResponseException {
+    static void resetDB(DataAccess db) {
         db.deleteDatabase();
     }
 
@@ -139,7 +140,7 @@ class DBMemoryAccessTest {
     }
 
     @Test
-    void setWhite() {
+    void setWhite() throws ResponseException {
         DBMemoryAccess db = new DBMemoryAccess();
         resetDB(db);
         int gameID = db.createGame("chess123");
@@ -149,7 +150,7 @@ class DBMemoryAccessTest {
     }
 
     @Test
-    void setBlack() {
+    void setBlack() throws ResponseException {
         DBMemoryAccess db = new DBMemoryAccess();
         resetDB(db);
         int gameID = db.createGame("chess123");

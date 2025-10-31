@@ -28,7 +28,7 @@ public interface DataAccess {
 
     public List<GameData> gamesList();
 
-    public void setWhite(int gameID, String username);
+    public void setWhite(int gameID, String username) throws ResponseException;
 
-    public void setBlack(int gameID, String username);
+    public void setBlack(int gameID, String username) throws ResponseException;
 }

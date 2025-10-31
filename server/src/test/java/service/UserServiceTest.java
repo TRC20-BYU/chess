@@ -15,17 +15,18 @@ class UserServiceTest {
     @Test
     void delete() throws ResponseException {
         DataAccess dataAccess = new DBMemoryAccess();
+        dataAccess.deleteDatabase();
         UserService userService = new UserService(dataAccess);
         UserData userData = new UserData("Joe", "password", "joe@joe");
         userService.register(userData);
         userService.deleteDatabase();
-        var result = userService.login(userData);
-        Assertions.assertNull(result);
+        Assertions.assertThrows(ResponseException.class, () -> userService.login(userData));
     }
 
     @Test
     void registerSuccess() throws ResponseException {
         DataAccess dataAccess = new DBMemoryAccess();
+        dataAccess.deleteDatabase();
         UserService userService = new UserService(dataAccess);
         UserData userData = new UserData("Joe", "password", "joe@joe");
         AuthData res = userService.register(userData);
@@ -35,16 +36,17 @@ class UserServiceTest {
     @Test
     void registerFail() throws ResponseException {
         DataAccess dataAccess = new DBMemoryAccess();
+        dataAccess.deleteDatabase();
         UserService userService = new UserService(dataAccess);
         UserData userData = new UserData("Joe", "password", "joe@joe");
         userService.register(userData);
-        AuthData res = userService.register(userData);
-        Assertions.assertNull(res);
+        Assertions.assertThrows(ResponseException.class, () -> userService.register(userData));
     }
 
     @Test
     void loginSuccess() throws ResponseException {
         DataAccess dataAccess = new DBMemoryAccess();
+        dataAccess.deleteDatabase();
         UserService userService = new UserService(dataAccess);
         UserData userData = new UserData("Joe", "password", "joe@joe");
         userService.register(userData);
@@ -55,15 +57,17 @@ class UserServiceTest {
     @Test
     void loginFail() throws ResponseException {
         DataAccess dataAccess = new DBMemoryAccess();
+        dataAccess.deleteDatabase();
         UserService userService = new UserService(dataAccess);
         UserData userData = new UserData("Joe", "password", "joe@joe");
-        var res = userService.login(userData);
-        Assertions.assertNull(res);
+        Assertions.assertThrows(ResponseException.class, () -> userService.login(userData));
+
     }
 
     @Test
     void logoutSuccess() throws ResponseException {
         DataAccess dataAccess = new DBMemoryAccess();
+        dataAccess.deleteDatabase();
         UserService userService = new UserService(dataAccess);
         UserData userData = new UserData("Joe", "password", "joe@joe");
         userService.register(userData);
@@ -75,8 +79,8 @@ class UserServiceTest {
     @Test
     void logoutFail() throws ResponseException {
         DataAccess dataAccess = new DBMemoryAccess();
+        dataAccess.deleteDatabase();
         UserService userService = new UserService(dataAccess);
-        boolean passed = userService.logout("cow");
-        Assertions.assertFalse(passed);
+        Assertions.assertThrows(ResponseException.class, () -> userService.logout("cow"));
     }
 }

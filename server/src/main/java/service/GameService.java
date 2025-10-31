@@ -23,7 +23,7 @@ public class GameService {
         throw new ResponseException(ResponseException.Code.authError);
     }
 
-    public int joinGame(String authToken, Server.PlayerColor playerColor, int gameId) throws ResponseException {
+    public void joinGame(String authToken, Server.PlayerColor playerColor, int gameId) throws ResponseException {
         if (dataAccess.authenticate(authToken)) {
             String username = dataAccess.getUsername(authToken).username();
             if (playerColor == Server.PlayerColor.WHITE) {
@@ -31,8 +31,9 @@ public class GameService {
             } else {
                 dataAccess.setBlack(gameId, username);
             }
+        } else {
+            throw new ResponseException(ResponseException.Code.authError);
         }
-        throw new ResponseException(ResponseException.Code.authError);
     }
 
 

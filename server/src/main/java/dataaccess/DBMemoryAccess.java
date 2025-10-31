@@ -16,6 +16,7 @@ import java.util.List;
 public class DBMemoryAccess implements DataAccess {
 
     public DBMemoryAccess() {
+
         try {
             configureDatabase();
         } catch (DataAccessException e) {
@@ -178,13 +179,17 @@ public class DBMemoryAccess implements DataAccess {
     }
 
     @Override
-    public void setWhite(int gameID, String username) {
+    public void setWhite(int gameID, String username) throws ResponseException {
         try (Connection conn = DatabaseManager.getConnection()) {
-            var statement = "SELECT whitePlayerName IS NULL FROM games WHERE gameID=?";
+            var statement = "SELECT whitePlayerName FROM games WHERE gameID=?";
             try (PreparedStatement ps1 = conn.prepareStatement(statement)) {
                 ps1.setInt(1, gameID);
                 try (ResultSet rs = ps1.executeQuery()) {
                     if (rs.next()) {
+                        String whitePlayerName = rs.getString("whitePlayerName");
+                        if (whitePlayerName != null) {
+                            throw new ResponseException(ResponseException.Code.takenError);
+                        }
                         statement = "UPDATE games Set whitePlayerName=? WHERE gameID=?";
                         try (PreparedStatement ps2 = conn.prepareStatement(statement)) {
                             ps2.setString(1, username);
@@ -192,25 +197,28 @@ public class DBMemoryAccess implements DataAccess {
                             ps2.executeUpdate();
                         }
                     } else {
-                        /// raise error here
+                        throw new ResponseException(ResponseException.Code.requestError);
                     }
                 }
             }
 
         } catch (SQLException | DataAccessException ex) {
-            System.out.print("here6");
+            throw new ResponseException(ResponseException.Code.serverError, ex.getMessage());
         }
-
     }
 
     @Override
-    public void setBlack(int gameID, String username) {
+    public void setBlack(int gameID, String username) throws ResponseException {
         try (Connection conn = DatabaseManager.getConnection()) {
-            var statement = "SELECT blackPlayerName IS NULL FROM games WHERE gameID=?";
+            var statement = "SELECT blackPlayerName FROM games WHERE gameID=?";
             try (PreparedStatement ps1 = conn.prepareStatement(statement)) {
                 ps1.setInt(1, gameID);
                 try (ResultSet rs = ps1.executeQuery()) {
                     if (rs.next()) {
+                        String blackPlayerName = rs.getString("blackPlayerName");
+                        if (blackPlayerName != null) {
+                            throw new ResponseException(ResponseException.Code.takenError);
+                        }
                         statement = "UPDATE games Set blackPlayerName=? WHERE gameID=?";
                         try (PreparedStatement ps2 = conn.prepareStatement(statement)) {
                             ps2.setString(1, username);
@@ -218,13 +226,13 @@ public class DBMemoryAccess implements DataAccess {
                             ps2.executeUpdate();
                         }
                     } else {
-                        /// raise error here
+                        throw new ResponseException(ResponseException.Code.requestError);
                     }
                 }
             }
 
         } catch (SQLException | DataAccessException ex) {
-            System.out.print("here5");
+            throw new ResponseException(ResponseException.Code.serverError, ex.getMessage());
         }
     }
 

@@ -1,5 +1,6 @@
 package service;
 
+import dataaccess.DBMemoryAccess;
 import datamodel.GameData;
 import datamodel.AuthData;
 import datamodel.UserData;
@@ -17,7 +18,8 @@ class GameServiceTest {
     @Test
     void createGameSuccess() throws ResponseException {
 
-        DataAccess dataAccess = new MemoryDataAccess();
+        DataAccess dataAccess = new DBMemoryAccess();
+        dataAccess.deleteDatabase();
         GameService gameService = new GameService(dataAccess);
         UserService userService = new UserService(dataAccess);
         UserData userData = new UserData("Joe", "password", "joe@joe");
@@ -30,49 +32,48 @@ class GameServiceTest {
     @Test
     void createGameFail() throws ResponseException {
 
-        DataAccess dataAccess = new MemoryDataAccess();
+        DataAccess dataAccess = new DBMemoryAccess();
+        dataAccess.deleteDatabase();
         GameService gameService = new GameService(dataAccess);
-        int x = gameService.createGame("cow", "name");
-        Assertions.assertFalse(x > 0);
+        Assertions.assertThrows(ResponseException.class, () -> gameService.createGame("cow", "name"));
     }
 
     @Test
     void joinGameSuccess() throws ResponseException {
-        DataAccess dataAccess = new MemoryDataAccess();
+        DataAccess dataAccess = new DBMemoryAccess();
+        dataAccess.deleteDatabase();
         GameService gameService = new GameService(dataAccess);
         UserService userService = new UserService(dataAccess);
         UserData userData = new UserData("Joe", "password", "joe@joe");
         userService.register(userData);
         AuthData res = userService.login(userData);
         int gameId = gameService.createGame(res.authToken(), "name");
-        int result = gameService.joinGame(res.authToken(), Server.PlayerColor.WHITE, gameId);
-        Assertions.assertTrue(result > 0);
-        result = gameService.joinGame(res.authToken(), Server.PlayerColor.BLACK, gameId);
-        Assertions.assertTrue(result > 0);
+        Assertions.assertDoesNotThrow(() -> gameService.joinGame(res.authToken(), Server.PlayerColor.WHITE, gameId));
+        Assertions.assertDoesNotThrow(() -> gameService.joinGame(res.authToken(), Server.PlayerColor.BLACK, gameId));
 
     }
 
     @Test
     void joinGameFail() throws ResponseException {
         {
-            DataAccess dataAccess = new MemoryDataAccess();
+            DataAccess dataAccess = new DBMemoryAccess();
+            dataAccess.deleteDatabase();
             GameService gameService = new GameService(dataAccess);
             UserService userService = new UserService(dataAccess);
             UserData userData = new UserData("Joe", "password", "joe@joe");
             userService.register(userData);
             AuthData res = userService.login(userData);
             int x = gameService.createGame(res.authToken(), "name");
-            int y = gameService.joinGame(res.authToken(), Server.PlayerColor.WHITE, x);
-            Assertions.assertTrue(y > 0);
-            y = gameService.joinGame(res.authToken(), Server.PlayerColor.WHITE, x);
-            Assertions.assertFalse(y > 0);
+            Assertions.assertDoesNotThrow(() -> gameService.joinGame(res.authToken(), Server.PlayerColor.WHITE, x));
+            Assertions.assertThrows(ResponseException.class, () -> gameService.joinGame(res.authToken(), Server.PlayerColor.WHITE, x));
 
         }
     }
 
     @Test
     void listGamesSuccess() throws ResponseException {
-        DataAccess dataAccess = new MemoryDataAccess();
+        DataAccess dataAccess = new DBMemoryAccess();
+        dataAccess.deleteDatabase();
         GameService gameService = new GameService(dataAccess);
         UserService userService = new UserService(dataAccess);
         UserData userData = new UserData("Joe", "password", "joe@joe");
@@ -84,10 +85,10 @@ class GameServiceTest {
 
 
     @Test
-    void listGamesFail() {
-        DataAccess dataAccess = new MemoryDataAccess();
+    void listGamesFail() throws ResponseException {
+        DataAccess dataAccess = new DBMemoryAccess();
+        dataAccess.deleteDatabase();
         GameService gameService = new GameService(dataAccess);
-        List<GameData> gameList = gameService.listGames("cow");
-        Assertions.assertNull(gameList);
+        Assertions.assertThrows(ResponseException.class, () -> gameService.listGames("cow"));
     }
 }
