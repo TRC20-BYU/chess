@@ -16,16 +16,11 @@ import java.util.List;
 public class DBMemoryAccess implements DataAccess {
 
     public DBMemoryAccess() {
-
-        try {
-            configureDatabase();
-        } catch (DataAccessException e) {
-            System.out.print("here");
-        }
+        configureDatabase();
     }
 
     @Override
-    public boolean saveUser(UserData user) {
+    public boolean saveUser(UserData user) throws ResponseException {
         if (getUserData(user.username()) == null) {
             var statement = "INSERT INTO users (username, password, email) VALUES (?, ?, ?)";
             String username = user.username();
@@ -34,15 +29,15 @@ public class DBMemoryAccess implements DataAccess {
             try {
                 executeUpdate(statement, username, password, email);
                 return true;
-            } catch (DataAccessException e) {
-                return false;
+            } catch (DataAccessException ex) {
+                throw new ResponseException(ResponseException.Code.serverError, ex.getMessage());
             }
         }
         return false;
     }
 
     @Override
-    public UserData getUserData(String username) {
+    public UserData getUserData(String username) throws ResponseException {
         try (Connection conn = DatabaseManager.getConnection()) {
             var statement = "SELECT username, password, email FROM users WHERE username=?";
             try (PreparedStatement ps = conn.prepareStatement(statement)) {
@@ -54,7 +49,7 @@ public class DBMemoryAccess implements DataAccess {
                 }
             }
         } catch (SQLException | DataAccessException ex) {
-            return null;
+            throw new ResponseException(ResponseException.Code.serverError, ex.getMessage());
         }
         return null;
     }
@@ -75,22 +70,23 @@ public class DBMemoryAccess implements DataAccess {
             throw new ResponseException(ResponseException.Code.serverError, ex.getMessage());
         }
         throw new ResponseException(ResponseException.Code.authError);
+
     }
 
     /// maybe changes this to be a bool for pass fail??????????????????????????
     @Override
-    public void registerAuthToken(String authToken, String username) {
+    public void registerAuthToken(String authToken, String username) throws ResponseException {
         var statement = "INSERT INTO authTokens (authToken, username) VALUES (?, ?)";
         try {
             executeUpdate(statement, authToken, username);
-        } catch (DataAccessException e) {
-            System.out.print("here3");
+        } catch (DataAccessException ex) {
+            throw new ResponseException(ResponseException.Code.serverError, ex.getMessage());
         }
 
     }
 
     @Override
-    public boolean authenticate(String authToken) {
+    public boolean authenticate(String authToken) throws ResponseException {
         try (Connection conn = DatabaseManager.getConnection()) {
             var statement = "SELECT authToken FROM authTokens WHERE authToken=?";
             try (PreparedStatement ps = conn.prepareStatement(statement)) {
@@ -102,13 +98,13 @@ public class DBMemoryAccess implements DataAccess {
                 }
             }
         } catch (SQLException | DataAccessException ex) {
-            return false;
+            throw new ResponseException(ResponseException.Code.serverError, ex.getMessage());
         }
         return false;
     }
 
     @Override
-    public void removeAuthToken(String authToken) {
+    public void removeAuthToken(String authToken) throws ResponseException {
         try (Connection conn = DatabaseManager.getConnection()) {
             var statement = "DELETE FROM authTokens WHERE authToken=?";
             try (PreparedStatement ps = conn.prepareStatement(statement)) {
@@ -116,29 +112,29 @@ public class DBMemoryAccess implements DataAccess {
                 ps.executeUpdate();
             }
         } catch (SQLException | DataAccessException ex) {
-            System.out.print("here4");
+            throw new ResponseException(ResponseException.Code.serverError, ex.getMessage());
         }
     }
 
     @Override
-    public void deleteDatabase() {
+    public void deleteDatabase() throws ResponseException {
         var statement = "DROP DATABASE chess";
         try {
             executeUpdate(statement);
             configureDatabase();
-        } catch (DataAccessException e) {
-            System.out.print("here2");
+        } catch (DataAccessException ex) {
+            throw new ResponseException(ResponseException.Code.serverError, ex.getMessage());
         }
 
     }
 
     @Override
-    public int createGame(String gameName) {
+    public int createGame(String gameName) throws ResponseException {
         var statement = "INSERT INTO games (gameName) VALUES (?)";
         try {
             return executeUpdate(statement, gameName);
-        } catch (DataAccessException e) {
-            return 0;
+        } catch (DataAccessException ex) {
+            throw new ResponseException(ResponseException.Code.serverError, ex.getMessage());
         }
     }
 
@@ -237,7 +233,7 @@ public class DBMemoryAccess implements DataAccess {
     }
 
 
-    private int executeUpdate(String statement, Object... params) throws DataAccessException {
+    private int executeUpdate(String statement, Object... params) throws DataAccessException, ResponseException {
 
         try (Connection conn = DatabaseManager.getConnection()) {
             try (PreparedStatement ps = conn.prepareStatement(statement, RETURN_GENERATED_KEYS)) {
@@ -261,9 +257,8 @@ public class DBMemoryAccess implements DataAccess {
                 return 0;
             }
         } catch (SQLException ex) {
-//                throw new ResponseException(ResponseException.Code.ServerError, String.format("Unable to configure database: %s", ex.getMessage()));
+            throw new ResponseException(ResponseException.Code.serverError, ex.getMessage());
         }
-        return 0;
     }
 
     private final String[] createStatements = {
@@ -294,17 +289,19 @@ public class DBMemoryAccess implements DataAccess {
             """
     };
 
-    private void configureDatabase() throws DataAccessException {
-        DatabaseManager.createDatabase();
-        try (Connection conn = DatabaseManager.getConnection()) {
-            for (String statement : createStatements) {
-                try (var preparedStatement = conn.prepareStatement(statement)) {
-                    preparedStatement.executeUpdate();
+    private void configureDatabase() {
+        try {
+            DatabaseManager.createDatabase();
+            try (Connection conn = DatabaseManager.getConnection()) {
+                for (String statement : createStatements) {
+                    try (var preparedStatement = conn.prepareStatement(statement)) {
+                        preparedStatement.executeUpdate();
+                    }
                 }
-            }
 
-        } catch (SQLException ex) {
-//                throw new ResponseException(ResponseException.Code.ServerError, String.format("Unable to configure database: %s", ex.getMessage()));
+            }
+        } catch (SQLException | DataAccessException ex) {
+            //do nothing for now
         }
 
     }

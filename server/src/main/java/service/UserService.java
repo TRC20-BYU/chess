@@ -46,8 +46,9 @@ public class UserService {
         if (dataAccess.authenticate(authToken)) {
             dataAccess.removeAuthToken(authToken);
             return true;
+        } else {
+            throw new ResponseException(ResponseException.Code.authError);
         }
-        throw new ResponseException(ResponseException.Code.authError);
     }
 
     public void deleteDatabase() throws ResponseException {

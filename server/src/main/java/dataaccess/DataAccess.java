@@ -8,21 +8,21 @@ import java.util.List;
 
 public interface DataAccess {
 
-    public boolean saveUser(UserData user);
+    public boolean saveUser(UserData user) throws ResponseException;
 
-    public UserData getUserData(String username);
+    public UserData getUserData(String username) throws ResponseException;
 
     public UserData getUsername(String authToken) throws ResponseException;
 
-    public void registerAuthToken(String authToken, String username);
+    public void registerAuthToken(String authToken, String username) throws ResponseException;
 
-    public boolean authenticate(String authToken);
+    public boolean authenticate(String authToken) throws ResponseException;
 
-    public void removeAuthToken(String authToken);
+    public void removeAuthToken(String authToken) throws ResponseException;
 
-    public void deleteDatabase();
+    public void deleteDatabase() throws ResponseException;
 
-    public int createGame(String gameName);
+    public int createGame(String gameName) throws ResponseException;
 
     public GameData getGame(int gameID);
 
