@@ -1,6 +1,5 @@
 package service;
 
-import dataaccess.DBMemoryAccess;
 import datamodel.GameData;
 import datamodel.AuthData;
 import datamodel.UserData;
@@ -18,7 +17,7 @@ class GameServiceTest {
     @Test
     void createGameSuccess() throws ResponseException {
 
-        DataAccess dataAccess = new DBMemoryAccess();
+        DataAccess dataAccess = new MemoryDataAccess();
         GameService gameService = new GameService(dataAccess);
         UserService userService = new UserService(dataAccess);
         UserData userData = new UserData("Joe", "password", "joe@joe");
@@ -31,7 +30,7 @@ class GameServiceTest {
     @Test
     void createGameFail() throws ResponseException {
 
-        DataAccess dataAccess = new DBMemoryAccess();
+        DataAccess dataAccess = new MemoryDataAccess();
         GameService gameService = new GameService(dataAccess);
         int x = gameService.createGame("cow", "name");
         Assertions.assertFalse(x > 0);
@@ -39,7 +38,7 @@ class GameServiceTest {
 
     @Test
     void joinGameSuccess() throws ResponseException {
-        DataAccess dataAccess = new DBMemoryAccess();
+        DataAccess dataAccess = new MemoryDataAccess();
         GameService gameService = new GameService(dataAccess);
         UserService userService = new UserService(dataAccess);
         UserData userData = new UserData("Joe", "password", "joe@joe");
@@ -56,7 +55,7 @@ class GameServiceTest {
     @Test
     void joinGameFail() throws ResponseException {
         {
-            DataAccess dataAccess = new DBMemoryAccess();
+            DataAccess dataAccess = new MemoryDataAccess();
             GameService gameService = new GameService(dataAccess);
             UserService userService = new UserService(dataAccess);
             UserData userData = new UserData("Joe", "password", "joe@joe");
@@ -73,7 +72,7 @@ class GameServiceTest {
 
     @Test
     void listGamesSuccess() throws ResponseException {
-        DataAccess dataAccess = new DBMemoryAccess();
+        DataAccess dataAccess = new MemoryDataAccess();
         GameService gameService = new GameService(dataAccess);
         UserService userService = new UserService(dataAccess);
         UserData userData = new UserData("Joe", "password", "joe@joe");
@@ -85,8 +84,8 @@ class GameServiceTest {
 
 
     @Test
-    void listGamesFail() throws ResponseException {
-        DataAccess dataAccess = new DBMemoryAccess();
+    void listGamesFail() {
+        DataAccess dataAccess = new MemoryDataAccess();
         GameService gameService = new GameService(dataAccess);
         List<GameData> gameList = gameService.listGames("cow");
         Assertions.assertNull(gameList);
