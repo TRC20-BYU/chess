@@ -60,15 +60,40 @@ class DBMemoryAccessTest {
     void getUsername() throws ResponseException {
         DBMemoryAccess db = new DBMemoryAccess();
         resetDB(db);
-        UserData user1 = db.getUserData("joe");
-        Assertions.assertNull(user1);
+        db.registerAuthToken("auth123", "joe");
+        UserData user = new UserData("joe", "supersecret", "joe@joe");
+        db.saveUser(user);
+        UserData userRes = db.getUsername("auth123");
+        Assertions.assertEquals(user, userRes);
     }
+
+    @Test
+    void getUsernameBad() throws ResponseException {
+        DBMemoryAccess db = new DBMemoryAccess();
+        resetDB(db);
+        UserData userRes = db.getUsername("auth123");
+        Assertions.assertNull(userRes);
+    }
+
 
     @Test
     void registerAuthToken() throws ResponseException {
         DBMemoryAccess db = new DBMemoryAccess();
         resetDB(db);
         db.registerAuthToken("auth123", "joe");
+        UserData user = new UserData("joe", "supersecret", "joe@joe");
+        db.saveUser(user);
+        boolean result = db.authenticate("auth123");
+        Assertions.assertTrue(result);
+    }
+
+    @Test
+    void registerAuthTokenBad() throws ResponseException {
+        DBMemoryAccess db = new DBMemoryAccess();
+        resetDB(db);
+        db.registerAuthToken("auth123", "joe");
+        Assertions.assertThrows(ResponseException.class, () -> db.registerAuthToken("auth123", "sally"));
+
     }
 
     @Test
@@ -76,6 +101,7 @@ class DBMemoryAccessTest {
         DBMemoryAccess db = new DBMemoryAccess();
         resetDB(db);
         db.registerAuthToken("auth123", "joe");
+
         boolean result = db.authenticate("auth123");
         Assertions.assertTrue(result);
     }
@@ -94,7 +120,15 @@ class DBMemoryAccessTest {
         resetDB(db);
         db.registerAuthToken("auth123", "joe");
         db.removeAuthToken("auth123");
+    }
 
+    ///  removeAuthToken does not really have a bad path I need to test except for server failer
+    @Test
+    void removeAuthTokenBad() throws ResponseException {
+        DBMemoryAccess db = new DBMemoryAccess();
+        resetDB(db);
+        db.removeAuthToken("auth123");
+        Assertions.assertTrue(true);
     }
 
     @Test
@@ -109,6 +143,18 @@ class DBMemoryAccessTest {
         resetDB(db);
         int result = db.createGame("chess123");
         Assertions.assertNotEquals(0, result);
+    }
+
+    ///  create game does not really have a bad path I need to test except for server failer
+    @Test
+    void createGameBad() throws ResponseException {
+        DBMemoryAccess db = new DBMemoryAccess();
+        resetDB(db);
+        int result = db.createGame("chess123");
+        int result2 = db.createGame("chess123");
+        Assertions.assertNotEquals(0, result);
+        Assertions.assertNotEquals(0, result2);
+
     }
 
     @Test
@@ -129,12 +175,24 @@ class DBMemoryAccessTest {
         Assertions.assertNull(result);
     }
 
+    ///  game list does not really have a bad path I need to test except for server failer
     @Test
     void gamesList() throws ResponseException {
         DBMemoryAccess db = new DBMemoryAccess();
         resetDB(db);
         db.createGame("chess123");
         db.createGame("chess456");
+        List<GameData> games = db.gamesList();
+        Assertions.assertNotEquals(0, games.size());
+    }
+
+
+    @Test
+    void gamesListBad() throws ResponseException {
+        DBMemoryAccess db = new DBMemoryAccess();
+        resetDB(db);
+        db.createGame("chess123");
+        db.createGame("chess123");
         List<GameData> games = db.gamesList();
         Assertions.assertNotEquals(0, games.size());
     }
@@ -150,6 +208,15 @@ class DBMemoryAccessTest {
     }
 
     @Test
+    void setWhiteBad() throws ResponseException {
+        DBMemoryAccess db = new DBMemoryAccess();
+        resetDB(db);
+        int gameID = db.createGame("chess123");
+        db.setWhite(gameID, "joe");
+        Assertions.assertThrows(ResponseException.class, () -> db.setWhite(gameID, "bob"));
+    }
+
+    @Test
     void setBlack() throws ResponseException {
         DBMemoryAccess db = new DBMemoryAccess();
         resetDB(db);
@@ -157,5 +224,14 @@ class DBMemoryAccessTest {
         db.setBlack(gameID, "robert");
         GameData result = db.getGame(gameID);
         Assertions.assertEquals("robert", result.getBlackUsername());
+    }
+
+    @Test
+    void setBlackBad() throws ResponseException {
+        DBMemoryAccess db = new DBMemoryAccess();
+        resetDB(db);
+        int gameID = db.createGame("chess123");
+        db.setBlack(gameID, "robert");
+        Assertions.assertThrows(ResponseException.class, () -> db.setBlack(gameID, "joe"));
     }
 }

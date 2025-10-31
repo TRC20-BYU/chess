@@ -69,7 +69,7 @@ public class DBMemoryAccess implements DataAccess {
         } catch (SQLException | DataAccessException ex) {
             throw new ResponseException(ResponseException.Code.serverError, ex.getMessage());
         }
-        throw new ResponseException(ResponseException.Code.authError);
+        return null;
 
     }
 
