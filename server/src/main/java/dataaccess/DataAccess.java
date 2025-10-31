@@ -26,4 +26,8 @@ public interface DataAccess {
     public GameData getGame(int gameID);
 
     public List<GameData> gamesList();
+
+    public void setWhite(int gameID, String username);
+
+    public void setBlack(int gameID, String username);
 }

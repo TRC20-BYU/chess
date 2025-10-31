@@ -163,6 +163,58 @@ public class DBMemoryAccess implements DataAccess {
         return listOfGames;
     }
 
+    @Override
+    public void setWhite(int gameID, String username) {
+        try (Connection conn = DatabaseManager.getConnection()) {
+            var statement = "SELECT whitePlayerName IS NULL FROM games WHERE gameID=?";
+            try (PreparedStatement ps1 = conn.prepareStatement(statement)) {
+                ps1.setInt(1, gameID);
+                try (ResultSet rs = ps1.executeQuery()) {
+                    if (rs.next()) {
+                        statement = "UPDATE games Set whitePlayerName=? games WHERE gameID=?";
+                        try (PreparedStatement ps2 = conn.prepareStatement(statement)) {
+                            ps2.setString(1, username);
+                            ps2.setInt(2, gameID);
+                            ps2.executeUpdate();
+                        }
+                    } else {
+                        /// raise error here
+                    }
+                }
+            }
+
+        } catch (SQLException | DataAccessException ex) {
+            // something
+        }
+
+    }
+
+    @Override
+    public void setBlack(int gameID, String username) {
+        try (Connection conn = DatabaseManager.getConnection()) {
+            var statement = "SELECT blackPlayerName IS NULL FROM games WHERE gameID=?";
+            try (PreparedStatement ps1 = conn.prepareStatement(statement)) {
+                ps1.setInt(1, gameID);
+                try (ResultSet rs = ps1.executeQuery()) {
+                    if (rs.next()) {
+                        statement = "UPDATE games Set blackPlayerName=? games WHERE gameID=?";
+                        try (PreparedStatement ps2 = conn.prepareStatement(statement)) {
+                            ps2.setString(1, username);
+                            ps2.setInt(2, gameID);
+                            ps2.executeUpdate();
+                        }
+                    } else {
+                        /// raise error here
+                    }
+                }
+            }
+
+        } catch (SQLException | DataAccessException ex) {
+            // something
+        }
+    }
+
+
     private int executeUpdate(String statement, Object... params) throws DataAccessException {
 
         try (Connection conn = DatabaseManager.getConnection()) {
@@ -247,7 +299,8 @@ public class DBMemoryAccess implements DataAccess {
         String gameName = rs.getString("gameName");
         String whitePlayerName = rs.getString("whitePlayerName");
         String blackPlayerName = rs.getString("blackPlayerName");
-//        String game = String.valueOf(rs.getLong("game"));
         return new GameData(gameID, gameName, whitePlayerName, blackPlayerName);
     }
+
+
 }

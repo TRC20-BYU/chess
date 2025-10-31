@@ -78,4 +78,14 @@ public class MemoryDataAccess implements DataAccess {
         return listOfGames;
     }
 
+    @Override
+    public void setWhite(int gameID, String username) {
+        ///Not implemented!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+    }
+
+    @Override
+    public void setBlack(int gameID, String username) {
+        ///Not implemented!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+    }
+
 }

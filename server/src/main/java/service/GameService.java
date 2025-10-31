@@ -24,10 +24,17 @@ public class GameService {
 
     public int joinGame(String authToken, Server.PlayerColor playerColor, int gameId) {
         if (dataAccess.authenticate(authToken)) {
-            GameData game = dataAccess.getGame(gameId);
-            if (game != null) {
-                return addColorToGame(authToken, playerColor, game);
+            String username = dataAccess.getUsername(authToken).username();
+            if (playerColor == Server.PlayerColor.WHITE) {
+                dataAccess.setWhite(gameId, username);
+            } else {
+                dataAccess.setBlack(gameId, username);
             }
+
+//            GameData game = dataAccess.getGame(gameId);
+//            if (game != null) {
+//                return addColorToGame(authToken, playerColor, game);
+//            }
         }
         return -1;
     }
