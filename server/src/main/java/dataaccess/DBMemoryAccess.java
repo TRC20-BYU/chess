@@ -119,14 +119,25 @@ public class DBMemoryAccess implements DataAccess {
 
     @Override
     public void deleteDatabase() throws ResponseException {
-        var statement = "DROP DATABASE chess";
+        var statement = "TRUNCATE  TABLE users";
+        try {
+            executeUpdate(statement);
+        } catch (DataAccessException ex) {
+            throw new ResponseException(ResponseException.Code.serverError, ex.getMessage());
+        }
+        statement = "TRUNCATE TABLE authTokens";
+        try {
+            executeUpdate(statement);
+        } catch (DataAccessException ex) {
+            throw new ResponseException(ResponseException.Code.serverError, ex.getMessage());
+        }
+        statement = "TRUNCATE TABLE games";
         try {
             executeUpdate(statement);
             configureDatabase();
         } catch (DataAccessException ex) {
             throw new ResponseException(ResponseException.Code.serverError, ex.getMessage());
         }
-
     }
 
     @Override
