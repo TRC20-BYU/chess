@@ -30,11 +30,6 @@ public class GameService {
             } else {
                 dataAccess.setBlack(gameId, username);
             }
-
-//            GameData game = dataAccess.getGame(gameId);
-//            if (game != null) {
-//                return addColorToGame(authToken, playerColor, game);
-//            }
         }
         return -1;
     }

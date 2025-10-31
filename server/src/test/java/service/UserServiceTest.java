@@ -6,25 +6,24 @@ import dataaccess.DataAccess;
 import dataaccess.MemoryDataAccess;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
+import server.ResponseException;
 
 class UserServiceTest {
 
-    DataAccess dataAccess;
-    UserService userService;
 
     @Test
-    void delete() {
+    void delete() throws ResponseException {
         DataAccess dataAccess = new MemoryDataAccess();
         UserService userService = new UserService(dataAccess);
         UserData userData = new UserData("Joe", "password", "joe@joe");
-        AuthData res = userService.register(userData);
+        userService.register(userData);
         userService.deleteDatabase();
         var result = userService.login(userData);
         Assertions.assertNull(result);
     }
 
     @Test
-    void registerSuccess() {
+    void registerSuccess() throws ResponseException {
         DataAccess dataAccess = new MemoryDataAccess();
         UserService userService = new UserService(dataAccess);
         UserData userData = new UserData("Joe", "password", "joe@joe");
@@ -33,18 +32,17 @@ class UserServiceTest {
     }
 
     @Test
-    void registerFail() {
+    void registerFail() throws ResponseException {
         DataAccess dataAccess = new MemoryDataAccess();
         UserService userService = new UserService(dataAccess);
         UserData userData = new UserData("Joe", "password", "joe@joe");
+        userService.register(userData);
         AuthData res = userService.register(userData);
-        res = userService.register(userData);
         Assertions.assertNull(res);
-        ;
     }
 
     @Test
-    void loginSuccess() {
+    void loginSuccess() throws ResponseException {
         DataAccess dataAccess = new MemoryDataAccess();
         UserService userService = new UserService(dataAccess);
         UserData userData = new UserData("Joe", "password", "joe@joe");
@@ -54,7 +52,7 @@ class UserServiceTest {
     }
 
     @Test
-    void loginFail() {
+    void loginFail() throws ResponseException {
         DataAccess dataAccess = new MemoryDataAccess();
         UserService userService = new UserService(dataAccess);
         UserData userData = new UserData("Joe", "password", "joe@joe");
@@ -63,7 +61,7 @@ class UserServiceTest {
     }
 
     @Test
-    void logoutSuccess() {
+    void logoutSuccess() throws ResponseException {
         DataAccess dataAccess = new MemoryDataAccess();
         UserService userService = new UserService(dataAccess);
         UserData userData = new UserData("Joe", "password", "joe@joe");

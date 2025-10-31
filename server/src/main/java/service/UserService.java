@@ -3,6 +3,7 @@ package service;
 import datamodel.AuthData;
 import datamodel.UserData;
 import dataaccess.DataAccess;
+import server.ResponseException;
 
 import java.util.Objects;
 import java.util.UUID;
@@ -16,7 +17,7 @@ public class UserService {
         this.dataAccess = dataAccess;
     }
 
-    public AuthData register(UserData userData) {
+    public AuthData register(UserData userData) throws ResponseException {
 
         boolean saved = dataAccess.saveUser(userData);
         if (saved) {
@@ -24,17 +25,17 @@ public class UserService {
             dataAccess.registerAuthToken(authToken, userData.username());
             return new AuthData(userData.username(), authToken);
         }
-        return null;
+        throw new ResponseException(ResponseException.Code.takenError);
 
     }
 
-    public AuthData login(UserData loginCred) {
+    public AuthData login(UserData loginCred) throws ResponseException {
         UserData userData = dataAccess.getUserData(loginCred.username());
         if (userData == null) {
-            return null;
+            throw new ResponseException(ResponseException.Code.authError);
         }
         if (!Objects.equals(userData.password(), loginCred.password())) {
-            return null;
+            throw new ResponseException(ResponseException.Code.authError);
         }
         String newAuthToken = generateToken();
         dataAccess.registerAuthToken(newAuthToken, userData.username());

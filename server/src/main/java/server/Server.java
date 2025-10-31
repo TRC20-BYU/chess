@@ -45,6 +45,7 @@ public class Server {
         server.post("game", this::createGame);
         server.put("game", this::joinGame);
         server.get("game", this::listGames);
+        server.exception(ResponseException.class, this::exceptionHandler);
     }
 
 
@@ -52,19 +53,15 @@ public class Server {
         userService.deleteDatabase();
     }
 
-    private void register(Context ctx) {
+    private void register(Context ctx) throws ResponseException {
         var serializer = new Gson();
         String reqJson = ctx.body();
         var req = serializer.fromJson(reqJson, UserData.class);
         if (req.username() == null || req.password() == null || req.email() == null) {
-            exceptionHandler(new ResponseException(ResponseException.Code.requestError), ctx);
+            throw new ResponseException(ResponseException.Code.requestError);
         } else {
             var regResult = userService.register(req);
-            if (regResult == null) {
-                exceptionHandler(new ResponseException(ResponseException.Code.takenError), ctx);
-            } else {
-                ctx.result(serializer.toJson(regResult));
-            }
+            ctx.result(serializer.toJson(regResult));
         }
     }
 
@@ -73,14 +70,10 @@ public class Server {
         String reqJson = ctx.body();
         var req = serializer.fromJson(reqJson, UserData.class);
         if (req.username() == null || req.password() == null) {
-            exceptionHandler(new ResponseException(ResponseException.Code.requestError), ctx);
+            throw new ResponseException(ResponseException.Code.requestError);
         } else {
             var regResult = userService.login(req);
-            if (regResult == null) {
-                exceptionHandler(new ResponseException(ResponseException.Code.authError), ctx);
-            } else {
-                ctx.result(serializer.toJson(regResult));
-            }
+            ctx.result(serializer.toJson(regResult));
         }
     }
 

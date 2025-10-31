@@ -7,6 +7,7 @@ import dataaccess.DataAccess;
 import dataaccess.MemoryDataAccess;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
+import server.ResponseException;
 import server.Server;
 
 import java.util.List;
@@ -14,7 +15,7 @@ import java.util.List;
 class GameServiceTest {
 
     @Test
-    void createGameSuccess() {
+    void createGameSuccess() throws ResponseException {
 
         DataAccess dataAccess = new MemoryDataAccess();
         GameService gameService = new GameService(dataAccess);
@@ -36,7 +37,7 @@ class GameServiceTest {
     }
 
     @Test
-    void joinGameSuccess() {
+    void joinGameSuccess() throws ResponseException {
         DataAccess dataAccess = new MemoryDataAccess();
         GameService gameService = new GameService(dataAccess);
         UserService userService = new UserService(dataAccess);
@@ -52,7 +53,7 @@ class GameServiceTest {
     }
 
     @Test
-    void joinGameFail() {
+    void joinGameFail() throws ResponseException {
         {
             DataAccess dataAccess = new MemoryDataAccess();
             GameService gameService = new GameService(dataAccess);
@@ -70,7 +71,7 @@ class GameServiceTest {
     }
 
     @Test
-    void listGamesSuccess() {
+    void listGamesSuccess() throws ResponseException {
         DataAccess dataAccess = new MemoryDataAccess();
         GameService gameService = new GameService(dataAccess);
         UserService userService = new UserService(dataAccess);
