@@ -9,6 +9,7 @@ import static java.sql.Statement.RETURN_GENERATED_KEYS;
 import static java.sql.Types.NULL;
 
 import java.sql.Connection;
+import java.util.ArrayList;
 import java.util.List;
 
 public class DBMemoryAccess implements DataAccess {
@@ -129,7 +130,7 @@ public class DBMemoryAccess implements DataAccess {
     @Override
     public GameData getGame(int gameID) {
         try (Connection conn = DatabaseManager.getConnection()) {
-            var statement = "SELECT gameID gameName whitePlayerName blackPlayerName game FROM users WHERE gameID=?";
+            var statement = "SELECT gameID, gameName, whitePlayerName, blackPlayerName, game FROM games WHERE gameID=?";
             try (PreparedStatement ps = conn.prepareStatement(statement)) {
                 ps.setInt(1, gameID);
                 try (ResultSet rs = ps.executeQuery()) {
@@ -146,7 +147,7 @@ public class DBMemoryAccess implements DataAccess {
 
     @Override
     public List<GameData> gamesList() {
-        return List.of();
+
     }
 
     private int executeUpdate(String statement, Object... params) throws DataAccessException {

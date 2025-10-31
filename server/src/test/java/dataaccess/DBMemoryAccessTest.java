@@ -1,5 +1,6 @@
 package dataaccess;
 
+import datamodel.GameData;
 import datamodel.UserData;
 
 import org.junit.jupiter.api.Test;
@@ -109,6 +110,20 @@ class DBMemoryAccessTest {
 
     @Test
     void getGame() {
+        DBMemoryAccess db = new DBMemoryAccess();
+        resetDB(db);
+        int id = db.createGame("chess123");
+        GameData result = db.getGame(id);
+        Assertions.assertNotNull(result);
+    }
+
+    @Test
+    void getGameBad() {
+        DBMemoryAccess db = new DBMemoryAccess();
+        resetDB(db);
+        int id = 6;
+        GameData result = db.getGame(id);
+        Assertions.assertNull(result);
     }
 
     @Test
