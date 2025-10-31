@@ -6,6 +6,7 @@ import datamodel.UserData;
 import org.junit.jupiter.api.Test;
 
 import org.junit.jupiter.api.Assertions;
+import server.ResponseException;
 
 import java.util.List;
 
@@ -18,7 +19,7 @@ class DBMemoryAccessTest {
     }
 
     @Test
-    void saveUser() {
+    void saveUser() throws ResponseException {
         DBMemoryAccess db = new DBMemoryAccess();
         resetDB(db);
         UserData user = new UserData("joe", "supersecret", "joe@joe");
@@ -27,7 +28,7 @@ class DBMemoryAccessTest {
     }
 
     @Test
-    void saveUserBad() {
+    void saveUserBad() throws ResponseException {
         DBMemoryAccess db = new DBMemoryAccess();
         resetDB(db);
         UserData user = new UserData("joe", "supersecret", "joe@joe");
@@ -38,7 +39,7 @@ class DBMemoryAccessTest {
     }
 
     @Test
-    void getUserData() {
+    void getUserData() throws ResponseException {
         DBMemoryAccess db = new DBMemoryAccess();
         resetDB(db);
         UserData user = new UserData("joe", "supersecret", "joe@joe");
@@ -48,7 +49,7 @@ class DBMemoryAccessTest {
     }
 
     @Test
-    void getUserDataBad() {
+    void getUserDataBad() throws ResponseException {
         DBMemoryAccess db = new DBMemoryAccess();
         resetDB(db);
         UserData user1 = db.getUserData("joe");
@@ -56,7 +57,7 @@ class DBMemoryAccessTest {
     }
 
     @Test
-    void getUsername() {
+    void getUsername() throws ResponseException {
         DBMemoryAccess db = new DBMemoryAccess();
         resetDB(db);
         UserData user1 = db.getUserData("joe");
@@ -64,14 +65,14 @@ class DBMemoryAccessTest {
     }
 
     @Test
-    void registerAuthToken() {
+    void registerAuthToken() throws ResponseException {
         DBMemoryAccess db = new DBMemoryAccess();
         resetDB(db);
         db.registerAuthToken("auth123", "joe");
     }
 
     @Test
-    void authenticate() {
+    void authenticate() throws ResponseException {
         DBMemoryAccess db = new DBMemoryAccess();
         resetDB(db);
         db.registerAuthToken("auth123", "joe");
@@ -80,7 +81,7 @@ class DBMemoryAccessTest {
     }
 
     @Test
-    void authenticateBad() {
+    void authenticateBad() throws ResponseException {
         DBMemoryAccess db = new DBMemoryAccess();
         resetDB(db);
         boolean result = db.authenticate("auth123");
@@ -88,7 +89,7 @@ class DBMemoryAccessTest {
     }
 
     @Test
-    void removeAuthToken() {
+    void removeAuthToken() throws ResponseException {
         DBMemoryAccess db = new DBMemoryAccess();
         resetDB(db);
         db.registerAuthToken("auth123", "joe");
@@ -97,13 +98,13 @@ class DBMemoryAccessTest {
     }
 
     @Test
-    void deleteDatabase() {
+    void deleteDatabase() throws ResponseException {
         DBMemoryAccess db = new DBMemoryAccess();
         db.deleteDatabase();
     }
 
     @Test
-    void createGame() {
+    void createGame() throws ResponseException {
         DBMemoryAccess db = new DBMemoryAccess();
         resetDB(db);
         int result = db.createGame("chess123");
@@ -111,7 +112,7 @@ class DBMemoryAccessTest {
     }
 
     @Test
-    void getGame() {
+    void getGame() throws ResponseException {
         DBMemoryAccess db = new DBMemoryAccess();
         resetDB(db);
         int id = db.createGame("chess123");
@@ -120,7 +121,7 @@ class DBMemoryAccessTest {
     }
 
     @Test
-    void getGameBad() {
+    void getGameBad() throws ResponseException {
         DBMemoryAccess db = new DBMemoryAccess();
         resetDB(db);
         int id = 6;
@@ -129,7 +130,7 @@ class DBMemoryAccessTest {
     }
 
     @Test
-    void gamesList() {
+    void gamesList() throws ResponseException {
         DBMemoryAccess db = new DBMemoryAccess();
         resetDB(db);
         db.createGame("chess123");
@@ -139,7 +140,7 @@ class DBMemoryAccessTest {
     }
 
     @Test
-    void setWhite() {
+    void setWhite() throws ResponseException {
         DBMemoryAccess db = new DBMemoryAccess();
         resetDB(db);
         int gameID = db.createGame("chess123");
@@ -149,7 +150,7 @@ class DBMemoryAccessTest {
     }
 
     @Test
-    void setBlack() {
+    void setBlack() throws ResponseException {
         DBMemoryAccess db = new DBMemoryAccess();
         resetDB(db);
         int gameID = db.createGame("chess123");

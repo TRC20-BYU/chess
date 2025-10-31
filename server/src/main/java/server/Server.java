@@ -30,10 +30,16 @@ public class Server {
     }
 
     public Server() {
+        DataAccess dataAccess1;
 
         server = Javalin.create(config -> config.staticFiles.add("web"));
 
-        dataAccess = new DBMemoryAccess();
+        try {
+            dataAccess1 = new DBMemoryAccess();
+        } catch (ResponseException ex) {
+            dataAccess1 = new MemoryDataAccess();
+        }
+        dataAccess = dataAccess1;
         userService = new UserService(dataAccess);
         gameService = new GameService(dataAccess);
 
