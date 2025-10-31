@@ -7,6 +7,8 @@ import org.junit.jupiter.api.Test;
 
 import org.junit.jupiter.api.Assertions;
 
+import java.util.List;
+
 
 class DBMemoryAccessTest {
 
@@ -128,5 +130,11 @@ class DBMemoryAccessTest {
 
     @Test
     void gamesList() {
+        DBMemoryAccess db = new DBMemoryAccess();
+        resetDB(db);
+        db.createGame("chess123");
+        db.createGame("chess456");
+        List<GameData> games = db.gamesList();
+        Assertions.assertNotEquals(0, games.size());
     }
 }
