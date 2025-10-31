@@ -2,6 +2,7 @@ package dataaccess;
 
 import datamodel.GameData;
 import datamodel.UserData;
+import org.jetbrains.annotations.Nullable;
 import server.ResponseException;
 
 import java.sql.*;
@@ -143,15 +144,24 @@ public class DBMemoryAccess implements DataAccess {
         try (Connection conn = DatabaseManager.getConnection()) {
             var statement = "SELECT gameID, gameName, whitePlayerName, blackPlayerName, game FROM games WHERE gameID=?";
             try (PreparedStatement ps = conn.prepareStatement(statement)) {
-                ps.setInt(1, gameID);
-                try (ResultSet rs = ps.executeQuery()) {
-                    if (rs.next()) {
-                        return readGameData(rs);
-                    }
+                GameData rs = readGames(gameID, ps);
+                if (rs != null) {
+                    return rs;
                 }
             }
         } catch (SQLException | DataAccessException ex) {
             return null;
+        }
+        return null;
+    }
+
+    @Nullable
+    private GameData readGames(int gameID, PreparedStatement ps) throws SQLException {
+        ps.setInt(1, gameID);
+        try (ResultSet rs = ps.executeQuery()) {
+            if (rs.next()) {
+                return readGameData(rs);
+            }
         }
         return null;
     }
@@ -162,16 +172,20 @@ public class DBMemoryAccess implements DataAccess {
         try (Connection conn = DatabaseManager.getConnection()) {
             var statement = "SELECT gameID, gameName, whitePlayerName, blackPlayerName, game FROM games";
             try (PreparedStatement ps = conn.prepareStatement(statement)) {
-                try (ResultSet rs = ps.executeQuery()) {
-                    while (rs.next()) {
-                        listOfGames.add(readGameData(rs));
-                    }
-                }
+                listGames(ps, listOfGames);
             }
         } catch (SQLException | DataAccessException ex) {
             return listOfGames;
         }
         return listOfGames;
+    }
+
+    private void listGames(PreparedStatement ps, ArrayList<GameData> listOfGames) throws SQLException {
+        try (ResultSet rs = ps.executeQuery()) {
+            while (rs.next()) {
+                listOfGames.add(readGameData(rs));
+            }
+        }
     }
 
     @Override
@@ -181,25 +195,30 @@ public class DBMemoryAccess implements DataAccess {
             try (PreparedStatement ps1 = conn.prepareStatement(statement)) {
                 ps1.setInt(1, gameID);
                 try (ResultSet rs = ps1.executeQuery()) {
-                    if (rs.next()) {
-                        String whitePlayerName = rs.getString("whitePlayerName");
-                        if (whitePlayerName != null) {
-                            throw new ResponseException(ResponseException.Code.takenError);
-                        }
-                        statement = "UPDATE games Set whitePlayerName=? WHERE gameID=?";
-                        try (PreparedStatement ps2 = conn.prepareStatement(statement)) {
-                            ps2.setString(1, username);
-                            ps2.setInt(2, gameID);
-                            ps2.executeUpdate();
-                        }
-                    } else {
-                        throw new ResponseException(ResponseException.Code.requestError);
-                    }
+                    updateWhitePlayer(gameID, username, rs, conn);
                 }
             }
 
         } catch (SQLException | DataAccessException ex) {
             throw new ResponseException(ResponseException.Code.serverError, ex.getMessage());
+        }
+    }
+
+    private static void updateWhitePlayer(int gameID, String username, ResultSet rs, Connection conn) throws SQLException, ResponseException {
+        String statement;
+        if (rs.next()) {
+            String whitePlayerName = rs.getString("whitePlayerName");
+            if (whitePlayerName != null) {
+                throw new ResponseException(ResponseException.Code.takenError);
+            }
+            statement = "UPDATE games Set whitePlayerName=? WHERE gameID=?";
+            try (PreparedStatement ps2 = conn.prepareStatement(statement)) {
+                ps2.setString(1, username);
+                ps2.setInt(2, gameID);
+                ps2.executeUpdate();
+            }
+        } else {
+            throw new ResponseException(ResponseException.Code.requestError);
         }
     }
 
@@ -210,25 +229,30 @@ public class DBMemoryAccess implements DataAccess {
             try (PreparedStatement ps1 = conn.prepareStatement(statement)) {
                 ps1.setInt(1, gameID);
                 try (ResultSet rs = ps1.executeQuery()) {
-                    if (rs.next()) {
-                        String blackPlayerName = rs.getString("blackPlayerName");
-                        if (blackPlayerName != null) {
-                            throw new ResponseException(ResponseException.Code.takenError);
-                        }
-                        statement = "UPDATE games Set blackPlayerName=? WHERE gameID=?";
-                        try (PreparedStatement ps2 = conn.prepareStatement(statement)) {
-                            ps2.setString(1, username);
-                            ps2.setInt(2, gameID);
-                            ps2.executeUpdate();
-                        }
-                    } else {
-                        throw new ResponseException(ResponseException.Code.requestError);
-                    }
+                    updateBlackPlayer(gameID, username, rs, conn);
                 }
             }
 
         } catch (SQLException | DataAccessException ex) {
             throw new ResponseException(ResponseException.Code.serverError, ex.getMessage());
+        }
+    }
+
+    private static void updateBlackPlayer(int gameID, String username, ResultSet rs, Connection conn) throws SQLException, ResponseException {
+        String statement;
+        if (rs.next()) {
+            String blackPlayerName = rs.getString("blackPlayerName");
+            if (blackPlayerName != null) {
+                throw new ResponseException(ResponseException.Code.takenError);
+            }
+            statement = "UPDATE games Set blackPlayerName=? WHERE gameID=?";
+            try (PreparedStatement ps2 = conn.prepareStatement(statement)) {
+                ps2.setString(1, username);
+                ps2.setInt(2, gameID);
+                ps2.executeUpdate();
+            }
+        } else {
+            throw new ResponseException(ResponseException.Code.requestError);
         }
     }
 
