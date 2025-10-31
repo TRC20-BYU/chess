@@ -24,17 +24,19 @@ public class DBMemoryAccess implements DataAccess {
 
     @Override
     public boolean saveUser(UserData user) {
-        var statement = "INSERT INTO users (username, password, email) VALUES (?, ?, ?)";
-        String username = user.username();
-        String password = user.password();
-        String email = user.email();
-        try {
-            executeUpdate(statement, username, password, email);
-        } catch (DataAccessException e) {
-            System.out.print("here2");
+        if (getUserData(user.username()) == null) {
+            var statement = "INSERT INTO users (username, password, email) VALUES (?, ?, ?)";
+            String username = user.username();
+            String password = user.password();
+            String email = user.email();
+            try {
+                executeUpdate(statement, username, password, email);
+                return true;
+            } catch (DataAccessException e) {
+                return false;
+            }
         }
-
-        return true;
+        return false;
     }
 
     @Override
@@ -80,9 +82,11 @@ public class DBMemoryAccess implements DataAccess {
         var statement = "DROP DATABASE chess";
         try {
             executeUpdate(statement);
+            configureDatabase();
         } catch (DataAccessException e) {
             System.out.print("here2");
         }
+
     }
 
     @Override
