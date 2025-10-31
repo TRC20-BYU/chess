@@ -118,7 +118,12 @@ public class DBMemoryAccess implements DataAccess {
 
     @Override
     public int createGame(String gameName) {
-        return 0;
+        var statement = "INSERT INTO games (gameName) VALUES (?)";
+        try {
+            return executeUpdate(statement, gameName);
+        } catch (DataAccessException e) {
+            return 0;
+        }
     }
 
     @Override
@@ -131,7 +136,7 @@ public class DBMemoryAccess implements DataAccess {
         return List.of();
     }
 
-    private void executeUpdate(String statement, Object... params) throws DataAccessException {
+    private int executeUpdate(String statement, Object... params) throws DataAccessException {
 
         try (Connection conn = DatabaseManager.getConnection()) {
             try (PreparedStatement ps = conn.prepareStatement(statement, RETURN_GENERATED_KEYS)) {
@@ -145,11 +150,19 @@ public class DBMemoryAccess implements DataAccess {
                         ps.setNull(i + 1, NULL);
                     }
                 }
-                ps.execute();
+                ps.executeUpdate();
+
+                ResultSet rs = ps.getGeneratedKeys();
+                if (rs.next()) {
+                    return rs.getInt(1);
+                }
+
+                return 0;
             }
         } catch (SQLException ex) {
 //                throw new ResponseException(ResponseException.Code.ServerError, String.format("Unable to configure database: %s", ex.getMessage()));
         }
+        return 0;
     }
 
     private final String[] createStatements = {
