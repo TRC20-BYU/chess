@@ -93,7 +93,17 @@ public class DBMemoryAccess implements DataAccess {
 
     @Override
     public void removeAuthToken(String authToken) {
+        try (Connection conn = DatabaseManager.getConnection()) {
+            var statement = "DELETE FROM authTokens WHERE authToken=?";
+            try (PreparedStatement ps = conn.prepareStatement(statement)) {
+                ps.setString(1, authToken);
+                try (ResultSet rs = ps.executeQuery()) {
 
+                }
+            }
+        } catch (SQLException | DataAccessException ex) {
+
+        }
     }
 
     @Override
