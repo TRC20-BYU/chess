@@ -2,6 +2,7 @@ package dataaccess;
 
 import datamodel.GameData;
 import datamodel.UserData;
+import server.ResponseException;
 
 import java.sql.*;
 
@@ -58,7 +59,7 @@ public class DBMemoryAccess implements DataAccess {
     }
 
     @Override
-    public UserData getUsername(String authToken) {
+    public UserData getUsername(String authToken) throws ResponseException {
         try (Connection conn = DatabaseManager.getConnection()) {
             var statement = "SELECT username FROM authTokens WHERE authToken=?";
             try (PreparedStatement ps = conn.prepareStatement(statement)) {
@@ -70,9 +71,9 @@ public class DBMemoryAccess implements DataAccess {
                 }
             }
         } catch (SQLException | DataAccessException ex) {
-            return null;
+            throw new ResponseException(ResponseException.Code.serverError, ex.getMessage());
         }
-        return null;
+        throw new ResponseException(ResponseException.Code.authError);
     }
 
     /// maybe changes this to be a bool for pass fail??????????????????????????

@@ -10,12 +10,20 @@ public class ResponseException extends Exception {
         requestError,
         authError,
         takenError,
+        serverError,
     }
 
     final private Code code;
+    final private String body;
 
     public ResponseException(Code code) {
         this.code = code;
+        body = "";
+    }
+
+    public ResponseException(Code code, String body) {
+        this.code = code;
+        this.body = body;
     }
 
     public String toJson() {
@@ -27,6 +35,7 @@ public class ResponseException extends Exception {
             case requestError -> "Error: bad request";
             case authError -> "Error: unauthorized";
             case takenError -> "Error: already taken";
+            case serverError -> "Error: " + " ";
             default -> "unknown";
         };
     }
@@ -36,6 +45,7 @@ public class ResponseException extends Exception {
             case requestError -> 400;
             case authError -> 401;
             case takenError -> 403;
+            case serverError -> 500;
         };
     }
 }

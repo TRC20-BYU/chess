@@ -2,6 +2,7 @@ package dataaccess;
 
 import datamodel.GameData;
 import datamodel.UserData;
+import server.ResponseException;
 
 import java.util.List;
 
@@ -11,7 +12,7 @@ public interface DataAccess {
 
     public UserData getUserData(String username);
 
-    public UserData getUsername(String authToken);
+    public UserData getUsername(String authToken) throws ResponseException;
 
     public void registerAuthToken(String authToken, String username);
 
