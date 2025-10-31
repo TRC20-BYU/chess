@@ -1,5 +1,6 @@
 package service;
 
+import dataaccess.DBMemoryAccess;
 import datamodel.AuthData;
 import datamodel.UserData;
 import dataaccess.DataAccess;
@@ -13,7 +14,7 @@ class UserServiceTest {
 
     @Test
     void delete() throws ResponseException {
-        DataAccess dataAccess = new MemoryDataAccess();
+        DataAccess dataAccess = new DBMemoryAccess();
         UserService userService = new UserService(dataAccess);
         UserData userData = new UserData("Joe", "password", "joe@joe");
         userService.register(userData);
@@ -24,7 +25,7 @@ class UserServiceTest {
 
     @Test
     void registerSuccess() throws ResponseException {
-        DataAccess dataAccess = new MemoryDataAccess();
+        DataAccess dataAccess = new DBMemoryAccess();
         UserService userService = new UserService(dataAccess);
         UserData userData = new UserData("Joe", "password", "joe@joe");
         AuthData res = userService.register(userData);
@@ -33,7 +34,7 @@ class UserServiceTest {
 
     @Test
     void registerFail() throws ResponseException {
-        DataAccess dataAccess = new MemoryDataAccess();
+        DataAccess dataAccess = new DBMemoryAccess();
         UserService userService = new UserService(dataAccess);
         UserData userData = new UserData("Joe", "password", "joe@joe");
         userService.register(userData);
@@ -43,7 +44,7 @@ class UserServiceTest {
 
     @Test
     void loginSuccess() throws ResponseException {
-        DataAccess dataAccess = new MemoryDataAccess();
+        DataAccess dataAccess = new DBMemoryAccess();
         UserService userService = new UserService(dataAccess);
         UserData userData = new UserData("Joe", "password", "joe@joe");
         userService.register(userData);
@@ -53,7 +54,7 @@ class UserServiceTest {
 
     @Test
     void loginFail() throws ResponseException {
-        DataAccess dataAccess = new MemoryDataAccess();
+        DataAccess dataAccess = new DBMemoryAccess();
         UserService userService = new UserService(dataAccess);
         UserData userData = new UserData("Joe", "password", "joe@joe");
         var res = userService.login(userData);
@@ -62,7 +63,7 @@ class UserServiceTest {
 
     @Test
     void logoutSuccess() throws ResponseException {
-        DataAccess dataAccess = new MemoryDataAccess();
+        DataAccess dataAccess = new DBMemoryAccess();
         UserService userService = new UserService(dataAccess);
         UserData userData = new UserData("Joe", "password", "joe@joe");
         userService.register(userData);
@@ -73,7 +74,7 @@ class UserServiceTest {
 
     @Test
     void logoutFail() throws ResponseException {
-        DataAccess dataAccess = new MemoryDataAccess();
+        DataAccess dataAccess = new DBMemoryAccess();
         UserService userService = new UserService(dataAccess);
         boolean passed = userService.logout("cow");
         Assertions.assertFalse(passed);

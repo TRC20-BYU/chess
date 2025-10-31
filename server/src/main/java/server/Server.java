@@ -55,7 +55,7 @@ public class Server {
     }
 
 
-    private void deleteDatabase(Context ctx) {
+    private void deleteDatabase(Context ctx) throws ResponseException {
         userService.deleteDatabase();
     }
 

@@ -50,7 +50,7 @@ public class UserService {
         throw new ResponseException(ResponseException.Code.authError);
     }
 
-    public void deleteDatabase() {
+    public void deleteDatabase() throws ResponseException {
         dataAccess.deleteDatabase();
     }
 
