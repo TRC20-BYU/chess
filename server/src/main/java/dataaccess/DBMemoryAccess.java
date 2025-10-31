@@ -9,7 +9,6 @@ import static java.sql.Statement.RETURN_GENERATED_KEYS;
 import static java.sql.Types.NULL;
 
 import java.sql.Connection;
-import java.sql.DriverManager;
 import java.util.List;
 
 public class DBMemoryAccess implements DataAccess {
@@ -62,8 +61,16 @@ public class DBMemoryAccess implements DataAccess {
         return null;
     }
 
+    /// maybe changes this to be a bool for pass fail??????????????????????????
     @Override
     public void registerAuthToken(String authToken, String username) {
+
+        var statement = "INSERT INTO authTokens (authToken, username) VALUES (?, ?)";
+        try {
+            executeUpdate(statement, authToken, username);
+        } catch (DataAccessException e) {
+            System.out.print("here3");
+        }
 
     }
 

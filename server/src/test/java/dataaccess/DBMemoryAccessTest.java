@@ -62,6 +62,7 @@ class DBMemoryAccessTest {
 
     @Test
     void registerAuthToken() {
+        
     }
 
     @Test
