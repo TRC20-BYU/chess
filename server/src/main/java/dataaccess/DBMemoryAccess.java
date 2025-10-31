@@ -147,7 +147,20 @@ public class DBMemoryAccess implements DataAccess {
 
     @Override
     public List<GameData> gamesList() {
-
+        ArrayList<GameData> listOfGames = new ArrayList<>();
+        try (Connection conn = DatabaseManager.getConnection()) {
+            var statement = "SELECT gameID, gameName, whitePlayerName, blackPlayerName, game FROM games";
+            try (PreparedStatement ps = conn.prepareStatement(statement)) {
+                try (ResultSet rs = ps.executeQuery()) {
+                    while (rs.next()) {
+                        listOfGames.add(readGameData(rs));
+                    }
+                }
+            }
+        } catch (SQLException | DataAccessException ex) {
+            return listOfGames;
+        }
+        return listOfGames;
     }
 
     private int executeUpdate(String statement, Object... params) throws DataAccessException {
