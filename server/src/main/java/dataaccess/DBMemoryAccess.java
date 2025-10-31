@@ -64,7 +64,6 @@ public class DBMemoryAccess implements DataAccess {
     /// maybe changes this to be a bool for pass fail??????????????????????????
     @Override
     public void registerAuthToken(String authToken, String username) {
-
         var statement = "INSERT INTO authTokens (authToken, username) VALUES (?, ?)";
         try {
             executeUpdate(statement, authToken, username);
@@ -76,6 +75,19 @@ public class DBMemoryAccess implements DataAccess {
 
     @Override
     public boolean authenticate(String authToken) {
+        try (Connection conn = DatabaseManager.getConnection()) {
+            var statement = "SELECT authToken FROM users WHERE authToken=?";
+            try (PreparedStatement ps = conn.prepareStatement(statement)) {
+                ps.setString(1, authToken);
+                try (ResultSet rs = ps.executeQuery()) {
+                    if (rs.next()) {
+                        return true;
+                    }
+                }
+            }
+        } catch (SQLException | DataAccessException ex) {
+            return false;
+        }
         return false;
     }
 

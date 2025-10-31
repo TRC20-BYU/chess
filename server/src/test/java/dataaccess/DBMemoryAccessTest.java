@@ -62,7 +62,9 @@ class DBMemoryAccessTest {
 
     @Test
     void registerAuthToken() {
-        
+        DBMemoryAccess db = new DBMemoryAccess();
+        resetDB(db);
+        db.registerAuthToken("auth123", "joe");
     }
 
     @Test
