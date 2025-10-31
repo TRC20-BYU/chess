@@ -14,7 +14,7 @@ import java.util.List;
 class DBMemoryAccessTest {
 
 
-    static void resetDB(DataAccess db) {
+    static void resetDB(DataAccess db) throws ResponseException {
         db.deleteDatabase();
     }
 
