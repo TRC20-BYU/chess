@@ -86,6 +86,11 @@ class DBMemoryAccessTest {
 
     @Test
     void removeAuthToken() {
+        DBMemoryAccess db = new DBMemoryAccess();
+        resetDB(db);
+        db.registerAuthToken("auth123", "joe");
+        db.removeAuthToken("auth123");
+        
     }
 
     @Test

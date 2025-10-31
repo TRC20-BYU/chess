@@ -97,12 +97,10 @@ public class DBMemoryAccess implements DataAccess {
             var statement = "DELETE FROM authTokens WHERE authToken=?";
             try (PreparedStatement ps = conn.prepareStatement(statement)) {
                 ps.setString(1, authToken);
-                try (ResultSet rs = ps.executeQuery()) {
-
-                }
+                ps.executeUpdate();
             }
         } catch (SQLException | DataAccessException ex) {
-
+            System.out.print("here4");
         }
     }
 
