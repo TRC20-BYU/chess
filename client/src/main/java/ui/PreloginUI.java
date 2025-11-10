@@ -2,7 +2,7 @@ package ui;
 
 public class PreloginUI {
 
-    void help() {
+    public void help() {
         //Displays text informing the user what actions they can take.
         System.out.println("Register: <username> <password> <email>");
         System.out.println("Login: <username> <password>");
