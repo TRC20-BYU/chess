@@ -1,5 +1,7 @@
 package ui;
 
+import datamodel.UserData;
+
 public class PreloginUI {
 
     public void help() {
@@ -10,9 +12,11 @@ public class PreloginUI {
         System.out.println("help - displays possible commands");
     }
 
-    public void login() {
+    public boolean login(UserData userData) {
         //http request
         //Prompts the user to input login information. Calls the server login API to login the user. When successfully logged in, the client should transition to the Postlogin UI.
+        System.out.println("Logged in " + userData.username());
+        return true;
     }
 
     public void register() {

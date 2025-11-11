@@ -1,4 +1,5 @@
 import chess.*;
+import datamodel.UserData;
 import ui.PostloginUI;
 import ui.PreloginUI;
 
@@ -34,9 +35,11 @@ public class Main {
                     if (params.length != 4) {
                         System.out.println("Error: incorrect number of arguments");
                     } else {
-                        preloginUI.login();
-                        user = params[1];
-                        loggedIn = true;
+                        UserData userData = new UserData(params[1], params[2], params[3]);
+                        if (preloginUI.login(userData)) {
+                            user = params[1];
+                            loggedIn = true;
+                        }
                     }
                 }
             } else {
