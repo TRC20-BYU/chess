@@ -6,16 +6,27 @@ import java.util.Scanner;
 
 public class Main {
     public static void main(String[] args) {
-        var piece = new ChessPiece(ChessGame.TeamColor.WHITE, ChessPiece.PieceType.PAWN);
-        System.out.println("♕ 240 Chess Client: " + piece);
+        System.out.println("Welcome ♕ 240 Chess Client ♕");
+        boolean loggedIn = false;
         PreloginUI preloginUI = new PreloginUI();
 
         while (true) {
             Scanner scanner = new Scanner(System.in);
             String line = scanner.nextLine();
-            if (Objects.equals(line, "help")) {
-                preloginUI.help();
+            if (!loggedIn) {
+                if (Objects.equals(line, "help")) {
+                    preloginUI.help();
+                }
+                if (Objects.equals(line, "help")) {
+                    preloginUI.log
+                }
             }
+            if (Objects.equals(line, "quit")) {
+                break;
+            }
+
         }
+        System.out.println("Good bye");
     }
+
 }
