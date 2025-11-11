@@ -27,7 +27,10 @@ public class Main {
                 if (Objects.equals(line, "help")) {
                     postloginUI.help();
                 }
-                
+                if (Objects.equals(line, "logout")) {
+                    postloginUI.logout();
+                    loggedIn = false;
+                }
             }
             if (Objects.equals(line, "quit")) {
                 break;
