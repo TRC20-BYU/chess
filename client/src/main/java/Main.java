@@ -24,24 +24,44 @@ public class Main {
             String[] params = line.split(" ");
             if (!loggedIn) {
                 if (Objects.equals(params[0], "help")) {
-                    preloginUI.help();
+                    if (params.length > 1) {
+                        System.out.println("Error: Too many arguments");
+                    } else {
+                        preloginUI.help();
+                    }
                 }
                 if (Objects.equals(params[0], "login")) {
-                    preloginUI.login();
-                    user = params[1];
-                    loggedIn = true;
+                    if (params.length != 4) {
+                        System.out.println("Error: incorrect number of arguments");
+                    } else {
+                        preloginUI.login();
+                        user = params[1];
+                        loggedIn = true;
+                    }
                 }
             } else {
                 if (Objects.equals(params[0], "help")) {
-                    postloginUI.help();
+                    if (params.length > 1) {
+                        System.out.println("Error: Too many arguments");
+                    } else {
+                        postloginUI.help();
+                    }
                 }
                 if (Objects.equals(params[0], "logout")) {
-                    postloginUI.logout();
-                    loggedIn = false;
+                    if (params.length > 1) {
+                        System.out.println("Error: Too many arguments");
+                    } else {
+                        postloginUI.logout();
+                        loggedIn = false;
+                    }
                 }
             }
             if (Objects.equals(params[0], "quit")) {
-                break;
+                if (params.length > 1) {
+                    System.out.println("Error: Too many arguments");
+                } else {
+                    break;
+                }
             }
 
         }
