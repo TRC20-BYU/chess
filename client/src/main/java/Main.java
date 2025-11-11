@@ -32,11 +32,22 @@ public class Main {
                     }
                 }
                 if (Objects.equals(params[0], "login")) {
+                    if (params.length != 3) {
+                        System.out.println("Error: incorrect number of arguments");
+                    } else {
+                        UserData userData = new UserData(params[1], params[2], null);
+                        if (preloginUI.login(userData)) {
+                            user = params[1];
+                            loggedIn = true;
+                        }
+                    }
+                }
+                if (Objects.equals(params[0], "register")) {
                     if (params.length != 4) {
                         System.out.println("Error: incorrect number of arguments");
                     } else {
                         UserData userData = new UserData(params[1], params[2], params[3]);
-                        if (preloginUI.login(userData)) {
+                        if (preloginUI.register(userData)) {
                             user = params[1];
                             loggedIn = true;
                         }

@@ -19,8 +19,10 @@ public class PreloginUI {
         return true;
     }
 
-    public void register() {
+    public boolean register(UserData userData) {
         //http request
         //Prompts the user to input registration information. Calls the server register API to register and login the user. If successfully registered, the client should be logged in and transition to the Postlogin UI.
+        System.out.println("Registered " + userData.username());
+        return true;
     }
 }
