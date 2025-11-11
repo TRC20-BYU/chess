@@ -1,4 +1,5 @@
 import chess.*;
+import ui.PostloginUI;
 import ui.PreloginUI;
 
 import java.util.Objects;
@@ -9,6 +10,7 @@ public class Main {
         System.out.println("Welcome ♕ 240 Chess Client ♕");
         boolean loggedIn = false;
         PreloginUI preloginUI = new PreloginUI();
+        PostloginUI postloginUI = new PostloginUI();
 
         while (true) {
             Scanner scanner = new Scanner(System.in);
@@ -17,9 +19,15 @@ public class Main {
                 if (Objects.equals(line, "help")) {
                     preloginUI.help();
                 }
-                if (Objects.equals(line, "help")) {
-                    preloginUI.log
+                if (Objects.equals(line, "login")) {
+                    preloginUI.login();
+                    loggedIn = true;
                 }
+            } else {
+                if (Objects.equals(line, "help")) {
+                    postloginUI.help();
+                }
+                
             }
             if (Objects.equals(line, "quit")) {
                 break;
