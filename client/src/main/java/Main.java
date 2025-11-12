@@ -1,5 +1,5 @@
-import chess.*;
 import datamodel.UserData;
+import serverfacade.ServerFacade;
 import ui.PostloginUI;
 import ui.PreloginUI;
 
@@ -11,8 +11,10 @@ public class Main {
         System.out.println("Welcome ♕ 240 Chess Client ♕");
         boolean loggedIn = false;
         String user = "";
-        PreloginUI preloginUI = new PreloginUI();
+        ServerFacade serverFacade = new ServerFacade();
+        PreloginUI preloginUI = new PreloginUI(serverFacade);
         PostloginUI postloginUI = new PostloginUI();
+
 
         while (true) {
             if (!loggedIn) {

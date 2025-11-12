@@ -1,8 +1,15 @@
 package ui;
 
 import datamodel.UserData;
+import serverfacade.ServerFacade;
 
 public class PreloginUI {
+
+    ServerFacade serverFacade;
+
+    public PreloginUI(ServerFacade serverFacade) {
+        this.serverFacade = serverFacade;
+    }
 
     public void help() {
         //Displays text informing the user what actions they can take.
@@ -15,6 +22,7 @@ public class PreloginUI {
     public boolean login(UserData userData) {
         //http request
         //Prompts the user to input login information. Calls the server login API to login the user. When successfully logged in, the client should transition to the Postlogin UI.
+        serverFacade.post("session", userData);
         System.out.println("Logged in " + userData.username());
         return true;
     }
