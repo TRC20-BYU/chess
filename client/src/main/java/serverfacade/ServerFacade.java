@@ -17,6 +17,11 @@ public class ServerFacade {
         System.out.println(sendRequest(request));
     }
 
+    public void delete(String path, Object body) {
+        var request = buildRequest("delete", path, body);
+        System.out.println(sendRequest(request));
+    }
+
     public void put(String path, Object body) {
         var request = buildRequest("put", path, body);
         System.out.println(sendRequest(request));

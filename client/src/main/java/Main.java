@@ -13,7 +13,7 @@ public class Main {
         String user = "";
         ServerFacade serverFacade = new ServerFacade();
         PreloginUI preloginUI = new PreloginUI(serverFacade);
-        PostloginUI postloginUI = new PostloginUI();
+        PostloginUI postloginUI = new PostloginUI(serverFacade);
 
 
         while (true) {

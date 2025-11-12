@@ -1,6 +1,14 @@
 package ui;
 
+import serverfacade.ServerFacade;
+
 public class PostloginUI {
+
+    ServerFacade serverFacade;
+
+    public PostloginUI(ServerFacade serverFacade) {
+        this.serverFacade = serverFacade;
+    }
 
     public void help() {
         //Displays text informing the user what actions they can take.
@@ -15,6 +23,7 @@ public class PostloginUI {
 
     public void logout() {
         //	Logs out the user. Calls the server logout API to logout the user. After logging out with the server, the client should transition to the Prelogin UI.
+        serverFacade.delete("session", null);
     }
 
     public void createGame() {
