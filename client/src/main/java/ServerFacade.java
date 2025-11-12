@@ -10,14 +10,24 @@ public class ServerFacade {
 
     private final HttpClient client = HttpClient.newHttpClient();
 
+    public void post(String path, Object body) {
+        var request = buildRequest("post", path, body);
+        System.out.println(sendRequest(request));
+    }
+
+    public void put(String path, Object body) {
+        var request = buildRequest("put", path, body);
+        System.out.println(sendRequest(request));
+    }
+
     public void get(String path, Object body) {
         var request = buildRequest("get", path, body);
-        sendRequest(request);
+        System.out.println(sendRequest(request));
     }
 
 
     private HttpRequest buildRequest(String method, String path, Object body) {
-        var request = HttpRequest.newBuilder().uri(URI.create("temp" + path)).method(method, makeRequestBody(body));
+        var request = HttpRequest.newBuilder().uri(URI.create("http://localhost:8080/" + path)).method(method, makeRequestBody(body));
         return request.build();
     }
 
