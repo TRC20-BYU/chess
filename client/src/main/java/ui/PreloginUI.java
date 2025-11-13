@@ -22,7 +22,7 @@ public class PreloginUI {
     public boolean login(UserData userData) {
         //http request
         //Prompts the user to input login information. Calls the server login API to login the user. When successfully logged in, the client should transition to the Postlogin UI.
-        serverFacade.post("session", userData);
+        serverFacade.post("session", userData, null);
         System.out.println("Logged in " + userData.username());
         return true;
     }
@@ -30,7 +30,7 @@ public class PreloginUI {
     public boolean register(UserData userData) {
         //http request
         //Prompts the user to input registration information. Calls the server register API to register and login the user. If successfully registered, the client should be logged in and transition to the Postlogin UI.
-        serverFacade.post("user", userData);
+        serverFacade.post("user", userData, null);
         System.out.println("Registered " + userData.username());
         return true;
     }

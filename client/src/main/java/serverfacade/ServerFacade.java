@@ -12,29 +12,32 @@ public class ServerFacade {
 
     private final HttpClient client = HttpClient.newHttpClient();
 
-    public void post(String path, Object body) {
-        var request = buildRequest("post", path, body);
+    public void post(String path, Object body, String authToken) {
+        var request = buildRequest("post", path, body, authToken);
         System.out.println(sendRequest(request));
     }
 
-    public void delete(String path, Object body) {
-        var request = buildRequest("delete", path, body);
+    public void delete(String path, Object body, String authToken) {
+        var request = buildRequest("delete", path, body, authToken);
         System.out.println(sendRequest(request));
     }
 
-    public void put(String path, Object body) {
-        var request = buildRequest("put", path, body);
+    public void put(String path, Object body, String authToken) {
+        var request = buildRequest("put", path, body, authToken);
         System.out.println(sendRequest(request));
     }
 
-    public void get(String path, Object body) {
-        var request = buildRequest("get", path, body);
+    public void get(String path, Object body, String authToken) {
+        var request = buildRequest("get", path, body, authToken);
         System.out.println(sendRequest(request));
     }
 
 
-    private HttpRequest buildRequest(String method, String path, Object body) {
+    private HttpRequest buildRequest(String method, String path, Object body, String authToken) {
         var request = HttpRequest.newBuilder().uri(URI.create("http://localhost:8080/" + path)).method(method, makeRequestBody(body));
+        if (authToken != null) {
+            request.setHeader("authorization", authToken);
+        }
         return request.build();
     }
 
