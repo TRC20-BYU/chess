@@ -21,9 +21,9 @@ public class PostloginUI {
         System.out.println("help - displays possible commands");
     }
 
-    public void logout() {
+    public void logout(String authToken) {
         //	Logs out the user. Calls the server logout API to logout the user. After logging out with the server, the client should transition to the Prelogin UI.
-        serverFacade.delete("session", null, "temp");
+        serverFacade.delete("session", null, authToken);
     }
 
     public void createGame() {

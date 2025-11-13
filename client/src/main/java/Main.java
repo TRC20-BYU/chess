@@ -69,7 +69,7 @@ public class Main {
                     if (params.length > 1) {
                         System.out.println("Error: Too many arguments");
                     } else {
-                        postloginUI.logout();
+                        postloginUI.logout(authToken);
                         loggedIn = false;
                     }
                 }
