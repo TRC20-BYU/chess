@@ -1,10 +1,17 @@
 package ui;
 
+import com.google.gson.Gson;
+import datamodel.GameData;
 import serverfacade.ServerFacade;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 
 public class PostloginUI {
 
     ServerFacade serverFacade;
+    List<Integer> gameIds = new ArrayList<>();
 
     public PostloginUI(ServerFacade serverFacade) {
         this.serverFacade = serverFacade;
@@ -26,8 +33,14 @@ public class PostloginUI {
         serverFacade.delete("session", null, authToken);
     }
 
-    public void createGame() {
+    public void createGame(String authToken, String name) {
         // Allows the user to input a name for the new game. Calls the server create API to create the game. This does not join the player to the created game; it only creates the new game in the server.
+        GameData gameData = new GameData(0, null, null, name);
+        var serializer = new Gson();
+        var seralized = serializer.toJson(gameData);
+        var result = serverFacade.post("game", seralized, authToken);
+        var mapped = serializer.fromJson(result, Map.class);
+        gameIds.add((int) mapped.get("gameID"));
     }
 
     public void listGame() {
@@ -40,6 +53,7 @@ public class PostloginUI {
 
     public void observerGame() {
         // Allows the user to specify which game they want to observe. They should be able to enter the number of the desired game. Your client will need to keep track of which number corresponds to which game from the last time it listed the games. Additional functionality will be added in Phase 6.
+        
     }
 
 }
