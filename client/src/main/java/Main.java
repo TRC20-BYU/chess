@@ -1,3 +1,4 @@
+import datamodel.AuthData;
 import datamodel.UserData;
 import serverfacade.ServerFacade;
 import ui.PostloginUI;
@@ -11,6 +12,7 @@ public class Main {
         System.out.println("Welcome ♕ 240 Chess Client ♕");
         boolean loggedIn = false;
         String user = "";
+        String authToken = "";
         ServerFacade serverFacade = new ServerFacade();
         PreloginUI preloginUI = new PreloginUI(serverFacade);
         PostloginUI postloginUI = new PostloginUI(serverFacade);
@@ -38,10 +40,10 @@ public class Main {
                         System.out.println("Error: incorrect number of arguments");
                     } else {
                         UserData userData = new UserData(params[1], params[2], null);
-                        if (preloginUI.login(userData)) {
-                            user = params[1];
-                            loggedIn = true;
-                        }
+                        AuthData authData = preloginUI.login(userData);
+                        authToken = authData.authToken();
+                        user = authData.username();
+                        loggedIn = true;
                     }
                 }
                 if (Objects.equals(params[0], "register")) {

@@ -1,5 +1,7 @@
 package ui;
 
+import com.google.gson.Gson;
+import datamodel.AuthData;
 import datamodel.UserData;
 import serverfacade.ServerFacade;
 
@@ -19,12 +21,14 @@ public class PreloginUI {
         System.out.println("help - displays possible commands");
     }
 
-    public boolean login(UserData userData) {
+    public AuthData login(UserData userData) {
         //http request
         //Prompts the user to input login information. Calls the server login API to login the user. When successfully logged in, the client should transition to the Postlogin UI.
-        serverFacade.post("session", userData, null);
-        System.out.println("Logged in " + userData.username());
-        return true;
+        String responce = serverFacade.post("session", userData, null);
+        var serializer = new Gson();
+        AuthData authData = serializer.fromJson(responce, AuthData.class);
+        System.out.println("Logged in " + authData.username());
+        return authData;
     }
 
     public boolean register(UserData userData) {

@@ -12,24 +12,24 @@ public class ServerFacade {
 
     private final HttpClient client = HttpClient.newHttpClient();
 
-    public void post(String path, Object body, String authToken) {
+    public String post(String path, Object body, String authToken) {
         var request = buildRequest("post", path, body, authToken);
-        System.out.println(sendRequest(request));
+        return sendRequest(request).body();
     }
 
-    public void delete(String path, Object body, String authToken) {
+    public String delete(String path, Object body, String authToken) {
         var request = buildRequest("delete", path, body, authToken);
-        System.out.println(sendRequest(request));
+        return sendRequest(request).body();
     }
 
-    public void put(String path, Object body, String authToken) {
+    public String put(String path, Object body, String authToken) {
         var request = buildRequest("put", path, body, authToken);
-        System.out.println(sendRequest(request));
+        return sendRequest(request).body();
     }
 
-    public void get(String path, Object body, String authToken) {
+    public String get(String path, Object body, String authToken) {
         var request = buildRequest("get", path, body, authToken);
-        System.out.println(sendRequest(request));
+        return sendRequest(request).body();
     }
 
 
