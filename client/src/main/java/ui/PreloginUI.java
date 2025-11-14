@@ -22,8 +22,6 @@ public class PreloginUI {
     }
 
     public AuthData login(UserData userData) {
-        //http request
-        //Prompts the user to input login information. Calls the server login API to login the user. When successfully logged in, the client should transition to the Postlogin UI.
         String responce = serverFacade.post("session", userData, null);
         var serializer = new Gson();
         AuthData authData = serializer.fromJson(responce, AuthData.class);

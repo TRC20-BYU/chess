@@ -1,5 +1,6 @@
 import datamodel.AuthData;
 import datamodel.UserData;
+import serverfacade.ServerError;
 import serverfacade.ServerFacade;
 import ui.PostloginUI;
 import ui.PreloginUI;
@@ -27,84 +28,90 @@ public class Main {
             Scanner scanner = new Scanner(System.in);
             String line = scanner.nextLine();
             String[] params = line.split(" ");
-            if (!loggedIn) {
-                if (Objects.equals(params[0], "help")) {
-                    if (params.length != 1) {
-                        System.out.println("Error: incorrect number of arguments");
-                    } else {
-                        preloginUI.help();
-                    }
-                }
-                if (Objects.equals(params[0], "login")) {
-                    if (params.length != 3) {
-                        System.out.println("Error: incorrect number of arguments");
-                    } else {
-                        UserData userData = new UserData(params[1], params[2], null);
-                        AuthData authData = preloginUI.login(userData);
-                        authToken = authData.authToken();
-                        user = authData.username();
-                        loggedIn = true;
-                    }
-                }
-                if (Objects.equals(params[0], "register")) {
-                    if (params.length != 4) {
-                        System.out.println("Error: incorrect number of arguments");
-                    } else {
-                        UserData userData = new UserData(params[1], params[2], params[3]);
-                        if (preloginUI.register(userData)) {
-                            user = params[1];
-                            loggedIn = true;
-                        }
-                    }
-                }
-            } else {
-                if (Objects.equals(params[0], "help")) {
-                    if (params.length != 1) {
-                        System.out.println("Error: incorrect number of arguments");
-                    } else {
-                        postloginUI.help();
-                    }
-                }
-                if (Objects.equals(params[0], "logout")) {
-                    if (params.length != 1) {
-                        System.out.println("Error: incorrect number of arguments");
-                    } else {
-                        postloginUI.logout(authToken);
-                        loggedIn = false;
-                    }
-                }
-                if (Objects.equals(params[0], "create")) {
-                    if (params.length != 2) {
-                        System.out.println("Error: incorrect number of arguments");
-                    } else {
-                        postloginUI.createGame(authToken, params[1]);
-                    }
-                }
-                if (Objects.equals(params[0], "list")) {
-                    if (params.length != 1) {
-                        System.out.println("Error: incorrect number of arguments");
-                    } else {
-                        postloginUI.listGame(authToken);
-                    }
-                }
-                if (Objects.equals(params[0], "join")) {
-                    if (params.length != 3) {
-                        System.out.println("Error: incorrect number of arguments");
-                    } else {
-                        if (Objects.equals(params[2], "WHITE") | Objects.equals(params[2], "BLACK")) {
-                            postloginUI.joinGame(authToken, params[1], params[2]);
+            try {
+                if (!loggedIn) {
+                    if (Objects.equals(params[0], "help")) {
+                        if (params.length != 1) {
+                            System.out.println("Error: incorrect number of arguments");
                         } else {
-                            System.out.println("The colors are WHITE and BLACK");
+                            preloginUI.help();
+                        }
+                    }
+                    if (Objects.equals(params[0], "login")) {
+                        if (params.length != 3) {
+                            System.out.println("Error: incorrect number of arguments");
+                        } else {
+                            UserData userData = new UserData(params[1], params[2], null);
+                            AuthData authData = preloginUI.login(userData);
+                            if (authData != null) {
+                                authToken = authData.authToken();
+                                user = authData.username();
+                                loggedIn = true;
+                            }
+                        }
+                    }
+                    if (Objects.equals(params[0], "register")) {
+                        if (params.length != 4) {
+                            System.out.println("Error: incorrect number of arguments");
+                        } else {
+                            UserData userData = new UserData(params[1], params[2], params[3]);
+                            if (preloginUI.register(userData)) {
+                                user = params[1];
+                                loggedIn = true;
+                            }
+                        }
+                    }
+                } else {
+                    if (Objects.equals(params[0], "help")) {
+                        if (params.length != 1) {
+                            System.out.println("Error: incorrect number of arguments");
+                        } else {
+                            postloginUI.help();
+                        }
+                    }
+                    if (Objects.equals(params[0], "logout")) {
+                        if (params.length != 1) {
+                            System.out.println("Error: incorrect number of arguments");
+                        } else {
+                            postloginUI.logout(authToken);
+                            loggedIn = false;
+                        }
+                    }
+                    if (Objects.equals(params[0], "create")) {
+                        if (params.length != 2) {
+                            System.out.println("Error: incorrect number of arguments");
+                        } else {
+                            postloginUI.createGame(authToken, params[1]);
+                        }
+                    }
+                    if (Objects.equals(params[0], "list")) {
+                        if (params.length != 1) {
+                            System.out.println("Error: incorrect number of arguments");
+                        } else {
+                            postloginUI.listGame(authToken);
+                        }
+                    }
+                    if (Objects.equals(params[0], "join")) {
+                        if (params.length != 3) {
+                            System.out.println("Error: incorrect number of arguments");
+                        } else {
+                            if (Objects.equals(params[2], "WHITE") | Objects.equals(params[2], "BLACK")) {
+                                postloginUI.joinGame(authToken, params[1], params[2]);
+                            } else {
+                                System.out.println("The colors are WHITE and BLACK");
+                            }
+                        }
+                    }
+                    if (Objects.equals(params[0], "observe")) {
+                        if (params.length != 2) {
+                            System.out.println("Error: incorrect number of arguments");
+                        } else {
+                            postloginUI.observerGame();
                         }
                     }
                 }
-                if (Objects.equals(params[0], "observe")) {
-                    if (params.length != 2) {
-                        System.out.println("Error: incorrect number of arguments");
-                    } else {
-                        postloginUI.observerGame();
-                    }
-                }
+            } catch (ServerError serverError) {
+                System.out.println(serverError.getMessage());
             }
             if (Objects.equals(params[0], "quit")) {
                 if (params.length != 1) {
