@@ -49,7 +49,7 @@ public class PostloginUI {
         gameIds = new ArrayList<>();
         for (int i = 0; i < games.size(); i++) {
             gameIds.add(games.get(i).getGameID());
-            System.out.println(i + " " + games.get(i).getGameName());
+            System.out.println((i + 1) + " " + games.get(i).getGameName());
         }
     }
 
