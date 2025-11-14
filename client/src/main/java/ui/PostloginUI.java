@@ -73,11 +73,12 @@ public class PostloginUI {
         ChessGame chessGame = new ChessGame();
         ChessBoard board = chessGame.getBoard();
         String boardRep = board.toString();
-        String header = "  a b c d e f g h";
+
+        String header = EscapeSequences.SET_BG_COLOR_LIGHT_GREY + "  a b c d e f g h  " + EscapeSequences.SET_BG_COLOR_BLACK;
         String[] lines = boardRep.split("\\R");
         System.out.println(header);
         for (int i = 0; i < lines.length; i++) {
-            System.out.println(i + " " + lines[i] + i);
+            System.out.println(EscapeSequences.SET_BG_COLOR_LIGHT_GREY + (i + 1) + EscapeSequences.SET_BG_COLOR_BLACK + " " + lines[i] + EscapeSequences.SET_BG_COLOR_LIGHT_GREY + (i + 1) + EscapeSequences.SET_BG_COLOR_BLACK);
         }
 //        System.out.print(boardRep);
         System.out.println(header);
