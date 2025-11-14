@@ -16,7 +16,8 @@ public class Main {
     static String authToken = "";
 
     public static void main(String[] args) {
-        System.out.println(EscapeSequences.SET_TEXT_COLOR_BLUE + "Welcome ♕ 240 Chess Client ♕ " + EscapeSequences.SET_TEXT_COLOR_GREEN + "- Type Help for menu" + EscapeSequences.RESET_TEXT_COLOR);
+        System.out.println(EscapeSequences.SET_TEXT_COLOR_BLUE + "Welcome ♕ 240 Chess Client ♕ " +
+                EscapeSequences.SET_TEXT_COLOR_GREEN + "- Type Help for menu" + EscapeSequences.RESET_TEXT_COLOR);
         String commands = "help login register create list join observe logout quit";
         ServerFacade serverFacade = new ServerFacade("8080");
         PreloginUI preloginUI = new PreloginUI(serverFacade);
@@ -43,13 +44,15 @@ public class Main {
             }
             if (Objects.equals(params[0], "quit")) {
                 if (params.length != 1) {
-                    System.out.println(EscapeSequences.SET_TEXT_COLOR_RED + "Error: incorrect number of arguments" + EscapeSequences.RESET_TEXT_COLOR);
+                    System.out.println(EscapeSequences.SET_TEXT_COLOR_RED +
+                            "Error: incorrect number of arguments" + EscapeSequences.RESET_TEXT_COLOR);
                 } else {
                     break;
                 }
             }
             if (!commands.contains(params[0])) {
-                System.out.println(EscapeSequences.SET_TEXT_COLOR_RED + "Error: invalid command - help for valid commands" + EscapeSequences.RESET_TEXT_COLOR);
+                System.out.println(EscapeSequences.SET_TEXT_COLOR_RED +
+                        "Error: invalid command - help for valid commands" + EscapeSequences.RESET_TEXT_COLOR);
             }
 
         }
@@ -59,7 +62,8 @@ public class Main {
     private static void postLoginOptions(String[] params, PostloginUI postloginUI) {
         if (Objects.equals(params[0], "help")) {
             if (params.length != 1) {
-                System.out.println(EscapeSequences.SET_TEXT_COLOR_RED + "Error: incorrect number of arguments" + EscapeSequences.RESET_TEXT_COLOR);
+                System.out.println(EscapeSequences.SET_TEXT_COLOR_RED +
+                        "Error: incorrect number of arguments" + EscapeSequences.RESET_TEXT_COLOR);
             } else {
                 postloginUI.help();
             }

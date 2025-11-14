@@ -22,13 +22,17 @@ public class PostloginUI {
 
     public void help() {
         //Displays text informing the user what actions they can take.
-        System.out.println("    " + EscapeSequences.SET_TEXT_COLOR_GREEN + "create: " + EscapeSequences.SET_TEXT_COLOR_MAGENTA + "<name> " + EscapeSequences.SET_TEXT_COLOR_BLUE + "- creates a game");
+        System.out.println("    " + EscapeSequences.SET_TEXT_COLOR_GREEN + "create: " + EscapeSequences.SET_TEXT_COLOR_MAGENTA +
+                "<name> " + EscapeSequences.SET_TEXT_COLOR_BLUE + "- creates a game");
         System.out.println("    " + EscapeSequences.SET_TEXT_COLOR_GREEN + "list " + EscapeSequences.SET_TEXT_COLOR_BLUE + "- lists the games");
-        System.out.println("    " + EscapeSequences.SET_TEXT_COLOR_GREEN + "join:" + EscapeSequences.SET_TEXT_COLOR_MAGENTA + " <ID> [WHITE|BLack] " + EscapeSequences.SET_TEXT_COLOR_BLUE + "- joins the selected game");
-        System.out.println("    " + EscapeSequences.SET_TEXT_COLOR_GREEN + "Observe:" + EscapeSequences.SET_TEXT_COLOR_MAGENTA + " <ID> " + EscapeSequences.SET_TEXT_COLOR_BLUE + "- observes the selected game");
+        System.out.println("    " + EscapeSequences.SET_TEXT_COLOR_GREEN + "join:" + EscapeSequences.SET_TEXT_COLOR_MAGENTA +
+                " <ID> [WHITE|BLack] " + EscapeSequences.SET_TEXT_COLOR_BLUE + "- joins the selected game");
+        System.out.println("    " + EscapeSequences.SET_TEXT_COLOR_GREEN + "Observe:" + EscapeSequences.SET_TEXT_COLOR_MAGENTA +
+                " <ID> " + EscapeSequences.SET_TEXT_COLOR_BLUE + "- observes the selected game");
         System.out.println("    " + EscapeSequences.SET_TEXT_COLOR_GREEN + "logout " + EscapeSequences.SET_TEXT_COLOR_BLUE + "- logs out the account");
         System.out.println("    " + EscapeSequences.SET_TEXT_COLOR_GREEN + "quit " + EscapeSequences.SET_TEXT_COLOR_BLUE + "- quits the program");
-        System.out.println("    " + EscapeSequences.SET_TEXT_COLOR_GREEN + "help " + EscapeSequences.SET_TEXT_COLOR_BLUE + "- displays possible commands" + EscapeSequences.RESET_TEXT_COLOR);
+        System.out.println("    " + EscapeSequences.SET_TEXT_COLOR_GREEN + "help " + EscapeSequences.SET_TEXT_COLOR_BLUE
+                + "- displays possible commands" + EscapeSequences.RESET_TEXT_COLOR);
     }
 
     public void logout(String authToken) {
@@ -48,8 +52,8 @@ public class PostloginUI {
         List<GameData> games = mapped.games();
         gameIds = new ArrayList<>();
         for (int i = 0; i < games.size(); i++) {
-            gameIds.add(games.get(i).getGameID());
-            System.out.println((i + 1) + " " + games.get(i).getGameName());
+            gameIds.add(games.get(i).gameID());
+            System.out.println(EscapeSequences.SET_TEXT_COLOR_GREEN + (i + 1) + " " + EscapeSequences.SET_TEXT_COLOR_BLUE + games.get(i).gameName() + EscapeSequences.RESET_TEXT_COLOR);
         }
     }
 
