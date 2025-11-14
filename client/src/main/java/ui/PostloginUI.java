@@ -3,9 +3,9 @@ package ui;
 import chess.ChessBoard;
 import chess.ChessGame;
 import com.google.gson.Gson;
-import datamodel.GameData;
 import datamodel.GameList;
 import datamodel.JoinData;
+import datamodels.GameData;
 import serverfacade.ServerError;
 import serverfacade.ServerFacade;
 

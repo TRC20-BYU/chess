@@ -2,7 +2,7 @@ package server;
 
 import com.google.gson.Gson;
 import dataaccess.DBMemoryAccess;
-import datamodel.GameData;
+import datamodels.GameData;
 import datamodel.GameList;
 import datamodel.JoinData;
 import datamodel.UserData;
