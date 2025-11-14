@@ -98,6 +98,13 @@ public class Main {
                         }
                     }
                 }
+                if (Objects.equals(params[0], "observe")) {
+                    if (params.length != 2) {
+                        System.out.println("Error: incorrect number of arguments");
+                    } else {
+                        postloginUI.observerGame();
+                    }
+                }
             }
             if (Objects.equals(params[0], "quit")) {
                 if (params.length != 1) {

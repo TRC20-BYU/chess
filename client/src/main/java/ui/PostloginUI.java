@@ -59,25 +59,30 @@ public class PostloginUI {
         JoinData joinData = new JoinData(color, gameIds.get(Integer.parseInt(id)));
         var result = serverFacade.put("game", joinData, authToken);
         System.out.println("Game joined!!!");
-        printBoard();
+        String board = printBoard();
+        if (Objects.equals(color, "WHITE")) {
+            System.out.print(board);
+        } else {
+            System.out.print(flippedBoard(board));
+        }
     }
 
     public void observerGame() {
         // Allows the user to specify which game they want to observe. They should be able to enter the number of the desired game. Your client will need to keep track of which number corresponds to which game from the last time it listed the games. Additional functionality will be added in Phase 6.
-
+        String board = printBoard();
+        System.out.print(board);
     }
 
-    void printBoard() {
+    private String printBoard() {
         ChessGame chessGame = new ChessGame();
         ChessBoard board = chessGame.getBoard();
         String boardRep = board.toString();
-
-        String header = EscapeSequences.SET_BG_COLOR_LIGHT_GREY + "    a  b  c  d  e  f  g  h    " + EscapeSequences.SET_BG_COLOR_BLACK;
+        String boardString = "";
+        String header = EscapeSequences.SET_BG_COLOR_LIGHT_GREY + "    a  b  c  d  e  f  g  h    " + EscapeSequences.RESET_BG_COLOR;
         String[] lines = boardRep.split("\\R");
-        System.out.println(header);
+        boardString += header + "\n";
         for (int i = 0; i < lines.length; i++) {
-            System.out.print(EscapeSequences.SET_BG_COLOR_LIGHT_GREY + " " + (8 - i) + " " + EscapeSequences.SET_BG_COLOR_BLACK);
-
+            boardString += EscapeSequences.SET_BG_COLOR_LIGHT_GREY + " " + (8 - i) + " " + EscapeSequences.RESET_BG_COLOR;
             for (int l = 0; l < lines[i].length(); l++) {
                 String color = "";
                 if ((l + i) % 2 != 0) {
@@ -87,12 +92,12 @@ public class PostloginUI {
                 }
                 char symbol = lines[i].charAt(l);
                 String piece = chessPieces(String.valueOf(symbol));
-                System.out.print(color + " " + piece + " " + EscapeSequences.SET_BG_COLOR_BLACK);
+                boardString += color + " " + piece + " " + EscapeSequences.RESET_BG_COLOR;
             }
-            System.out.println(EscapeSequences.SET_BG_COLOR_LIGHT_GREY + " " + (8 - i) + " " + EscapeSequences.SET_BG_COLOR_BLACK);
+            boardString += EscapeSequences.SET_BG_COLOR_LIGHT_GREY + " " + (8 - i) + " " + EscapeSequences.RESET_BG_COLOR + "\n";
         }
-//        System.out.print(boardRep);
-        System.out.println(header);
+        boardString += header + "\n";
+        return boardString;
     }
 
     String chessPieces(String piece) {
@@ -104,6 +109,15 @@ public class PostloginUI {
         } else {
             return EscapeSequences.SET_TEXT_COLOR_BLUE + piece + EscapeSequences.RESET_TEXT_COLOR;
         }
+    }
+
+    private String flippedBoard(String board) {
+        String flipped = "";
+        String[] rows = board.split("\n");
+        for (int i = 0; i < rows.length; i++) {
+            flipped += rows[rows.length - 1 - i] + "\n";
+        }
+        return flipped;
     }
 
 }

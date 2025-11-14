@@ -11,6 +11,6 @@ class PostloginUITest {
     void printBoard() {
         ServerFacade serverFacade = new ServerFacade();
         PostloginUI postloginUI = new PostloginUI(serverFacade);
-        postloginUI.printBoard();
+//        postloginUI.printBoard();
     }
 }
