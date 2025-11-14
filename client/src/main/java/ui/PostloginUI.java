@@ -29,7 +29,8 @@ public class PostloginUI {
                 " <ID> [WHITE|BLack] " + EscapeSequences.SET_TEXT_COLOR_BLUE + "- joins the selected game");
         System.out.println("    " + EscapeSequences.SET_TEXT_COLOR_GREEN + "Observe:" + EscapeSequences.SET_TEXT_COLOR_MAGENTA +
                 " <ID> " + EscapeSequences.SET_TEXT_COLOR_BLUE + "- observes the selected game");
-        System.out.println("    " + EscapeSequences.SET_TEXT_COLOR_GREEN + "logout " + EscapeSequences.SET_TEXT_COLOR_BLUE + "- logs out the account");
+        System.out.println("    " + EscapeSequences.SET_TEXT_COLOR_GREEN + "logout " +
+                EscapeSequences.SET_TEXT_COLOR_BLUE + "- logs out the account");
         System.out.println("    " + EscapeSequences.SET_TEXT_COLOR_GREEN + "quit " + EscapeSequences.SET_TEXT_COLOR_BLUE + "- quits the program");
         System.out.println("    " + EscapeSequences.SET_TEXT_COLOR_GREEN + "help " + EscapeSequences.SET_TEXT_COLOR_BLUE
                 + "- displays possible commands" + EscapeSequences.RESET_TEXT_COLOR);
@@ -53,7 +54,8 @@ public class PostloginUI {
         gameIds = new ArrayList<>();
         for (int i = 0; i < games.size(); i++) {
             gameIds.add(games.get(i).gameID());
-            System.out.println(EscapeSequences.SET_TEXT_COLOR_GREEN + (i + 1) + " " + EscapeSequences.SET_TEXT_COLOR_BLUE + games.get(i).gameName() + EscapeSequences.RESET_TEXT_COLOR);
+            System.out.println(EscapeSequences.SET_TEXT_COLOR_GREEN + (i + 1) + " " +
+                    EscapeSequences.SET_TEXT_COLOR_BLUE + games.get(i).gameName() + EscapeSequences.RESET_TEXT_COLOR);
         }
     }
 
