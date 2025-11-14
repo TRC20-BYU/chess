@@ -17,7 +17,7 @@ public class Main {
 
     public static void main(String[] args) {
         System.out.println(EscapeSequences.SET_TEXT_COLOR_BLUE + "Welcome ♕ 240 Chess Client ♕ " +
-                EscapeSequences.SET_TEXT_COLOR_GREEN + "- Type Help for menu" + EscapeSequences.RESET_TEXT_COLOR);
+                EscapeSequences.SET_TEXT_COLOR_GREEN + "- Type Help for options" + EscapeSequences.RESET_TEXT_COLOR);
         String commands = "help login register create list join observe logout quit";
         ServerFacade serverFacade = new ServerFacade("8080");
         PreloginUI preloginUI = new PreloginUI(serverFacade);

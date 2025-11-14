@@ -55,7 +55,9 @@ public class PostloginUI {
         for (int i = 0; i < games.size(); i++) {
             gameIds.add(games.get(i).gameID());
             System.out.println(EscapeSequences.SET_TEXT_COLOR_GREEN + (i + 1) + " " +
-                    EscapeSequences.SET_TEXT_COLOR_BLUE + games.get(i).gameName() + EscapeSequences.RESET_TEXT_COLOR);
+                    EscapeSequences.SET_TEXT_COLOR_BLUE + games.get(i).gameName()
+                    + EscapeSequences.SET_TEXT_COLOR_YELLOW + " White player: " + games.get(i).whiteUsername() +
+                    EscapeSequences.SET_TEXT_COLOR_MAGENTA + " Black player: " + games.get(i).blackUsername() + EscapeSequences.RESET_TEXT_COLOR);
         }
     }
 
