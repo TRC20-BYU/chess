@@ -89,10 +89,10 @@ public class ServerFacade {
 
     private String errorHandling(int code) {
         return switch (code) {
-            case 400 -> "requestError";
-            case 401 -> "authError";
-            case 403 -> "takenError";
-            case 500 -> "serverError";
+            case 400 -> "There was a problem with your request";
+            case 401 -> "You are not authorized to do this yet";
+            case 403 -> "That spot was taken";
+            case 500 -> "The server had an error";
             default -> null;
         };
     }

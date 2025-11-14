@@ -56,7 +56,7 @@ public class PostloginUI {
 
     public void joinGame(String authToken, String id, String color) {
         // Allows the user to specify which game they want to join and what color they want to play. They should be able to enter the number of the desired game. Your client will need to keep track of which number corresponds to which game from the last time it listed the games. Calls the server join API to join the user to the game.
-        JoinData joinData = new JoinData(color, gameIds.get(Integer.parseInt(id)));
+        JoinData joinData = new JoinData(color, gameIds.get(Integer.parseInt(id) - 1));
         var result = serverFacade.put("game", joinData, authToken);
         System.out.println("Game joined!!!");
         String board = printBoard();

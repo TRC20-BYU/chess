@@ -10,7 +10,7 @@ import java.util.Scanner;
 
 public class Main {
     public static void main(String[] args) {
-        System.out.println("Welcome ♕ 240 Chess Client ♕");
+        System.out.println("Welcome ♕ 240 Chess Client ♕ - Type Help for menu");
         boolean loggedIn = false;
         String user = "";
         String authToken = "";
@@ -43,11 +43,9 @@ public class Main {
                         } else {
                             UserData userData = new UserData(params[1], params[2], null);
                             AuthData authData = preloginUI.login(userData);
-                            if (authData != null) {
-                                authToken = authData.authToken();
-                                user = authData.username();
-                                loggedIn = true;
-                            }
+                            authToken = authData.authToken();
+                            user = authData.username();
+                            loggedIn = true;
                         }
                     }
                     if (Objects.equals(params[0], "register")) {
@@ -55,10 +53,11 @@ public class Main {
                             System.out.println("Error: incorrect number of arguments");
                         } else {
                             UserData userData = new UserData(params[1], params[2], params[3]);
-                            if (preloginUI.register(userData)) {
-                                user = params[1];
-                                loggedIn = true;
-                            }
+                            AuthData authData = preloginUI.register(userData);
+                            authToken = authData.authToken();
+                            user = authData.username();
+                            loggedIn = true;
+                            
                         }
                     }
                 } else {
