@@ -2,7 +2,6 @@ package server;
 
 import com.google.gson.Gson;
 import dataaccess.DBMemoryAccess;
-import dataaccess.DataAccessException;
 import datamodel.GameData;
 import datamodel.GameList;
 import datamodel.JoinData;

@@ -29,8 +29,8 @@ public class Main {
             String[] params = line.split(" ");
             if (!loggedIn) {
                 if (Objects.equals(params[0], "help")) {
-                    if (params.length > 1) {
-                        System.out.println("Error: Too many arguments");
+                    if (params.length != 1) {
+                        System.out.println("Error: incorrect number of arguments");
                     } else {
                         preloginUI.help();
                     }
@@ -59,38 +59,49 @@ public class Main {
                 }
             } else {
                 if (Objects.equals(params[0], "help")) {
-                    if (params.length > 1) {
-                        System.out.println("Error: Too many arguments");
+                    if (params.length != 1) {
+                        System.out.println("Error: incorrect number of arguments");
                     } else {
                         postloginUI.help();
                     }
                 }
                 if (Objects.equals(params[0], "logout")) {
-                    if (params.length > 1) {
-                        System.out.println("Error: Too many arguments");
+                    if (params.length != 1) {
+                        System.out.println("Error: incorrect number of arguments");
                     } else {
                         postloginUI.logout(authToken);
                         loggedIn = false;
                     }
                 }
                 if (Objects.equals(params[0], "create")) {
-                    if (params.length > 2) {
-                        System.out.println("Error: Too many arguments");
+                    if (params.length != 2) {
+                        System.out.println("Error: incorrect number of arguments");
                     } else {
                         postloginUI.createGame(authToken, params[1]);
                     }
                 }
                 if (Objects.equals(params[0], "list")) {
-                    if (params.length > 2) {
-                        System.out.println("Error: Too many arguments");
+                    if (params.length != 2) {
+                        System.out.println("Error: incorrect number of arguments");
                     } else {
                         postloginUI.listGame(authToken);
                     }
                 }
+                if (Objects.equals(params[0], "join")) {
+                    if (params.length != 3) {
+                        System.out.println("Error: incorrect number of arguments");
+                    } else {
+                        if (Objects.equals(params[2], "WHITE") | Objects.equals(params[2], "BLACK")) {
+                            postloginUI.joinGame(authToken, params[1], params[2]);
+                        } else {
+                            System.out.println("The colors are WHITE and BLACK");
+                        }
+                    }
+                }
             }
             if (Objects.equals(params[0], "quit")) {
-                if (params.length > 1) {
-                    System.out.println("Error: Too many arguments");
+                if (params.length != 1) {
+                    System.out.println("Error: incorrect number of arguments");
                 } else {
                     break;
                 }
