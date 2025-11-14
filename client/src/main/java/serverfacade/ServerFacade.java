@@ -14,22 +14,55 @@ public class ServerFacade {
 
     public String post(String path, Object body, String authToken) {
         var request = buildRequest("post", path, body, authToken);
-        return sendRequest(request).body();
+        var result = sendRequest(request);
+        if (result != null) {
+            if (result.statusCode() != 200) {
+                String error = errorHandling(result.statusCode());
+                System.out.println(error);
+                return null;
+            }
+        }
+        return result.body();
     }
 
     public String delete(String path, Object body, String authToken) {
         var request = buildRequest("delete", path, body, authToken);
-        return sendRequest(request).body();
+        var result = sendRequest(request);
+        if (result != null) {
+            if (result.statusCode() != 200) {
+                String error = errorHandling(result.statusCode());
+                System.out.println(error);
+                return null;
+            }
+        }
+        return result.body();
+
     }
 
     public String put(String path, Object body, String authToken) {
         var request = buildRequest("put", path, body, authToken);
-        return sendRequest(request).body();
+        var result = sendRequest(request);
+        if (result != null) {
+            if (result.statusCode() != 200) {
+                String error = errorHandling(result.statusCode());
+                System.out.println(error);
+                return null;
+            }
+        }
+        return result.body();
     }
 
     public String get(String path, Object body, String authToken) {
         var request = buildRequest("get", path, body, authToken);
-        return sendRequest(request).body();
+        var result = sendRequest(request);
+        if (result != null) {
+            if (result.statusCode() != 200) {
+                String error = errorHandling(result.statusCode());
+                System.out.println(error);
+                return null;
+            }
+        }
+        return result.body();
     }
 
 
@@ -55,5 +88,15 @@ public class ServerFacade {
         } catch (IOException | InterruptedException e) {
             return null;
         }
+    }
+
+    private String errorHandling(int code) {
+        return switch (code) {
+            case 400 -> "requestError";
+            case 401 -> "authError";
+            case 403 -> "takenError";
+            case 500 -> "serverError";
+            default -> null;
+        };
     }
 }
