@@ -1,6 +1,6 @@
 package datamodel;
 
-import datamodels.GameData;
+import datamodel.GameData;
 
 import java.util.List;
 

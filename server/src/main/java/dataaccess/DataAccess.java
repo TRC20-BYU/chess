@@ -1,6 +1,6 @@
 package dataaccess;
 
-import datamodels.GameData;
+import datamodel.GameData;
 import datamodel.UserData;
 import server.ResponseException;
 

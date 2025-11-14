@@ -5,7 +5,7 @@ import chess.ChessGame;
 import com.google.gson.Gson;
 import datamodel.GameList;
 import datamodel.JoinData;
-import datamodels.GameData;
+import datamodel.GameData;
 import serverfacade.ServerError;
 import serverfacade.ServerFacade;
 

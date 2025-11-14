@@ -1,6 +1,6 @@
 package service;
 
-import datamodels.GameData;
+import datamodel.GameData;
 import dataaccess.DataAccess;
 import server.ResponseException;
 import server.Server;
