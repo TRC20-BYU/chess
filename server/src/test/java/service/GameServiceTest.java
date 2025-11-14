@@ -5,7 +5,7 @@ import datamodel.AuthData;
 import datamodel.UserData;
 import dataaccess.DataAccess;
 import dataaccess.MemoryDataAccess;
-import datamodels.GameData;
+import datamodel.GameData;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import server.ResponseException;
