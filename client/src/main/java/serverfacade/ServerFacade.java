@@ -55,8 +55,7 @@ public class ServerFacade {
         if (result != null) {
             if (result.statusCode() != 200) {
                 String error = errorHandling(result.statusCode());
-                System.out.println(error);
-                throw new ServerError("something broke");
+                throw new ServerError(error);
             }
         }
         return result.body();

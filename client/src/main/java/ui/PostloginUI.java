@@ -6,6 +6,7 @@ import com.google.gson.Gson;
 import datamodel.GameData;
 import datamodel.GameList;
 import datamodel.JoinData;
+import serverfacade.ServerError;
 import serverfacade.ServerFacade;
 
 import java.util.*;
@@ -21,22 +22,20 @@ public class PostloginUI {
 
     public void help() {
         //Displays text informing the user what actions they can take.
-        System.out.println("create: <name> - creates a game");
-        System.out.println("List - lists the games");
-        System.out.println("join: <ID> [WHITE|BLack] - joins the selected game");
-        System.out.println("Observe: <ID> - observes the selected game");
-        System.out.println("logout - logs out the account");
-        System.out.println("quit - quits the program");
-        System.out.println("help - displays possible commands");
+        System.out.println("    " + EscapeSequences.SET_TEXT_COLOR_GREEN + "create: " + EscapeSequences.SET_TEXT_COLOR_MAGENTA + "<name> " + EscapeSequences.SET_TEXT_COLOR_BLUE + "- creates a game");
+        System.out.println("    " + EscapeSequences.SET_TEXT_COLOR_GREEN + "list " + EscapeSequences.SET_TEXT_COLOR_BLUE + "- lists the games");
+        System.out.println("    " + EscapeSequences.SET_TEXT_COLOR_GREEN + "join:" + EscapeSequences.SET_TEXT_COLOR_MAGENTA + " <ID> [WHITE|BLack] " + EscapeSequences.SET_TEXT_COLOR_BLUE + "- joins the selected game");
+        System.out.println("    " + EscapeSequences.SET_TEXT_COLOR_GREEN + "Observe:" + EscapeSequences.SET_TEXT_COLOR_MAGENTA + " <ID> " + EscapeSequences.SET_TEXT_COLOR_BLUE + "- observes the selected game");
+        System.out.println("    " + EscapeSequences.SET_TEXT_COLOR_GREEN + "logout " + EscapeSequences.SET_TEXT_COLOR_BLUE + "- logs out the account");
+        System.out.println("    " + EscapeSequences.SET_TEXT_COLOR_GREEN + "quit " + EscapeSequences.SET_TEXT_COLOR_BLUE + "- quits the program");
+        System.out.println("    " + EscapeSequences.SET_TEXT_COLOR_GREEN + "help " + EscapeSequences.SET_TEXT_COLOR_BLUE + "- displays possible commands" + EscapeSequences.RESET_TEXT_COLOR);
     }
 
     public void logout(String authToken) {
-        //	Logs out the user. Calls the server logout API to logout the user. After logging out with the server, the client should transition to the Prelogin UI.
         serverFacade.delete("session", null, authToken);
     }
 
     public void createGame(String authToken, String name) {
-        // Allows the user to input a name for the new game. Calls the server create API to create the game. This does not join the player to the created game; it only creates the new game in the server.
         GameData gameData = new GameData(0, null, null, name);
         var result = serverFacade.post("game", gameData, authToken);
         System.out.println("Game created: " + name);
@@ -48,15 +47,20 @@ public class PostloginUI {
         var mapped = serializer.fromJson(result, GameList.class);
         List<GameData> games = mapped.games();
         gameIds = new ArrayList<>();
-        for (GameData game : games) {
-            gameIds.add(game.getGameID());
-            System.out.println(game.getGameID() + " " + game.getGameName());
+        for (int i = 0; i < games.size(); i++) {
+            gameIds.add(games.get(i).getGameID());
+            System.out.println(i + " " + games.get(i).getGameName());
         }
     }
 
     public void joinGame(String authToken, String id, String color) {
-        // Allows the user to specify which game they want to join and what color they want to play. They should be able to enter the number of the desired game. Your client will need to keep track of which number corresponds to which game from the last time it listed the games. Calls the server join API to join the user to the game.
-        JoinData joinData = new JoinData(color, gameIds.get(Integer.parseInt(id) - 1));
+        int idnum = 0;
+        try {
+            idnum = gameIds.get(Integer.parseInt(id) - 1);
+        } catch (Exception ex) {
+            throw new ServerError("Invalid ID use \"list\" to find valid IDs");
+        }
+        JoinData joinData = new JoinData(color, idnum);
         var result = serverFacade.put("game", joinData, authToken);
         System.out.println("Game joined!!!");
         String board = printBoard();
@@ -68,7 +72,6 @@ public class PostloginUI {
     }
 
     public void observerGame() {
-        // Allows the user to specify which game they want to observe. They should be able to enter the number of the desired game. Your client will need to keep track of which number corresponds to which game from the last time it listed the games. Additional functionality will be added in Phase 6.
         String board = printBoard();
         System.out.print(board);
     }

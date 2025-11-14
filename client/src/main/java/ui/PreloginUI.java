@@ -15,10 +15,10 @@ public class PreloginUI {
 
     public void help() {
         //Displays text informing the user what actions they can take.
-        System.out.println("Register: <username> <password> <email> - registers an account");
-        System.out.println("Login: <username> <password> - logs in an account");
-        System.out.println("quit - quits the program");
-        System.out.println("help - displays possible commands");
+        System.out.println("    " + EscapeSequences.SET_TEXT_COLOR_GREEN + "Register: " + EscapeSequences.SET_TEXT_COLOR_MAGENTA + " <username> <password> <email> " + EscapeSequences.SET_TEXT_COLOR_BLUE + "- registers an account");
+        System.out.println("    " + EscapeSequences.SET_TEXT_COLOR_GREEN + "Login: " + EscapeSequences.SET_TEXT_COLOR_MAGENTA + " <username> <password> " + EscapeSequences.SET_TEXT_COLOR_BLUE + "- logs in an account");
+        System.out.println("    " + EscapeSequences.SET_TEXT_COLOR_GREEN + "quit " + EscapeSequences.SET_TEXT_COLOR_BLUE + "- quits the program");
+        System.out.println("    " + EscapeSequences.SET_TEXT_COLOR_GREEN + "help " + EscapeSequences.SET_TEXT_COLOR_BLUE + "- displays possible commands" + EscapeSequences.RESET_TEXT_COLOR);
     }
 
     public AuthData login(UserData userData) {
