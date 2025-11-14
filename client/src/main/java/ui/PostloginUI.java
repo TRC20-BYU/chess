@@ -8,9 +8,7 @@ import datamodel.GameList;
 import datamodel.JoinData;
 import serverfacade.ServerFacade;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class PostloginUI {
 
@@ -74,15 +72,38 @@ public class PostloginUI {
         ChessBoard board = chessGame.getBoard();
         String boardRep = board.toString();
 
-        String header = EscapeSequences.SET_BG_COLOR_LIGHT_GREY + "  a b c d e f g h  " + EscapeSequences.SET_BG_COLOR_BLACK;
+        String header = EscapeSequences.SET_BG_COLOR_LIGHT_GREY + "    a  b  c  d  e  f  g  h    " + EscapeSequences.SET_BG_COLOR_BLACK;
         String[] lines = boardRep.split("\\R");
         System.out.println(header);
         for (int i = 0; i < lines.length; i++) {
-            System.out.println(EscapeSequences.SET_BG_COLOR_LIGHT_GREY + (i + 1) + EscapeSequences.SET_BG_COLOR_BLACK + " " + lines[i] + EscapeSequences.SET_BG_COLOR_LIGHT_GREY + (i + 1) + EscapeSequences.SET_BG_COLOR_BLACK);
+            System.out.print(EscapeSequences.SET_BG_COLOR_LIGHT_GREY + " " + (8 - i) + " " + EscapeSequences.SET_BG_COLOR_BLACK);
+
+            for (int l = 0; l < lines[i].length(); l++) {
+                String color = "";
+                if ((l + i) % 2 != 0) {
+                    color = EscapeSequences.SET_BG_COLOR_BLACK;
+                } else {
+                    color = EscapeSequences.SET_BG_COLOR_WHITE;
+                }
+                char symbol = lines[i].charAt(l);
+                String piece = chessPieces(String.valueOf(symbol));
+                System.out.print(color + " " + piece + " " + EscapeSequences.SET_BG_COLOR_BLACK);
+            }
+            System.out.println(EscapeSequences.SET_BG_COLOR_LIGHT_GREY + " " + (8 - i) + " " + EscapeSequences.SET_BG_COLOR_BLACK);
         }
 //        System.out.print(boardRep);
         System.out.println(header);
+    }
 
+    String chessPieces(String piece) {
+        if (Objects.equals(piece, ".")) {
+            return " ";
+        }
+        if (Objects.equals(piece, piece.toLowerCase())) {
+            return EscapeSequences.SET_TEXT_COLOR_RED + piece + EscapeSequences.RESET_TEXT_COLOR;
+        } else {
+            return EscapeSequences.SET_TEXT_COLOR_BLUE + piece + EscapeSequences.RESET_TEXT_COLOR;
+        }
     }
 
 }

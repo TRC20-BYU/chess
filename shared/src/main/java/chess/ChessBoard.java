@@ -178,7 +178,7 @@ public class ChessBoard {
         for (int x = board.length - 1; x >= 0; x--) {
             for (int y = 0; y < board[x].length; y++) {
                 ChessPiece piece = board[x][y];
-                boardState += String.format("%s ", piece == null ? "." : piece.toString());
+                boardState += String.format("%s", piece == null ? "." : piece.toString());
             }
             boardState += "\n";
         }
