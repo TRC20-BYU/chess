@@ -37,23 +37,29 @@ public class PostloginUI {
         // Allows the user to input a name for the new game. Calls the server create API to create the game. This does not join the player to the created game; it only creates the new game in the server.
         GameData gameData = new GameData(0, null, null, name);
         var serializer = new Gson();
-        var seralized = serializer.toJson(gameData);
-        var result = serverFacade.post("game", seralized, authToken);
+        var result = serverFacade.post("game", gameData, authToken);
         var mapped = serializer.fromJson(result, Map.class);
-        gameIds.add((int) mapped.get("gameID"));
+        int id = ((Number) mapped.get("gameID")).intValue();
+        gameIds.add(id);
     }
 
-    public void listGame() {
+    public void listGame(String authToken) {
         // Lists all the games that currently exist on the server. Calls the server list API to get all the game data, and displays the games in a numbered list, including the game name and players (not observers) in the game. The numbering for the list should be independent of the game IDs and should start at 1.
+//        var result = serverFacade.get("game", null, authToken);
+//        var serializer = new Gson();
+//        var mapped = serializer.fromJson(result, Map.class);
+//        List<GameData> games = (List<GameData>) mapped.get("games");
+
     }
 
     public void playGame() {
         // Allows the user to specify which game they want to join and what color they want to play. They should be able to enter the number of the desired game. Your client will need to keep track of which number corresponds to which game from the last time it listed the games. Calls the server join API to join the user to the game.
+
     }
 
     public void observerGame() {
         // Allows the user to specify which game they want to observe. They should be able to enter the number of the desired game. Your client will need to keep track of which number corresponds to which game from the last time it listed the games. Additional functionality will be added in Phase 6.
-        
+
     }
 
 }
