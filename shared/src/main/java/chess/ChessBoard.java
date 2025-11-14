@@ -19,7 +19,7 @@ public class ChessBoard {
     private Collection<ChessPiece> enPassantables = new HashSet<>();
 
     public ChessBoard() {
-         board = new ChessPiece[8][8];
+        board = new ChessPiece[8][8];
     }
 
     /**
@@ -29,15 +29,15 @@ public class ChessBoard {
      * @param piece    the piece to add
      */
     public void addPiece(ChessPosition position, ChessPiece piece) {
-        this.board[position.getRow()-1][position.getColumn()-1] = piece;
-        if(piece != null) {
+        this.board[position.getRow() - 1][position.getColumn() - 1] = piece;
+        if (piece != null) {
             if (piece.getPieceType() == ChessPiece.PieceType.KING) {
-                if(position.getColumn() == 5) {
+                if (position.getColumn() == 5) {
                     piece.hasMoved = false;
                 }
             }
-            if(piece.getPieceType() == ChessPiece.PieceType.ROOK){
-                if(position.getColumn() == 1 || position.getColumn() == 8) {
+            if (piece.getPieceType() == ChessPiece.PieceType.ROOK) {
+                if (position.getColumn() == 1 || position.getColumn() == 8) {
                     piece.hasMoved = false;
                 }
             }
@@ -45,13 +45,13 @@ public class ChessBoard {
     }
 
     public void addDelete(ChessPosition start, ChessPosition end, ChessPiece piece, boolean hypothetical) {
-        this.board[end.getRow()-1][end.getColumn()-1] = piece;
-        this.board[start.getRow()-1][start.getColumn()-1] = null;
-        if(piece != null) {
+        this.board[end.getRow() - 1][end.getColumn() - 1] = piece;
+        this.board[start.getRow() - 1][start.getColumn() - 1] = null;
+        if (piece != null) {
             if (piece.getPieceType() == ChessPiece.PieceType.KING || piece.getPieceType() == ChessPiece.PieceType.ROOK) {
-               if(!hypothetical) {
-                   piece.hasMoved = true;
-               }
+                if (!hypothetical) {
+                    piece.hasMoved = true;
+                }
             }
         }
     }
@@ -64,52 +64,50 @@ public class ChessBoard {
      * position
      */
     public ChessPiece getPiece(ChessPosition position) {
-        return this.board[position.getRow()-1][position.getColumn()-1];
+        return this.board[position.getRow() - 1][position.getColumn() - 1];
     }
 
-    public void movePiece(ChessPosition start, ChessPosition end, ChessPiece piece, boolean hypothetical)
-    {
+    public void movePiece(ChessPosition start, ChessPosition end, ChessPiece piece, boolean hypothetical) {
         Collection<ChessPiece> remover = new HashSet<>();
-        for(ChessPiece pawn : enPassantables){
-            if(pawn.getTeamColor() == piece.getTeamColor()){
+        for (ChessPiece pawn : enPassantables) {
+            if (pawn.getTeamColor() == piece.getTeamColor()) {
                 pawn.hasMoved = false;
                 remover.add(pawn);
             }
         }
-        for(ChessPiece pawn : remover){
-                enPassantables.remove(pawn);
+        for (ChessPiece pawn : remover) {
+            enPassantables.remove(pawn);
         }
-        addDelete(start,end,piece, hypothetical);
-        if(piece.getPieceType() == ChessPiece.PieceType.PAWN && abs(start.getColumn()-end.getColumn()) > 0) {
-            addPiece(new ChessPosition(start.getRow(), end.getColumn()),null);
+        addDelete(start, end, piece, hypothetical);
+        if (piece.getPieceType() == ChessPiece.PieceType.PAWN && abs(start.getColumn() - end.getColumn()) > 0) {
+            addPiece(new ChessPosition(start.getRow(), end.getColumn()), null);
         }
-        if(piece.getPieceType() == ChessPiece.PieceType.PAWN && abs(start.getRow()-end.getRow()) > 1) {
+        if (piece.getPieceType() == ChessPiece.PieceType.PAWN && abs(start.getRow() - end.getRow()) > 1) {
             enPassantables.add(piece);
         }
-        if(piece.getPieceType() == ChessPiece.PieceType.KING){
-            if(abs(start.getColumn() - end.getColumn()) > 1){
-                if(start.getColumn() - end.getColumn() > 0){
-                    ChessPosition startPos = new ChessPosition( start.getRow(),1);
-                    ChessPosition endPos = new ChessPosition(start.getRow(),4);
-                    movePiece(startPos,endPos,getPiece(startPos),hypothetical);
-                }
-                else{
-                    ChessPosition startPos = new ChessPosition(start.getRow(),8);
-                    ChessPosition endPos = new ChessPosition(start.getRow(),6);
-                    movePiece(startPos,endPos,getPiece(startPos),hypothetical);
+        if (piece.getPieceType() == ChessPiece.PieceType.KING) {
+            if (abs(start.getColumn() - end.getColumn()) > 1) {
+                if (start.getColumn() - end.getColumn() > 0) {
+                    ChessPosition startPos = new ChessPosition(start.getRow(), 1);
+                    ChessPosition endPos = new ChessPosition(start.getRow(), 4);
+                    movePiece(startPos, endPos, getPiece(startPos), hypothetical);
+                } else {
+                    ChessPosition startPos = new ChessPosition(start.getRow(), 8);
+                    ChessPosition endPos = new ChessPosition(start.getRow(), 6);
+                    movePiece(startPos, endPos, getPiece(startPos), hypothetical);
                 }
             }
         }
     }
 
-    boolean checkEnPassantable(ChessPiece piece){
+    boolean checkEnPassantable(ChessPiece piece) {
         return enPassantables.contains(piece);
     }
 
 
-    public ChessPiece[][] getBoard(){
+    public ChessPiece[][] getBoard() {
         ChessPiece[][] boardCopy = new ChessPiece[8][8];
-        for(int x =0; x< board.length; x++){
+        for (int x = 0; x < board.length; x++) {
             boardCopy[x] = board[x].clone();
         }
         return boardCopy;
@@ -117,7 +115,7 @@ public class ChessBoard {
 
     public void setBoard(ChessPiece[][] board) {
         ChessPiece[][] boardCopy = new ChessPiece[8][8];
-        for(int x =0; x< board.length; x++){
+        for (int x = 0; x < board.length; x++) {
             boardCopy[x] = board[x].clone();
         }
         this.board = boardCopy;
@@ -138,10 +136,10 @@ public class ChessBoard {
         board[7][0] = new ChessPiece(ChessGame.TeamColor.BLACK, ChessPiece.PieceType.ROOK);
         board[0][7] = new ChessPiece(ChessGame.TeamColor.WHITE, ChessPiece.PieceType.ROOK);
         board[7][7] = new ChessPiece(ChessGame.TeamColor.BLACK, ChessPiece.PieceType.ROOK);
-        getPiece(new ChessPosition(1,1)).hasMoved = false;
-        getPiece(new ChessPosition(8,1)).hasMoved = false;
-        getPiece(new ChessPosition(1,8)).hasMoved = false;
-        getPiece(new ChessPosition(8,8)).hasMoved = false;
+        getPiece(new ChessPosition(1, 1)).hasMoved = false;
+        getPiece(new ChessPosition(8, 1)).hasMoved = false;
+        getPiece(new ChessPosition(1, 8)).hasMoved = false;
+        getPiece(new ChessPosition(8, 8)).hasMoved = false;
         board[0][1] = new ChessPiece(ChessGame.TeamColor.WHITE, ChessPiece.PieceType.KNIGHT);
         board[7][1] = new ChessPiece(ChessGame.TeamColor.BLACK, ChessPiece.PieceType.KNIGHT);
         board[0][6] = new ChessPiece(ChessGame.TeamColor.WHITE, ChessPiece.PieceType.KNIGHT);
@@ -154,8 +152,8 @@ public class ChessBoard {
         board[7][3] = new ChessPiece(ChessGame.TeamColor.BLACK, ChessPiece.PieceType.QUEEN);
         board[0][4] = new ChessPiece(ChessGame.TeamColor.WHITE, ChessPiece.PieceType.KING);
         board[7][4] = new ChessPiece(ChessGame.TeamColor.BLACK, ChessPiece.PieceType.KING);
-        getPiece(new ChessPosition(1,5)).hasMoved = false;
-        getPiece(new ChessPosition(8,5)).hasMoved = false;
+        getPiece(new ChessPosition(1, 5)).hasMoved = false;
+        getPiece(new ChessPosition(8, 5)).hasMoved = false;
 
     }
 
@@ -177,17 +175,15 @@ public class ChessBoard {
     @Override
     public String toString() {
         String boardState = "";
-        for(int x = board.length - 1; x >= 0; x--) {
-            for(int y = 0; y < board[x].length; y++){
+        for (int x = board.length - 1; x >= 0; x--) {
+            for (int y = 0; y < board[x].length; y++) {
                 ChessPiece piece = board[x][y];
-               boardState +=  String.format("%s", piece == null ? "." : piece.toString() );
+                boardState += String.format("%s ", piece == null ? "." : piece.toString());
             }
             boardState += "\n";
         }
         return boardState;
     }
-
-
 
 
 }

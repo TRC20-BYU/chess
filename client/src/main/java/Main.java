@@ -81,7 +81,7 @@ public class Main {
                     }
                 }
                 if (Objects.equals(params[0], "list")) {
-                    if (params.length != 2) {
+                    if (params.length != 1) {
                         System.out.println("Error: incorrect number of arguments");
                     } else {
                         postloginUI.listGame(authToken);

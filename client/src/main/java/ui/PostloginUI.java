@@ -1,5 +1,7 @@
 package ui;
 
+import chess.ChessBoard;
+import chess.ChessGame;
 import com.google.gson.Gson;
 import datamodel.GameData;
 import datamodel.GameList;
@@ -59,6 +61,7 @@ public class PostloginUI {
         JoinData joinData = new JoinData(color, gameIds.get(Integer.parseInt(id)));
         var result = serverFacade.put("game", joinData, authToken);
         System.out.println("Game joined!!!");
+        printBoard();
     }
 
     public void observerGame() {
@@ -67,6 +70,17 @@ public class PostloginUI {
     }
 
     void printBoard() {
+        ChessGame chessGame = new ChessGame();
+        ChessBoard board = chessGame.getBoard();
+        String boardRep = board.toString();
+        String header = "  a b c d e f g h";
+        String[] lines = boardRep.split("\\R");
+        System.out.println(header);
+        for (int i = 0; i < lines.length; i++) {
+            System.out.println(i + " " + lines[i] + i);
+        }
+//        System.out.print(boardRep);
+        System.out.println(header);
 
     }
 
