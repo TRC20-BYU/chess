@@ -71,11 +71,13 @@ public class PostloginUI {
         JoinData joinData = new JoinData(color, idnum);
         serverFacade.put("game", joinData, authToken);
         System.out.println("Game joined!!!");
-        String board = printBoard();
+        String board;
         if (Objects.equals(color, "WHITE")) {
+            board = printBoard();
             System.out.print(board);
         } else {
-            System.out.print(flippedBoard(board));
+            board = rotateboard();
+            System.out.print(board);
         }
     }
 
@@ -122,11 +124,43 @@ public class PostloginUI {
         }
     }
 
-    private String flippedBoard(String board) {
+    private String rotateboard() {
+        ChessGame chessGame = new ChessGame();
+        ChessBoard board = chessGame.getBoard();
+        String boardRep = flipBoard(board.toString());
+        String boardString = "";
+        String header = EscapeSequences.SET_BG_COLOR_LIGHT_GREY + "    h  g  f  e  d  c  b  a    " + EscapeSequences.RESET_BG_COLOR;
+        String[] lines = boardRep.split("\\R");
+        boardString += header + "\n";
+        for (int i = 0; i < lines.length; i++) {
+            boardString += EscapeSequences.SET_BG_COLOR_LIGHT_GREY + " " + (i + 1) + " " + EscapeSequences.RESET_BG_COLOR;
+            for (int l = 0; l < lines[i].length(); l++) {
+                String color = "";
+                if ((l + i) % 2 != 0) {
+                    color = EscapeSequences.SET_BG_COLOR_BLACK;
+                } else {
+                    color = EscapeSequences.SET_BG_COLOR_WHITE;
+                }
+                char symbol = lines[i].charAt(l);
+                String piece = chessPieces(String.valueOf(symbol));
+                boardString += color + " " + piece + " " + EscapeSequences.RESET_BG_COLOR;
+            }
+            boardString += EscapeSequences.SET_BG_COLOR_LIGHT_GREY + " " + (i + 1) + " " + EscapeSequences.RESET_BG_COLOR + "\n";
+        }
+        boardString += header + "\n";
+        return boardString;
+    }
+
+    private String flipBoard(String board) {
         String flipped = "";
         String[] rows = board.split("\n");
         for (int i = 0; i < rows.length; i++) {
-            flipped += rows[rows.length - 1 - i] + "\n";
+            String row = rows[rows.length - 1 - i];
+            String reversedString = "";
+            for (int k = row.length() - 1; k >= 0; k--) {
+                reversedString += row.charAt(k);
+            }
+            flipped += reversedString + "\n";
         }
         return flipped;
     }
