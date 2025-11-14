@@ -16,7 +16,7 @@ public class Main {
         String user = "";
         String authToken = "";
         String commands = "help login register create list join observe logout quit";
-        ServerFacade serverFacade = new ServerFacade();
+        ServerFacade serverFacade = new ServerFacade("8080");
         PreloginUI preloginUI = new PreloginUI(serverFacade);
         PostloginUI postloginUI = new PostloginUI(serverFacade);
 

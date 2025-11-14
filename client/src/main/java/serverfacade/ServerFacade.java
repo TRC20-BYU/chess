@@ -11,9 +11,14 @@ import java.net.http.HttpResponse;
 public class ServerFacade {
 
     private final HttpClient client = HttpClient.newHttpClient();
+    private String port;
+
+    public ServerFacade(String port) {
+        this.port = port;
+    }
 
     public String post(String path, Object body, String authToken) {
-        var request = buildRequest("post", path, body, authToken);
+        var request = buildRequest(port, "post", path, body, authToken);
         var result = sendRequest(request);
         if (result != null) {
             if (result.statusCode() != 200) {
@@ -25,7 +30,7 @@ public class ServerFacade {
     }
 
     public String delete(String path, Object body, String authToken) {
-        var request = buildRequest("delete", path, body, authToken);
+        var request = buildRequest(port, "delete", path, body, authToken);
         var result = sendRequest(request);
         if (result != null) {
             if (result.statusCode() != 200) {
@@ -38,7 +43,7 @@ public class ServerFacade {
     }
 
     public String put(String path, Object body, String authToken) {
-        var request = buildRequest("put", path, body, authToken);
+        var request = buildRequest(port, "put", path, body, authToken);
         var result = sendRequest(request);
         if (result != null) {
             if (result.statusCode() != 200) {
@@ -50,7 +55,7 @@ public class ServerFacade {
     }
 
     public String get(String path, Object body, String authToken) {
-        var request = buildRequest("get", path, body, authToken);
+        var request = buildRequest(port, "get", path, body, authToken);
         var result = sendRequest(request);
         if (result != null) {
             if (result.statusCode() != 200) {
@@ -62,8 +67,8 @@ public class ServerFacade {
     }
 
 
-    private HttpRequest buildRequest(String method, String path, Object body, String authToken) {
-        var request = HttpRequest.newBuilder().uri(URI.create("http://localhost:8080/" + path)).method(method, makeRequestBody(body));
+    private HttpRequest buildRequest(String port, String method, String path, Object body, String authToken) {
+        var request = HttpRequest.newBuilder().uri(URI.create("http://localhost:" + port + "/" + path)).method(method, makeRequestBody(body));
         if (authToken != null) {
             request.setHeader("authorization", authToken);
         }

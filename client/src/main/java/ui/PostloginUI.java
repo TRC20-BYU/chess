@@ -37,7 +37,7 @@ public class PostloginUI {
 
     public void createGame(String authToken, String name) {
         GameData gameData = new GameData(0, null, null, name);
-        var result = serverFacade.post("game", gameData, authToken);
+        serverFacade.post("game", gameData, authToken);
         System.out.println("Game created: " + name);
     }
 
@@ -61,7 +61,7 @@ public class PostloginUI {
             throw new ServerError("Invalid ID use \"list\" to find valid IDs");
         }
         JoinData joinData = new JoinData(color, idnum);
-        var result = serverFacade.put("game", joinData, authToken);
+        serverFacade.put("game", joinData, authToken);
         System.out.println("Game joined!!!");
         String board = printBoard();
         if (Objects.equals(color, "WHITE")) {
