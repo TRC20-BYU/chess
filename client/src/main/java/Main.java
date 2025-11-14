@@ -80,13 +80,13 @@ public class Main {
                         postloginUI.createGame(authToken, params[1]);
                     }
                 }
-//                if (Objects.equals(params[0], "create")) {
-//                    if (params.length > 2) {
-//                        System.out.println("Error: Too many arguments");
-//                    } else {
-//                        postloginUI.listGame(authToken);
-//                    }
-//                }
+                if (Objects.equals(params[0], "list")) {
+                    if (params.length > 2) {
+                        System.out.println("Error: Too many arguments");
+                    } else {
+                        postloginUI.listGame(authToken);
+                    }
+                }
             }
             if (Objects.equals(params[0], "quit")) {
                 if (params.length > 1) {

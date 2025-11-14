@@ -2,6 +2,7 @@ package ui;
 
 import com.google.gson.Gson;
 import datamodel.GameData;
+import datamodel.GameList;
 import serverfacade.ServerFacade;
 
 import java.util.ArrayList;
@@ -41,15 +42,17 @@ public class PostloginUI {
         var mapped = serializer.fromJson(result, Map.class);
         int id = ((Number) mapped.get("gameID")).intValue();
         gameIds.add(id);
+        System.out.println("Game created: " + name);
     }
 
     public void listGame(String authToken) {
-        // Lists all the games that currently exist on the server. Calls the server list API to get all the game data, and displays the games in a numbered list, including the game name and players (not observers) in the game. The numbering for the list should be independent of the game IDs and should start at 1.
-//        var result = serverFacade.get("game", null, authToken);
-//        var serializer = new Gson();
-//        var mapped = serializer.fromJson(result, Map.class);
-//        List<GameData> games = (List<GameData>) mapped.get("games");
-
+        var serializer = new Gson();
+        var result = serverFacade.get("game", null, authToken);
+        var mapped = serializer.fromJson(result, GameList.class);
+        List<GameData> games = mapped.games();
+        for (GameData game : games) {
+            System.out.println(game.getGameID() + " " + game.getGameName());
+        }
     }
 
     public void playGame() {

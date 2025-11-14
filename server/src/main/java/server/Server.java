@@ -4,16 +4,15 @@ import com.google.gson.Gson;
 import dataaccess.DBMemoryAccess;
 import dataaccess.DataAccessException;
 import datamodel.GameData;
+import datamodel.GameList;
 import datamodel.JoinData;
 import datamodel.UserData;
 import dataaccess.DataAccess;
-import dataaccess.MemoryDataAccess;
 import io.javalin.*;
 import io.javalin.http.Context;
 import service.GameService;
 import service.UserService;
 
-import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
@@ -116,8 +115,8 @@ public class Server {
     }
 
     private void listGames(Context ctx) throws ResponseException {
-        List<GameData> result = gameService.listGames(ctx.header("authorization"));
-        ctx.result(new Gson().toJson(Map.of("games", result)));
+        GameList gameList = new GameList(gameService.listGames(ctx.header("authorization")));
+        ctx.result(new Gson().toJson(gameList));
     }
 
     private void exceptionHandler(ResponseException ex, Context ctx) {
