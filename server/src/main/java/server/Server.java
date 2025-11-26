@@ -11,6 +11,7 @@ import io.javalin.*;
 import io.javalin.http.Context;
 import service.GameService;
 import service.UserService;
+import websocket.WebSocketHandler;
 
 import java.util.Map;
 import java.util.Objects;
@@ -21,6 +22,7 @@ public class Server {
     private final UserService userService;
     private final GameService gameService;
     private final DataAccess dataAccess;
+    private final WebSocketHandler webSocketHandler;
 
     public enum PlayerColor {
         WHITE,
@@ -34,7 +36,7 @@ public class Server {
         dataAccess = new DBMemoryAccess();
         userService = new UserService(dataAccess);
         gameService = new GameService(dataAccess);
-
+        webSocketHandler = new WebSocketHandler();
         // Register your endpoints and exception handlers here.
         server.delete("db", this::deleteDatabase);
         server.post("user", this::register);
@@ -44,6 +46,11 @@ public class Server {
         server.put("game", this::joinGame);
         server.get("game", this::listGames);
         server.exception(ResponseException.class, this::exceptionHandler);
+        server.ws("/ws", ws -> {
+            ws.onConnect(webSocketHandler);
+            ws.onMessage(webSocketHandler);
+            ws.onClose(webSocketHandler);
+        });
     }
 
 
