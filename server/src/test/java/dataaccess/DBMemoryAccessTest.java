@@ -1,5 +1,9 @@
 package dataaccess;
 
+import chess.ChessGame;
+import chess.ChessMove;
+import chess.ChessPosition;
+import chess.InvalidMoveException;
 import datamodel.GameData;
 import datamodel.UserData;
 
@@ -233,5 +237,32 @@ class DBMemoryAccessTest {
         int gameID = db.createGame("chess123");
         db.setBlack(gameID, "robert");
         Assertions.assertThrows(ResponseException.class, () -> db.setBlack(gameID, "joe"));
+    }
+
+    ///  update board doesn't have a sad path since except a server error since all other errors are handled before it
+    @Test
+    void updateBoard() throws ResponseException, InvalidMoveException {
+        DBMemoryAccess db = new DBMemoryAccess();
+        resetDB(db);
+        int gameID = db.createGame("chess123");
+        GameData result = db.getGame(gameID);
+        ChessGame chessGame = result.getChessGame();
+        chessGame.makeMove(new ChessMove(new ChessPosition(2, 1), new ChessPosition(3, 1), null));
+        db.updateGame(gameID, chessGame);
+        result = db.getGame(gameID);
+        Assertions.assertEquals(chessGame, result.getChessGame());
+    }
+
+    @Test
+    void updateBoardBad() throws ResponseException, InvalidMoveException {
+        DBMemoryAccess db = new DBMemoryAccess();
+        resetDB(db);
+        int gameID = db.createGame("chess123");
+        GameData result = db.getGame(gameID);
+        ChessGame chessGame = result.getChessGame();
+        chessGame.makeMove(new ChessMove(new ChessPosition(2, 1), new ChessPosition(3, 1), null));
+        db.updateGame(gameID, chessGame);
+        result = db.getGame(gameID);
+        Assertions.assertEquals(chessGame, result.getChessGame());
     }
 }

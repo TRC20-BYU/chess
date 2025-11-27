@@ -33,6 +33,10 @@ public class GameData {
         return whiteUsername;
     }
 
+    public ChessGame getChessGame() {
+        return chessGame;
+    }
+
     public void setBlackUsername(String username) {
         blackUsername = username;
     }
