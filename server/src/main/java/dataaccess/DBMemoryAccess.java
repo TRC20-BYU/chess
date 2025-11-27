@@ -254,6 +254,38 @@ public class DBMemoryAccess implements DataAccess {
         }
     }
 
+    @Override
+    public void updateGame(int gameId, ChessGame chessGame) throws ResponseException {
+        try (Connection conn = DatabaseManager.getConnection()) {
+            var statement = "SELECT game FROM games WHERE gameID=?";
+            try (PreparedStatement ps1 = conn.prepareStatement(statement)) {
+                ps1.setInt(1, gameId);
+                try (ResultSet rs = ps1.executeQuery()) {
+                    var serializer = new Gson();
+                    String serializedGame = serializer.toJson(chessGame);
+                    updateGameData(gameId, serializedGame, rs, conn);
+                }
+            }
+
+        } catch (SQLException | DataAccessException ex) {
+            throw new ResponseException(ResponseException.Code.serverError, ex.getMessage());
+        }
+    }
+
+    private static void updateGameData(int gameID, String serializedGame, ResultSet rs, Connection conn) throws SQLException, ResponseException {
+        String statement;
+        if (rs.next()) {
+            statement = "UPDATE games Set game=? WHERE gameID=?";
+            try (PreparedStatement ps = conn.prepareStatement(statement)) {
+                ps.setString(1, serializedGame);
+                ps.setInt(2, gameID);
+                ps.executeUpdate();
+            }
+        } else {
+            throw new ResponseException(ResponseException.Code.requestError);
+        }
+    }
+
     private static void updateBlackPlayer(int gameID, String username, ResultSet rs, Connection conn) throws SQLException, ResponseException {
         String statement;
         if (rs.next()) {

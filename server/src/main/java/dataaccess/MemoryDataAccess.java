@@ -1,6 +1,7 @@
 package dataaccess;
 
 
+import chess.ChessGame;
 import datamodel.UserData;
 import datamodel.GameData;
 
@@ -89,6 +90,13 @@ public class MemoryDataAccess implements DataAccess {
     public void setBlack(int gameID, String username) {
         GameData game = getGame(gameID);
         game.setBlackUsername(username);
+    }
+
+    @Override
+    public void updateGame(int gameId, ChessGame chessGame) {
+        GameData gameData = games.get(gameId);
+        GameData update = new GameData(gameId, gameData.getWhiteUsername(), gameData.getBlackUsername(), gameData.getGameName(), chessGame);
+        games.put(gameId, update);
     }
 
 }

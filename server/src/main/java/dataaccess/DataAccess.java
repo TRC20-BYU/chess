@@ -1,5 +1,6 @@
 package dataaccess;
 
+import chess.ChessGame;
 import datamodel.GameData;
 import datamodel.UserData;
 import server.ResponseException;
@@ -31,4 +32,6 @@ public interface DataAccess {
     public void setWhite(int gameID, String username) throws ResponseException;
 
     public void setBlack(int gameID, String username) throws ResponseException;
+
+    public void updateGame(int gameId, ChessGame chessGame) throws ResponseException;
 }
