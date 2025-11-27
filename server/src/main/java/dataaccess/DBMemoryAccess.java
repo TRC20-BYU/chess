@@ -1,5 +1,7 @@
 package dataaccess;
 
+import chess.ChessGame;
+import com.google.gson.Gson;
 import datamodel.GameData;
 import datamodel.UserData;
 import org.jetbrains.annotations.Nullable;
@@ -142,9 +144,12 @@ public class DBMemoryAccess implements DataAccess {
 
     @Override
     public int createGame(String gameName) throws ResponseException {
-        var statement = "INSERT INTO games (gameName) VALUES (?)";
+        var statement = "INSERT INTO games (gameName, game) VALUES (?, ?)";
         try {
-            return executeUpdate(statement, gameName);
+            var serializer = new Gson();
+            ChessGame chessGame = new ChessGame();
+            String game = serializer.toJson(chessGame);
+            return executeUpdate(statement, gameName, game);
         } catch (DataAccessException ex) {
             throw new ResponseException(ResponseException.Code.serverError, ex.getMessage());
         }
@@ -357,7 +362,10 @@ public class DBMemoryAccess implements DataAccess {
         String gameName = rs.getString("gameName");
         String whitePlayerName = rs.getString("whitePlayerName");
         String blackPlayerName = rs.getString("blackPlayerName");
-        return new GameData(gameID, whitePlayerName, blackPlayerName, gameName);
+        String game = rs.getString("game");
+        var serializer = new Gson();
+        ChessGame chessGame = serializer.fromJson(game, ChessGame.class);
+        return new GameData(gameID, whitePlayerName, blackPlayerName, gameName, chessGame);
     }
 
 

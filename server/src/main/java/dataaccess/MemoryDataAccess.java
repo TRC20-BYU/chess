@@ -62,7 +62,7 @@ public class MemoryDataAccess implements DataAccess {
     @Override
     public int createGame(String gameName) {
         gameNumbers++;
-        games.put(gameNumbers, new GameData(gameNumbers, null, null, gameName));
+        games.put(gameNumbers, new GameData(gameNumbers, null, null, gameName, null));
         return gameNumbers;
     }
 
