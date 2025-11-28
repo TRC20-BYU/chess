@@ -106,7 +106,8 @@ class GameServiceTest {
         userService.register(userData);
         AuthData res = userService.login(userData);
         int x = gameService.createGame(res.authToken(), "name");
-        ChessGame result = gameService.makeMove(x, chessMove);
+        gameService.joinGame(res.authToken(), Server.PlayerColor.WHITE, x);
+        ChessGame result = gameService.makeMove(res.authToken(), x, chessMove);
         ChessGame chessGame = new ChessGame();
         chessGame.makeMove(chessMove);
         Assertions.assertEquals(result, chessGame);

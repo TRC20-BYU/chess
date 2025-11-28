@@ -1,5 +1,6 @@
 package websocket;
 
+import chess.ChessMove;
 import com.google.gson.Gson;
 import datamodel.GameData;
 import io.javalin.websocket.*;
@@ -34,6 +35,9 @@ public class WebSocketHandler implements WsConnectHandler, WsMessageHandler, WsC
     private void moveHandler(String reqJson) {
         var serializer = new Gson();
         var moveReq = serializer.fromJson(reqJson, MakeMoveCommand.class);
+        String authToken = moveReq.authToken;
+        int GameId = moveReq.gameID;
+        ChessMove chessMove = moveReq.chessMove;
     }
 
     @Override

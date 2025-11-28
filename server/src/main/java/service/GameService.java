@@ -1,6 +1,6 @@
 package service;
 
-import chess.ChessBoard;
+
 import chess.ChessGame;
 import chess.ChessMove;
 import chess.InvalidMoveException;
@@ -10,6 +10,7 @@ import server.ResponseException;
 import server.Server;
 
 import java.util.List;
+import java.util.Objects;
 
 public class GameService {
 
@@ -48,14 +49,38 @@ public class GameService {
         throw new ResponseException(ResponseException.Code.authError);
     }
 
-    public ChessGame makeMove(int gameId, ChessMove chessMove) throws ResponseException {
-        ChessGame chessGame = dataAccess.getGame(gameId).getChessGame();
-        try {
-            chessGame.makeMove(chessMove);
-            dataAccess.updateGame(gameId, chessGame);
-        } catch (InvalidMoveException e) {
+    public ChessGame makeMove(String authToken, int gameId, ChessMove chessMove) throws ResponseException {
+        if (dataAccess.authenticate(authToken)) {
+            datamodel.GameData gameData = dataAccess.getGame(gameId);
+            ChessGame chessGame = gameData.getChessGame();
+            if (validateUserColor(authToken, gameData, chessMove)) {
+                try {
+                    chessGame.makeMove(chessMove);
+                    dataAccess.updateGame(gameId, chessGame);
+                } catch (InvalidMoveException e) {
 
+                }
+                return chessGame;
+            } else {
+                throw new ResponseException(ResponseException.Code.authError);
+            }
+        } else {
+            throw new ResponseException(ResponseException.Code.authError);
         }
-        return chessGame;
+    }
+
+    public boolean validateUserColor(String authToken, GameData gameData, ChessMove chessMove) throws ResponseException {
+        String username = dataAccess.getUsername(authToken).username();
+        ChessGame.TeamColor teamTurn = gameData.getChessGame().getTeamTurn();
+        ChessGame.TeamColor pieceColor = gameData.getChessGame().getBoard().getPiece(chessMove.getStartPosition()).getTeamColor();
+        if (teamTurn == pieceColor) {
+            if (teamTurn == ChessGame.TeamColor.WHITE) {
+                return Objects.equals(gameData.getWhiteUsername(), username);
+            } else {
+                return Objects.equals(gameData.getBlackUsername(), username);
+            }
+        } else {
+            throw new ResponseException(ResponseException.Code.authError);
+        }
     }
 }
