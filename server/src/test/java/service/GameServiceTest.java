@@ -1,5 +1,9 @@
 package service;
 
+import chess.ChessGame;
+import chess.ChessMove;
+import chess.ChessPosition;
+import chess.InvalidMoveException;
 import dataaccess.DBMemoryAccess;
 import datamodel.AuthData;
 import datamodel.UserData;
@@ -17,7 +21,6 @@ class GameServiceTest {
 
     @Test
     void createGameSuccess() throws ResponseException {
-
         DataAccess dataAccess = new DBMemoryAccess();
         dataAccess.deleteDatabase();
         GameService gameService = new GameService(dataAccess);
@@ -90,5 +93,22 @@ class GameServiceTest {
         dataAccess.deleteDatabase();
         GameService gameService = new GameService(dataAccess);
         Assertions.assertThrows(ResponseException.class, () -> gameService.listGames("cow"));
+    }
+
+    @Test
+    void makeMove() throws ResponseException, InvalidMoveException {
+        ChessMove chessMove = new ChessMove(new ChessPosition(2, 1), new ChessPosition(3, 1), null);
+        DataAccess dataAccess = new DBMemoryAccess();
+        dataAccess.deleteDatabase();
+        GameService gameService = new GameService(dataAccess);
+        UserService userService = new UserService(dataAccess);
+        UserData userData = new UserData("Joe", "password", "joe@joe");
+        userService.register(userData);
+        AuthData res = userService.login(userData);
+        int x = gameService.createGame(res.authToken(), "name");
+        ChessGame result = gameService.makeMove(x, chessMove);
+        ChessGame chessGame = new ChessGame();
+        chessGame.makeMove(chessMove);
+        Assertions.assertEquals(result, chessGame);
     }
 }

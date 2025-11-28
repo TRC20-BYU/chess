@@ -1,5 +1,9 @@
 package service;
 
+import chess.ChessBoard;
+import chess.ChessGame;
+import chess.ChessMove;
+import chess.InvalidMoveException;
 import datamodel.GameData;
 import dataaccess.DataAccess;
 import server.ResponseException;
@@ -42,5 +46,16 @@ public class GameService {
             return dataAccess.gamesList();
         }
         throw new ResponseException(ResponseException.Code.authError);
+    }
+
+    public ChessGame makeMove(int gameId, ChessMove chessMove) throws ResponseException {
+        ChessGame chessGame = dataAccess.getGame(gameId).getChessGame();
+        try {
+            chessGame.makeMove(chessMove);
+            dataAccess.updateGame(gameId, chessGame);
+        } catch (InvalidMoveException e) {
+
+        }
+        return chessGame;
     }
 }
