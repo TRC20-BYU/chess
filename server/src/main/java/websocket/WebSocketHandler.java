@@ -1,5 +1,7 @@
 package websocket;
 
+import com.google.gson.Gson;
+import datamodel.GameData;
 import io.javalin.websocket.*;
 import org.jetbrains.annotations.NotNull;
 
@@ -12,9 +14,26 @@ public class WebSocketHandler implements WsConnectHandler, WsMessageHandler, WsC
 
     @Override
     public void handleMessage(@NotNull WsMessageContext ctx) throws Exception {
-        System.out.println("Websocket message received");
-        System.out.println(ctx.message());
-        ctx.send("WebSocket response:" + ctx.message());
+        var serializer = new Gson();
+        String reqJson = ctx.message();
+        var req = serializer.fromJson(reqJson, WebSocketCommands.class);
+        if (req.commandType == WebSocketCommands.CommandType.MAKE_MOVE) {
+            moveHandler(reqJson);
+        }
+        if (req.commandType == WebSocketCommands.CommandType.CONNECT) {
+
+        }
+        if (req.commandType == WebSocketCommands.CommandType.LEAVE) {
+
+        }
+        if (req.commandType == WebSocketCommands.CommandType.RESIGN) {
+
+        }
+    }
+
+    private void moveHandler(String reqJson) {
+        var serializer = new Gson();
+        var moveReq = serializer.fromJson(reqJson, MakeMoveCommand.class);
     }
 
     @Override
