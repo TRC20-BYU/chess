@@ -6,8 +6,10 @@ import chess.ChessMove;
 import chess.InvalidMoveException;
 import datamodel.GameData;
 import dataaccess.DataAccess;
+import org.eclipse.jetty.websocket.api.Session;
 import server.ResponseException;
 import server.Server;
+import websocket.ConnectionManager;
 
 import java.util.List;
 import java.util.Objects;
@@ -15,10 +17,12 @@ import java.util.Objects;
 public class GameService {
 
     private final DataAccess dataAccess;
+    private final ConnectionManager connectionManager;
 
 
     public GameService(DataAccess dataAccess) {
         this.dataAccess = dataAccess;
+        this.connectionManager = new ConnectionManager();
     }
 
     public int createGame(String authToken, String gameName) throws ResponseException {
@@ -81,6 +85,30 @@ public class GameService {
             }
         } else {
             throw new ResponseException(ResponseException.Code.authError);
+        }
+    }
+
+    public void connectService(String authToken, Integer gameID, Session session) throws ResponseException {
+        String username = dataAccess.getUsername(authToken).username();
+        GameData gameData = dataAccess.getGame(gameID);
+        if (Objects.equals(gameData.whiteUsername(), username)) {
+            connectionManager.addWhite(gameID, session);
+        } else if (Objects.equals(gameData.blackUsername(), username)) {
+            connectionManager.addBlack(gameID, session);
+        } else {
+            connectionManager.addObserver(gameID, session);
+        }
+    }
+
+    public void disconnectService(String authToken, Integer gameID, Session session) throws ResponseException {
+        String username = dataAccess.getUsername(authToken).username();
+        GameData gameData = dataAccess.getGame(gameID);
+        if (Objects.equals(gameData.whiteUsername(), username)) {
+            connectionManager.removeWhite(gameID, session);
+        } else if (Objects.equals(gameData.blackUsername(), username)) {
+            connectionManager.removeBlack(gameID, session);
+        } else {
+            connectionManager.removeObserver(gameID, session);
         }
     }
 }

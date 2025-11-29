@@ -1,7 +1,7 @@
 package websocket;
 
 import datamodel.GameConnections;
-import jakarta.websocket.Session;
+import org.eclipse.jetty.websocket.api.Session;
 
 import java.util.concurrent.ConcurrentHashMap;
 

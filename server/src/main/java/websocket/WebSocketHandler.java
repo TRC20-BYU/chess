@@ -3,6 +3,7 @@ package websocket;
 import chess.ChessMove;
 import com.google.gson.Gson;
 import io.javalin.websocket.*;
+import org.eclipse.jetty.websocket.api.Session;
 import org.jetbrains.annotations.NotNull;
 import server.ResponseException;
 import service.GameService;
@@ -25,20 +26,27 @@ public class WebSocketHandler implements WsConnectHandler, WsMessageHandler, WsC
 
     @Override
     public void handleMessage(@NotNull WsMessageContext ctx) {
-        var serializer = new Gson();
-        String reqJson = ctx.message();
-        var req = serializer.fromJson(reqJson, UserGameCommand.class);
-        if (req.getCommandType() == UserGameCommand.CommandType.MAKE_MOVE) {
-            moveHandler(reqJson);
-        }
-        if (req.getCommandType() == UserGameCommand.CommandType.CONNECT) {
-
-        }
-        if (req.getCommandType() == UserGameCommand.CommandType.LEAVE) {
-
-        }
-        if (req.getCommandType() == UserGameCommand.CommandType.RESIGN) {
-
+        try {
+            var serializer = new Gson();
+            String reqJson = ctx.message();
+            var req = serializer.fromJson(reqJson, UserGameCommand.class);
+            if (req.getCommandType() == UserGameCommand.CommandType.MAKE_MOVE) {
+                moveHandler(reqJson);
+            }
+            if (req.getCommandType() == UserGameCommand.CommandType.CONNECT) {
+                Session session = ctx.session;
+                gameService.connectService(req.getAuthToken(), req.getGameID(), session);
+            }
+            if (req.getCommandType() == UserGameCommand.CommandType.LEAVE) {
+                Session session = ctx.session;
+                gameService.disconnectService(req.getAuthToken(), req.getGameID(), session);
+            }
+            if (req.getCommandType() == UserGameCommand.CommandType.RESIGN) {
+//            Session session = ctx.session;
+//            gameService.resignService(req.getAuthToken(), req.getGameID(),session);
+            }
+        } catch (Exception e) {
+            
         }
     }
 
