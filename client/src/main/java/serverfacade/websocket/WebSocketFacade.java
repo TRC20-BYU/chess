@@ -13,14 +13,22 @@ import java.net.URISyntaxException;
 
 public class WebSocketFacade extends Endpoint {
 
+    Session session;
+
     public void makeMove(String port, String authToken, int gameID, ChessMove chessMove) throws URISyntaxException, DeploymentException, IOException {
-        URI uri = new URI("ws://localhost:" + port + "/ws");
-        WebSocketContainer container = ContainerProvider.getWebSocketContainer();
-        Session session = container.connectToServer(this, uri);
         MakeMoveCommand command = new MakeMoveCommand(UserGameCommand.CommandType.MAKE_MOVE, authToken, gameID, chessMove);
         var serializer = new Gson();
         String commandSerialized = serializer.toJson(command);
         session.getBasicRemote().sendText(commandSerialized);
+    }
+
+    public void conncect(String port, String authToken, int gameID) throws URISyntaxException, DeploymentException, IOException {
+        URI uri = new URI("ws://localhost:" + port + "/ws");
+        WebSocketContainer container = ContainerProvider.getWebSocketContainer();
+        session = container.connectToServer(this, uri);
+        var serializer = new Gson();
+        String commandSerialized = serializer.toJson();
+        session.getBasicRemote().sendText("place holder");
     }
 
 
