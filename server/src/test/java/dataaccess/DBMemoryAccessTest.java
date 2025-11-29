@@ -208,7 +208,7 @@ class DBMemoryAccessTest {
         int gameID = db.createGame("chess123");
         db.setWhite(gameID, "joe");
         GameData result = db.getGame(gameID);
-        Assertions.assertEquals("joe", result.getWhiteUsername());
+        Assertions.assertEquals("joe", result.whiteUsername());
     }
 
     @Test
@@ -227,7 +227,7 @@ class DBMemoryAccessTest {
         int gameID = db.createGame("chess123");
         db.setBlack(gameID, "robert");
         GameData result = db.getGame(gameID);
-        Assertions.assertEquals("robert", result.getBlackUsername());
+        Assertions.assertEquals("robert", result.blackUsername());
     }
 
     @Test
@@ -246,11 +246,11 @@ class DBMemoryAccessTest {
         resetDB(db);
         int gameID = db.createGame("chess123");
         GameData result = db.getGame(gameID);
-        ChessGame chessGame = result.getChessGame();
+        ChessGame chessGame = result.chessGame();
         chessGame.makeMove(new ChessMove(new ChessPosition(2, 1), new ChessPosition(3, 1), null));
         db.updateGame(gameID, chessGame);
         result = db.getGame(gameID);
-        Assertions.assertEquals(chessGame, result.getChessGame());
+        Assertions.assertEquals(chessGame, result.chessGame());
     }
 
     @Test
@@ -259,10 +259,10 @@ class DBMemoryAccessTest {
         resetDB(db);
         int gameID = db.createGame("chess123");
         GameData result = db.getGame(gameID);
-        ChessGame chessGame = result.getChessGame();
+        ChessGame chessGame = result.chessGame();
         chessGame.makeMove(new ChessMove(new ChessPosition(2, 1), new ChessPosition(3, 1), null));
         db.updateGame(gameID, chessGame);
         result = db.getGame(gameID);
-        Assertions.assertEquals(chessGame, result.getChessGame());
+        Assertions.assertEquals(chessGame, result.chessGame());
     }
 }

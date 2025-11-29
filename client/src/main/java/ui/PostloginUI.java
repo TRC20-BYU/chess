@@ -41,7 +41,7 @@ public class PostloginUI {
     }
 
     public void createGame(String authToken, String name) {
-        GameData gameData = new GameData(0, null, null, name);
+        GameData gameData = new GameData(0, null, null, name, new ChessGame());
         serverFacade.post("game", gameData, authToken);
         System.out.println("Game created: " + name);
     }

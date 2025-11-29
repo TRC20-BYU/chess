@@ -2,48 +2,7 @@ package datamodel;
 
 import chess.ChessGame;
 
-public class GameData {
-    int gameID;
-    String whiteUsername;
-    String blackUsername;
-    String gameName;
-    ChessGame chessGame;
-
-    public GameData(int gameID, String whiteUsername, String blackUsername, String gameName, ChessGame chessGame) {
-        this.gameID = gameID;
-        this.whiteUsername = whiteUsername;
-        this.blackUsername = blackUsername;
-        this.gameName = gameName;
-        this.chessGame = chessGame;
-    }
-
-    public String getGameName() {
-        return gameName;
-    }
-
-    public int getGameID() {
-        return gameID;
-    }
-
-    public String getBlackUsername() {
-        return blackUsername;
-    }
-
-    public String getWhiteUsername() {
-        return whiteUsername;
-    }
-
-    public ChessGame getChessGame() {
-        return chessGame;
-    }
-
-    public void setBlackUsername(String username) {
-        blackUsername = username;
-    }
-
-    public void setWhiteUsername(String username) {
-        whiteUsername = username;
-    }
+public record GameData(int gameID, String whiteUsername, String blackUsername, String gameName, ChessGame chessGame) {
 
     @Override
     public String toString() {

@@ -36,7 +36,7 @@ public class Server {
         dataAccess = new DBMemoryAccess();
         userService = new UserService(dataAccess);
         gameService = new GameService(dataAccess);
-        webSocketHandler = new WebSocketHandler();
+        webSocketHandler = new WebSocketHandler(gameService);
         // Register your endpoints and exception handlers here.
         server.delete("db", this::deleteDatabase);
         server.post("user", this::register);
@@ -95,10 +95,10 @@ public class Server {
         var serializer = new Gson();
         String reqJson = ctx.body();
         var req = serializer.fromJson(reqJson, GameData.class);
-        if (req.getGameName() == null) {
+        if (req.gameName() == null) {
             throw new ResponseException(ResponseException.Code.requestError);
         } else {
-            int result = gameService.createGame(ctx.header("authorization"), req.getGameName());
+            int result = gameService.createGame(ctx.header("authorization"), req.gameName());
             ctx.result(new Gson().toJson(Map.of("gameID", result)));
         }
     }

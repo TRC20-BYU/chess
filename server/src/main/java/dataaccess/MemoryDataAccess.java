@@ -83,19 +83,21 @@ public class MemoryDataAccess implements DataAccess {
     @Override
     public void setWhite(int gameID, String username) {
         GameData game = getGame(gameID);
-        game.setWhiteUsername(username);
+        GameData updateGame = new GameData(gameID, username, game.blackUsername(), game.gameName(), game.chessGame());
+        games.put(gameID, updateGame);
     }
 
     @Override
     public void setBlack(int gameID, String username) {
         GameData game = getGame(gameID);
-        game.setBlackUsername(username);
+        GameData updateGame = new GameData(gameID, game.whiteUsername(), username, game.gameName(), game.chessGame());
+        games.put(gameID, updateGame);
     }
 
     @Override
     public void updateGame(int gameId, ChessGame chessGame) {
         GameData gameData = games.get(gameId);
-        GameData update = new GameData(gameId, gameData.getWhiteUsername(), gameData.getBlackUsername(), gameData.getGameName(), chessGame);
+        GameData update = new GameData(gameId, gameData.whiteUsername(), gameData.blackUsername(), gameData.gameName(), chessGame);
         games.put(gameId, update);
     }
 

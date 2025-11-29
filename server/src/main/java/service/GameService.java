@@ -52,7 +52,7 @@ public class GameService {
     public ChessGame makeMove(String authToken, int gameId, ChessMove chessMove) throws ResponseException {
         if (dataAccess.authenticate(authToken)) {
             datamodel.GameData gameData = dataAccess.getGame(gameId);
-            ChessGame chessGame = gameData.getChessGame();
+            ChessGame chessGame = gameData.chessGame();
             if (validateUserColor(authToken, gameData, chessMove)) {
                 try {
                     chessGame.makeMove(chessMove);
@@ -71,13 +71,13 @@ public class GameService {
 
     public boolean validateUserColor(String authToken, GameData gameData, ChessMove chessMove) throws ResponseException {
         String username = dataAccess.getUsername(authToken).username();
-        ChessGame.TeamColor teamTurn = gameData.getChessGame().getTeamTurn();
-        ChessGame.TeamColor pieceColor = gameData.getChessGame().getBoard().getPiece(chessMove.getStartPosition()).getTeamColor();
+        ChessGame.TeamColor teamTurn = gameData.chessGame().getTeamTurn();
+        ChessGame.TeamColor pieceColor = gameData.chessGame().getBoard().getPiece(chessMove.getStartPosition()).getTeamColor();
         if (teamTurn == pieceColor) {
             if (teamTurn == ChessGame.TeamColor.WHITE) {
-                return Objects.equals(gameData.getWhiteUsername(), username);
+                return Objects.equals(gameData.whiteUsername(), username);
             } else {
-                return Objects.equals(gameData.getBlackUsername(), username);
+                return Objects.equals(gameData.blackUsername(), username);
             }
         } else {
             throw new ResponseException(ResponseException.Code.authError);

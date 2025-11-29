@@ -2,32 +2,42 @@ package websocket;
 
 import chess.ChessMove;
 import com.google.gson.Gson;
-import datamodel.GameData;
 import io.javalin.websocket.*;
 import org.jetbrains.annotations.NotNull;
+import server.ResponseException;
+import service.GameService;
+import websocket.commands.MakeMoveCommand;
+import websocket.commands.UserGameCommand;
 
 public class WebSocketHandler implements WsConnectHandler, WsMessageHandler, WsCloseHandler {
+
+    GameService gameService;
+
+    public WebSocketHandler(GameService gameService) {
+        this.gameService = gameService;
+    }
+
     @Override
-    public void handleConnect(@NotNull WsConnectContext ctx) throws Exception {
+    public void handleConnect(@NotNull WsConnectContext ctx) {
         System.out.println("Websocket connected");
         ctx.enableAutomaticPings();
     }
 
     @Override
-    public void handleMessage(@NotNull WsMessageContext ctx) throws Exception {
+    public void handleMessage(@NotNull WsMessageContext ctx) {
         var serializer = new Gson();
         String reqJson = ctx.message();
-        var req = serializer.fromJson(reqJson, WebSocketCommands.class);
-        if (req.commandType == WebSocketCommands.CommandType.MAKE_MOVE) {
+        var req = serializer.fromJson(reqJson, UserGameCommand.class);
+        if (req.getCommandType() == UserGameCommand.CommandType.MAKE_MOVE) {
             moveHandler(reqJson);
         }
-        if (req.commandType == WebSocketCommands.CommandType.CONNECT) {
+        if (req.getCommandType() == UserGameCommand.CommandType.CONNECT) {
 
         }
-        if (req.commandType == WebSocketCommands.CommandType.LEAVE) {
+        if (req.getCommandType() == UserGameCommand.CommandType.LEAVE) {
 
         }
-        if (req.commandType == WebSocketCommands.CommandType.RESIGN) {
+        if (req.getCommandType() == UserGameCommand.CommandType.RESIGN) {
 
         }
     }
@@ -35,9 +45,14 @@ public class WebSocketHandler implements WsConnectHandler, WsMessageHandler, WsC
     private void moveHandler(String reqJson) {
         var serializer = new Gson();
         var moveReq = serializer.fromJson(reqJson, MakeMoveCommand.class);
-        String authToken = moveReq.authToken;
-        int GameId = moveReq.gameID;
-        ChessMove chessMove = moveReq.chessMove;
+        String authToken = moveReq.getAuthToken();
+        int gameId = moveReq.getGameID();
+        ChessMove chessMove = moveReq.getChessMove();
+        try {
+            gameService.makeMove(authToken, gameId, chessMove);
+        } catch (ResponseException e) {
+
+        }
     }
 
     @Override

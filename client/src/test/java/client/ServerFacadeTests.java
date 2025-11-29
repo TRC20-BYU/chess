@@ -1,5 +1,6 @@
 package client;
 
+import chess.ChessGame;
 import com.google.gson.Gson;
 import datamodel.*;
 import org.junit.jupiter.api.*;
@@ -92,13 +93,13 @@ public class ServerFacadeTests {
         String responce = serverFacade.post("session", userData, null);
         var serializer = new Gson();
         AuthData authData = serializer.fromJson(responce, AuthData.class);
-        GameData gameData = new GameData(0, null, null, "something");
+        GameData gameData = new GameData(0, null, null, "something", new ChessGame());
         Assertions.assertDoesNotThrow(() -> serverFacade.post("game", gameData, authData.authToken()));
     }
 
     @Test
     public void createBad() {
-        GameData gameData = new GameData(0, null, null, "something");
+        GameData gameData = new GameData(0, null, null, "something", new ChessGame());
         Assertions.assertThrows(ServerError.class, () -> serverFacade.post("game", gameData, null));
     }
 
@@ -109,7 +110,7 @@ public class ServerFacadeTests {
         String responce = serverFacade.post("session", userData, null);
         var serializer = new Gson();
         AuthData authData = serializer.fromJson(responce, AuthData.class);
-        GameData gameData = new GameData(0, null, null, "something");
+        GameData gameData = new GameData(0, null, null, "something", new ChessGame());
         serverFacade.post("game", gameData, authData.authToken());
         JoinData joinData = new JoinData("WHITE", 1);
         Assertions.assertDoesNotThrow(() -> serverFacade.put("game", joinData, authData.authToken()));
@@ -129,7 +130,7 @@ public class ServerFacadeTests {
         String responce = serverFacade.post("session", userData, null);
         var serializer = new Gson();
         AuthData authData = serializer.fromJson(responce, AuthData.class);
-        GameData gameData = new GameData(0, null, null, "something");
+        GameData gameData = new GameData(0, null, null, "something", new ChessGame());
         serverFacade.post("game", gameData, authData.authToken());
         var games = serverFacade.get("game", null, authData.authToken());
         var mapped = serializer.fromJson(games, GameList.class);
