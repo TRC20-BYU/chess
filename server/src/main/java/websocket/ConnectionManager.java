@@ -58,4 +58,8 @@ public class ConnectionManager {
             gameConnectins.put(gameID, new GameConnections());
         }
     }
+
+    public GameConnections gameConnections(int gameID) {
+        return gameConnectins.get(gameID);
+    }
 }

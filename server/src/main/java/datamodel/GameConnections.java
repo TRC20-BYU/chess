@@ -1,6 +1,6 @@
 package datamodel;
 
-import jakarta.websocket.Session;
+import org.eclipse.jetty.websocket.api.Session;
 
 import java.util.List;
 
@@ -31,6 +31,18 @@ public class GameConnections {
 
     public void removeObserver(Session session) {
         observers.remove(session);
+    }
+
+    public Session getWhitePlayer() {
+        return whitePlayer;
+    }
+
+    public Session getBlackPlayer() {
+        return blackPlayer;
+    }
+
+    public List<Session> getObservers() {
+        return observers;
     }
 
 
