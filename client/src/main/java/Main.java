@@ -94,7 +94,7 @@ public class Main {
     }
 
 
-    private static void postLoginOptions(String[] params, PostloginUI postloginUI) {
+    private static void postLoginOptions(String[] params, PostloginUI postloginUI, WebSocketUI webSocketUI) {
         if (Objects.equals(params[0], "help")) {
             if (params.length != 1) {
                 System.out.println(EscapeSequences.SET_TEXT_COLOR_RED +
@@ -141,6 +141,20 @@ public class Main {
                 System.out.println(EscapeSequences.SET_TEXT_COLOR_RED + "Error: incorrect number of arguments" + EscapeSequences.RESET_TEXT_COLOR);
             } else {
                 postloginUI.observerGame();
+            }
+        }
+        if (Objects.equals(params[0], "connect")) {
+            if (params.length != 2) {
+                System.out.println(EscapeSequences.SET_TEXT_COLOR_RED + "Error: incorrect number of arguments" + EscapeSequences.RESET_TEXT_COLOR);
+            } else {
+                try {
+                    int gameId = Integer.parseInt(params[1]);
+                    webSocketUI.connect(gameId, authToken);
+                } catch (NumberFormatException e) {
+                    System.out.println(EscapeSequences.SET_TEXT_COLOR_RED + "Error: invalid game ID" + EscapeSequences.RESET_TEXT_COLOR);
+                }
+
+
             }
         }
     }

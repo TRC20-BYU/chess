@@ -15,11 +15,15 @@ public class WebSocketFacade extends Endpoint {
 
     Session session;
 
-    public void makeMove(String port, String authToken, int gameID, ChessMove chessMove) throws URISyntaxException, DeploymentException, IOException {
-        MakeMoveCommand command = new MakeMoveCommand(UserGameCommand.CommandType.MAKE_MOVE, authToken, gameID, chessMove);
-        var serializer = new Gson();
-        String commandSerialized = serializer.toJson(command);
-        session.getBasicRemote().sendText(commandSerialized);
+    public void makeMove(String port, String authToken, int gameID, ChessMove chessMove) {
+        try {
+            MakeMoveCommand command = new MakeMoveCommand(UserGameCommand.CommandType.MAKE_MOVE, authToken, gameID, chessMove);
+            var serializer = new Gson();
+            String commandSerialized = serializer.toJson(command);
+            session.getBasicRemote().sendText(commandSerialized);
+        } catch (IOException e) {
+
+        }
     }
 
     public void connect(String port, String authToken, int gameID) {

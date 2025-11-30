@@ -6,8 +6,6 @@ import chess.ChessPiece;
 import chess.ChessPosition;
 import serverfacade.InvalidError;
 import serverfacade.websocket.WebSocketFacade;
-import websocket.commands.MakeMoveCommand;
-import websocket.commands.UserGameCommand;
 
 import java.util.Scanner;
 
@@ -27,9 +25,6 @@ public class WebSocketUI {
         webSocketFacade.connect(port, authToken, gameID);
     }
 
-    public void move(ChessMove chessMove, String authToken, int gameID) {
-        MakeMoveCommand makeMoveCommand = new MakeMoveCommand(UserGameCommand.CommandType.MAKE_MOVE, authToken, gameID, chessMove);
-    }
 
     public boolean checkForPromotion(ChessMove chessMove) {
         if (chessGame.getBoard().getPiece(chessMove.getStartPosition()).getPieceType() == ChessPiece.PieceType.PAWN) {
@@ -53,7 +48,7 @@ public class WebSocketUI {
             ChessPiece.PieceType promotion = getPromotion();
             chessMove = new ChessMove(pieceLocal, newPos, promotion);
         }
-        webSocketUI.move(chessMove, authToken, gameID);
+        webSocketFacade.makeMove(port, authToken, gameID, chessMove);
     }
 
     private static ChessPiece.PieceType getPromotion() {
