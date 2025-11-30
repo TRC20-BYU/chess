@@ -1,43 +1,58 @@
+import chess.ChessGame;
+import chess.ChessMove;
+import chess.ChessPiece;
+import chess.ChessPosition;
 import datamodel.AuthData;
 import datamodel.UserData;
+import serverfacade.InvalidError;
 import serverfacade.ServerError;
 import serverfacade.ServerFacade;
+import serverfacade.websocket.WebSocketFacade;
 import ui.EscapeSequences;
 import ui.PostloginUI;
 import ui.PreloginUI;
+import ui.WebSocketUI;
 
 import java.util.Objects;
 import java.util.Scanner;
 
+
 public class Main {
 
-    static boolean loggedIn = false;
+    static int loggedIn = 0;
     static String user = "";
     static String authToken = "";
+    static String port = "808";
+    static int gameID = 0;
+    static ChessGame.TeamColor teamColor = ChessGame.TeamColor.WHITE;
 
     public static void main(String[] args) {
         System.out.println(EscapeSequences.SET_TEXT_COLOR_BLUE + "Welcome ♕ 240 Chess Client ♕ " +
                 EscapeSequences.SET_TEXT_COLOR_GREEN + "- Type Help for options" + EscapeSequences.RESET_TEXT_COLOR);
         String commands = "help login register create list join observe logout quit";
-        ServerFacade serverFacade = new ServerFacade("8080");
+        ServerFacade serverFacade = new ServerFacade(port);
         PreloginUI preloginUI = new PreloginUI(serverFacade);
         PostloginUI postloginUI = new PostloginUI(serverFacade);
+        WebSocketFacade webSocketFacade = new WebSocketFacade();
+        WebSocketUI webSocketUI = new WebSocketUI(webSocketFacade, port);
 
 
         while (true) {
-            if (!loggedIn) {
+            if (loggedIn == 0) {
                 System.out.print("not logged in: ");
-            } else {
+            } else if (loggedIn == 1) {
                 System.out.print("logged in as " + user + ": ");
             }
             Scanner scanner = new Scanner(System.in);
             String line = scanner.nextLine();
             String[] params = line.split(" ");
             try {
-                if (!loggedIn) {
+                if (loggedIn == 0) {
                     preLoginOptions(params, preloginUI);
-                } else {
+                } else if (loggedIn == 1) {
                     postLoginOptions(params, postloginUI);
+                } else {
+                    webSocketOptions(params, webSocketUI);
                 }
             } catch (ServerError serverError) {
                 System.out.println(EscapeSequences.SET_TEXT_COLOR_RED + serverError.getMessage() + EscapeSequences.RESET_TEXT_COLOR);
@@ -59,6 +74,26 @@ public class Main {
         System.out.println("Good bye");
     }
 
+    private static void webSocketOptions(String[] params, WebSocketUI webSocketUI) {
+        if (Objects.equals(params[0], "move")) {
+            if (params.length != 1) {
+                System.out.println(EscapeSequences.SET_TEXT_COLOR_RED +
+                        "Error: incorrect number of arguments" + EscapeSequences.RESET_TEXT_COLOR);
+            } else {
+                webSocketUI.getChessMove(webSocketUI, authToken, gameID);
+            }
+        }
+        if (Objects.equals(params[0], "leave")) {
+            if (params.length != 1) {
+                System.out.println(EscapeSequences.SET_TEXT_COLOR_RED +
+                        "Error: incorrect number of arguments" + EscapeSequences.RESET_TEXT_COLOR);
+            } else {
+                webSocketUI.leave();
+            }
+        }
+    }
+
+
     private static void postLoginOptions(String[] params, PostloginUI postloginUI) {
         if (Objects.equals(params[0], "help")) {
             if (params.length != 1) {
@@ -73,7 +108,7 @@ public class Main {
                 System.out.println(EscapeSequences.SET_TEXT_COLOR_RED + "Error: incorrect number of arguments" + EscapeSequences.RESET_TEXT_COLOR);
             } else {
                 postloginUI.logout(authToken);
-                loggedIn = false;
+                loggedIn = 0;
             }
         }
         if (Objects.equals(params[0], "create")) {
@@ -126,7 +161,7 @@ public class Main {
                 AuthData authData = preloginUI.login(userData);
                 authToken = authData.authToken();
                 user = authData.username();
-                loggedIn = true;
+                loggedIn = 1;
             }
         }
         if (Objects.equals(params[0], "register")) {
@@ -137,7 +172,7 @@ public class Main {
                 AuthData authData = preloginUI.register(userData);
                 authToken = authData.authToken();
                 user = authData.username();
-                loggedIn = true;
+                loggedIn = 1;
 
             }
         }

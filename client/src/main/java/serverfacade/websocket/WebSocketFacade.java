@@ -22,13 +22,20 @@ public class WebSocketFacade extends Endpoint {
         session.getBasicRemote().sendText(commandSerialized);
     }
 
-    public void conncect(String port, String authToken, int gameID) throws URISyntaxException, DeploymentException, IOException {
-        URI uri = new URI("ws://localhost:" + port + "/ws");
-        WebSocketContainer container = ContainerProvider.getWebSocketContainer();
-        session = container.connectToServer(this, uri);
-        var serializer = new Gson();
-        String commandSerialized = serializer.toJson();
-        session.getBasicRemote().sendText("place holder");
+    public void connect(String port, String authToken, int gameID) {
+
+        URI uri = null;
+        try {
+            uri = new URI("ws://localhost:" + port + "/ws");
+            WebSocketContainer container = ContainerProvider.getWebSocketContainer();
+            session = container.connectToServer(this, uri);
+            UserGameCommand userGameCommand = new UserGameCommand(UserGameCommand.CommandType.CONNECT, authToken, gameID);
+            var serializer = new Gson();
+            String commandSerialized = serializer.toJson(userGameCommand);
+            session.getBasicRemote().sendText(commandSerialized);
+        } catch (URISyntaxException | IOException | DeploymentException e) {
+            throw new RuntimeException(e);
+        }
     }
 
 
