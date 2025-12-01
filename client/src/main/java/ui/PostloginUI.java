@@ -69,11 +69,11 @@ public class PostloginUI {
             throw new ServerError("Invalid ID use \"list\" to find valid IDs");
         }
         JoinData joinData = new JoinData(color, idnum);
-        serverFacade.put("game", joinData, authToken);
+        String result = serverFacade.put("game", joinData, authToken);
         System.out.println("Game joined!!!");
         String board;
         if (Objects.equals(color, "WHITE")) {
-            board = printBoard();
+            board = printBoard(new ChessGame());
             System.out.print(board);
         } else {
             board = rotateboard();
@@ -82,12 +82,11 @@ public class PostloginUI {
     }
 
     public void observerGame() {
-        String board = printBoard();
+        String board = printBoard(new ChessGame());
         System.out.print(board);
     }
 
-    private String printBoard() {
-        ChessGame chessGame = new ChessGame();
+    private String printBoard(ChessGame chessGame) {
         ChessBoard board = chessGame.getBoard();
         String boardRep = board.toString();
         String boardString = "";

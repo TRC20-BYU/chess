@@ -38,7 +38,18 @@ public class WebSocketFacade extends Endpoint {
             String commandSerialized = serializer.toJson(userGameCommand);
             session.getBasicRemote().sendText(commandSerialized);
         } catch (URISyntaxException | IOException | DeploymentException e) {
-            throw new RuntimeException(e);
+
+        }
+    }
+
+    public void leave(String authToken, int gameID) {
+        try {
+            UserGameCommand userGameCommand = new UserGameCommand(UserGameCommand.CommandType.LEAVE, authToken, gameID);
+            var serializer = new Gson();
+            String commandSerialized = serializer.toJson(userGameCommand);
+            session.getBasicRemote().sendText(commandSerialized);
+        } catch (IOException e) {
+
         }
     }
 

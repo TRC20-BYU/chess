@@ -92,4 +92,8 @@ public class WebSocketUI {
             return new ChessPosition(row, col);
         }
     }
+
+    public void leave(String authToken, int gameID) {
+        webSocketFacade.leave(authToken, gameID);
+    }
 }

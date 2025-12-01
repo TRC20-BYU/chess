@@ -43,13 +43,10 @@ class WebSocketFacadeTest {
 
     @Test
     void makeMove() {
-        try {
-            String authToken = createGame();
-            ChessMove chessMove = new ChessMove(new ChessPosition(2, 1), new ChessPosition(3, 1), null);
-            webSocketFacade.makeMove(portLabel, authToken, 1, chessMove);
-        } catch (DeploymentException | URISyntaxException | IOException e) {
-            throw new RuntimeException(e);
-        }
+        String authToken = createGame();
+        ChessMove chessMove = new ChessMove(new ChessPosition(2, 1), new ChessPosition(3, 1), null);
+        webSocketFacade.connect(portLabel, authToken, 1);
+        webSocketFacade.makeMove(portLabel, authToken, 1, chessMove);
     }
 
     String createGame() {

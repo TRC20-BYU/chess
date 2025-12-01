@@ -1,10 +1,5 @@
-import chess.ChessGame;
-import chess.ChessMove;
-import chess.ChessPiece;
-import chess.ChessPosition;
 import datamodel.AuthData;
 import datamodel.UserData;
-import serverfacade.InvalidError;
 import serverfacade.ServerError;
 import serverfacade.ServerFacade;
 import serverfacade.websocket.WebSocketFacade;
@@ -22,14 +17,13 @@ public class Main {
     static int loggedIn = 0;
     static String user = "";
     static String authToken = "";
-    static String port = "808";
+    static String port = "8080";
     static int gameID = 0;
-    static ChessGame.TeamColor teamColor = ChessGame.TeamColor.WHITE;
 
     public static void main(String[] args) {
         System.out.println(EscapeSequences.SET_TEXT_COLOR_BLUE + "Welcome ♕ 240 Chess Client ♕ " +
                 EscapeSequences.SET_TEXT_COLOR_GREEN + "- Type Help for options" + EscapeSequences.RESET_TEXT_COLOR);
-        String commands = "help login register create list join observe logout quit";
+        String commands = "help login register create list join observe logout quit connect move leave";
         ServerFacade serverFacade = new ServerFacade(port);
         PreloginUI preloginUI = new PreloginUI(serverFacade);
         PostloginUI postloginUI = new PostloginUI(serverFacade);
@@ -50,7 +44,7 @@ public class Main {
                 if (loggedIn == 0) {
                     preLoginOptions(params, preloginUI);
                 } else if (loggedIn == 1) {
-                    postLoginOptions(params, postloginUI);
+                    postLoginOptions(params, postloginUI, webSocketUI);
                 } else {
                     webSocketOptions(params, webSocketUI);
                 }
@@ -88,7 +82,7 @@ public class Main {
                 System.out.println(EscapeSequences.SET_TEXT_COLOR_RED +
                         "Error: incorrect number of arguments" + EscapeSequences.RESET_TEXT_COLOR);
             } else {
-                webSocketUI.leave();
+                webSocketUI.leave(authToken, gameID);
             }
         }
     }
@@ -149,12 +143,11 @@ public class Main {
             } else {
                 try {
                     int gameId = Integer.parseInt(params[1]);
+                    gameID = gameId;
                     webSocketUI.connect(gameId, authToken);
                 } catch (NumberFormatException e) {
                     System.out.println(EscapeSequences.SET_TEXT_COLOR_RED + "Error: invalid game ID" + EscapeSequences.RESET_TEXT_COLOR);
                 }
-
-
             }
         }
     }
