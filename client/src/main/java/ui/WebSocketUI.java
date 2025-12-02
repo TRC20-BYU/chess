@@ -14,6 +14,7 @@ public class WebSocketUI {
     WebSocketFacade webSocketFacade;
     ChessGame chessGame;
     String port;
+    PostloginUI postloginUI;
 
 
     public WebSocketUI(WebSocketFacade webSocketFacade, String port) {
@@ -21,8 +22,12 @@ public class WebSocketUI {
         this.port = port;
     }
 
+    public void setPostLoginUI(PostloginUI postloginUI) {
+        this.postloginUI = postloginUI;
+    }
+
     public void connect(int gameID, String authToken) {
-        webSocketFacade.connect(port, authToken, gameID);
+        webSocketFacade.connect(port, authToken, gameID, postloginUI);
     }
 
 
@@ -48,7 +53,7 @@ public class WebSocketUI {
             ChessPiece.PieceType promotion = getPromotion();
             chessMove = new ChessMove(pieceLocal, newPos, promotion);
         }
-        webSocketFacade.makeMove(port, authToken, gameID, chessMove);
+        webSocketFacade.makeMove(authToken, gameID, chessMove);
     }
 
     private static ChessPiece.PieceType getPromotion() {
@@ -96,4 +101,6 @@ public class WebSocketUI {
     public void leave(String authToken, int gameID) {
         webSocketFacade.leave(authToken, gameID);
     }
+
+
 }

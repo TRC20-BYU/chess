@@ -1,10 +1,16 @@
 package serverfacade.websocket;
 
+import chess.ChessGame;
 import chess.ChessMove;
 import com.google.gson.Gson;
 import jakarta.websocket.*;
+import ui.PostloginUI;
 import websocket.commands.MakeMoveCommand;
 import websocket.commands.UserGameCommand;
+import websocket.messages.ErrorMessage;
+import websocket.messages.LoadGameMessage;
+import websocket.messages.NotificationMessage;
+import websocket.messages.ServerMessage;
 
 
 import java.io.IOException;
@@ -14,8 +20,9 @@ import java.net.URISyntaxException;
 public class WebSocketFacade extends Endpoint {
 
     Session session;
+    PostloginUI postloginUI;
 
-    public void makeMove(String port, String authToken, int gameID, ChessMove chessMove) {
+    public void makeMove(String authToken, int gameID, ChessMove chessMove) {
         try {
             MakeMoveCommand command = new MakeMoveCommand(UserGameCommand.CommandType.MAKE_MOVE, authToken, gameID, chessMove);
             var serializer = new Gson();
@@ -26,9 +33,9 @@ public class WebSocketFacade extends Endpoint {
         }
     }
 
-    public void connect(String port, String authToken, int gameID) {
-
-        URI uri = null;
+    public void connect(String port, String authToken, int gameID, PostloginUI postloginUI) {
+        this.postloginUI = postloginUI;
+        URI uri;
         try {
             uri = new URI("ws://localhost:" + port + "/ws");
             WebSocketContainer container = ContainerProvider.getWebSocketContainer();
@@ -55,16 +62,34 @@ public class WebSocketFacade extends Endpoint {
 
 
     public void ping(String port) throws URISyntaxException, DeploymentException, IOException {
-        URI uri = new URI("ws://localhost:" + port + "/ws");
-        WebSocketContainer container = ContainerProvider.getWebSocketContainer();
-        Session session = container.connectToServer(this, uri);
-        session.addMessageHandler(new MessageHandler.Whole<String>() {
-            public void onMessage(String message) {
-                System.out.println(message);
-            }
-        });
+//        URI uri = new URI("ws://localhost:" + port + "/ws");
+//        WebSocketContainer container = ContainerProvider.getWebSocketContainer();
+//        Session session = container.connectToServer(this, uri);
+//        session.addMessageHandler(new MessageHandler.Whole<String>() {
+//            public void onMessage(String message) {
+//                System.out.println(message);
+//            }
+//        });
+//
+//        session.getBasicRemote().sendText("testing");
+    }
 
-        session.getBasicRemote().sendText("testing");
+    void onMessage(String message) {
+        var serializer = new Gson();
+        ServerMessage serverMessage = serializer.fromJson(message, ServerMessage.class);
+
+        if (serverMessage.getServerMessageType() == ServerMessage.ServerMessageType.LOAD_GAME) {
+            LoadGameMessage game = serializer.fromJson(message, LoadGameMessage.class);
+            ChessGame chessGame = game.getGame();
+            postloginUI.drawBoard(chessGame);
+        }
+        if (serverMessage.getServerMessageType() == ServerMessage.ServerMessageType.ERROR) {
+            ErrorMessage errorMessage = serializer.fromJson(message, ErrorMessage.class);
+        }
+        if (serverMessage.getServerMessageType() == ServerMessage.ServerMessageType.NOTIFICATION) {
+            NotificationMessage notificationMessage = serializer.fromJson(message, NotificationMessage.class);
+        }
+
     }
 
     @Override

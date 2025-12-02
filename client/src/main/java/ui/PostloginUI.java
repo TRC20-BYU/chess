@@ -14,10 +14,14 @@ import java.util.*;
 public class PostloginUI {
 
     ServerFacade serverFacade;
+    WebSocketUI webSocketUI;
     List<Integer> gameIds = new ArrayList<>();
+    String team = "WHITE";
 
-    public PostloginUI(ServerFacade serverFacade) {
+    public PostloginUI(ServerFacade serverFacade, WebSocketUI webSocketUI) {
         this.serverFacade = serverFacade;
+        this.webSocketUI = webSocketUI;
+        this.webSocketUI.setPostLoginUI(this);
     }
 
     public void help() {
@@ -71,19 +75,32 @@ public class PostloginUI {
         JoinData joinData = new JoinData(color, idnum);
         String result = serverFacade.put("game", joinData, authToken);
         System.out.println("Game joined!!!");
-        String board;
-        if (Objects.equals(color, "WHITE")) {
-            board = printBoard(new ChessGame());
-            System.out.print(board);
-        } else {
-            board = rotateboard();
-            System.out.print(board);
-        }
+        team = color;
     }
 
-    public void observerGame() {
-        String board = printBoard(new ChessGame());
-        System.out.print(board);
+    public void observerGame(String id, String authToken) {
+        int idnum;
+        try {
+            idnum = gameIds.get(Integer.parseInt(id) - 1);
+        } catch (Exception ex) {
+            throw new ServerError("Invalid ID use \"list\" to find valid IDs");
+        }
+        webSocketUI.connect(idnum, authToken);
+    }
+
+    public void resetTeam() {
+        team = "WHITE";
+    }
+
+    public void drawBoard(ChessGame chessGame) {
+        String board;
+        if (Objects.equals(team, "WHITE")) {
+            board = printBoard(chessGame);
+            System.out.print(board);
+        } else {
+            board = rotateboard(chessGame);
+            System.out.print(board);
+        }
     }
 
     private String printBoard(ChessGame chessGame) {
@@ -123,8 +140,7 @@ public class PostloginUI {
         }
     }
 
-    private String rotateboard() {
-        ChessGame chessGame = new ChessGame();
+    private String rotateboard(ChessGame chessGame) {
         ChessBoard board = chessGame.getBoard();
         String boardRep = flipBoard(board.toString());
         String boardString = "";

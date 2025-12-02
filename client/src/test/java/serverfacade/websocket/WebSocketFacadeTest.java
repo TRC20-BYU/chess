@@ -13,6 +13,8 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import server.Server;
 import serverfacade.ServerFacade;
+import ui.PostloginUI;
+import ui.WebSocketUI;
 
 import java.io.IOException;
 import java.net.URISyntaxException;
@@ -45,8 +47,11 @@ class WebSocketFacadeTest {
     void makeMove() {
         String authToken = createGame();
         ChessMove chessMove = new ChessMove(new ChessPosition(2, 1), new ChessPosition(3, 1), null);
-        webSocketFacade.connect(portLabel, authToken, 1);
-        webSocketFacade.makeMove(portLabel, authToken, 1, chessMove);
+        WebSocketUI webSocketUI = new WebSocketUI(webSocketFacade, "8080");
+        ServerFacade serverFacade = new ServerFacade(portLabel);
+        PostloginUI postloginUI = new PostloginUI(serverFacade, webSocketUI);
+        webSocketFacade.connect(portLabel, authToken, 1, postloginUI);
+        webSocketFacade.makeMove(authToken, 1, chessMove);
     }
 
     String createGame() {
