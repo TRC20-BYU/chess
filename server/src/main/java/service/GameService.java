@@ -7,6 +7,7 @@ import chess.InvalidMoveException;
 import datamodel.GameConnections;
 import datamodel.GameData;
 import dataaccess.DataAccess;
+import datamodel.UserData;
 import org.eclipse.jetty.websocket.api.Session;
 import server.ResponseException;
 import server.Server;
@@ -55,21 +56,45 @@ public class GameService {
         throw new ResponseException(ResponseException.Code.authError);
     }
 
-    public ChessGame makeMove(String authToken, int gameId, ChessMove chessMove) throws ResponseException {
+    public ChessGame makeMove(String authToken, int gameId, ChessMove chessMove) throws ResponseException, SocketException {
         if (dataAccess.authenticate(authToken)) {
             datamodel.GameData gameData = dataAccess.getGame(gameId);
             ChessGame chessGame = gameData.chessGame();
+            if (chessGame.getHasEnded()) {
+                throw new SocketException("Game has ended");
+            }
             if (validateUserColor(authToken, gameData, chessMove)) {
                 try {
                     chessGame.makeMove(chessMove);
                     dataAccess.updateGame(gameId, chessGame);
                 } catch (InvalidMoveException e) {
-
+                    throw new SocketException("invalid move");
                 }
                 return chessGame;
             } else {
                 throw new ResponseException(ResponseException.Code.authError);
             }
+        } else {
+            throw new ResponseException(ResponseException.Code.authError);
+        }
+    }
+
+    public void resign(String authToken, int gameId) throws ResponseException, SocketException {
+        if (dataAccess.authenticate(authToken)) {
+            datamodel.GameData gameData = dataAccess.getGame(gameId);
+            UserData userData = dataAccess.getUsername(authToken);
+            ChessGame chessGame = gameData.chessGame();
+            if (chessGame.getHasEnded()) {
+                throw new SocketException("Game has ended");
+            }
+            if (Objects.equals(gameData.whiteUsername(), userData.username())) {
+                chessGame.setHasEnded(true, ChessGame.TeamColor.BLACK);
+            } else if (Objects.equals(gameData.blackUsername(), userData.username())) {
+                chessGame.setHasEnded(true, ChessGame.TeamColor.WHITE);
+            } else {
+                throw new ResponseException(ResponseException.Code.authError);
+            }
+            dataAccess.updateGame(gameId, chessGame);
         } else {
             throw new ResponseException(ResponseException.Code.authError);
         }
@@ -97,6 +122,7 @@ public class GameService {
             throw new ResponseException(ResponseException.Code.authError);
         }
     }
+
 
     public ChessGame connectService(String authToken, Integer gameID, Session session) throws SocketException {
         try {

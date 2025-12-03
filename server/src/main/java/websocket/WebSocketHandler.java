@@ -67,8 +67,10 @@ public class WebSocketHandler implements WsConnectHandler, WsMessageHandler, WsC
                 notifyAction(gameConnections, username, req.getGameID(), ctx, "has left game");
             }
             if (req.getCommandType() == UserGameCommand.CommandType.RESIGN) {
-//            Session session = ctx.session;
-//            gameService.resignService(req.getAuthToken(), req.getGameID(),session);
+                gameService.resign(req.getAuthToken(), req.getGameID());
+                String username = gameService.getGameData(req.getAuthToken());
+                GameConnections gameConnections = gameService.getConnects(req.getGameID());
+                notifyActionAll(gameConnections, username, req.getGameID(), ctx, "has resigned game");
             }
         } catch (SocketException e) {
             sendError(e.getMessage(), ctx);
@@ -104,6 +106,10 @@ public class WebSocketHandler implements WsConnectHandler, WsMessageHandler, WsC
         LoadGameMessage loadGameMessage = new LoadGameMessage(ServerMessage.ServerMessageType.LOAD_GAME, chessGame);
         var serializer = new Gson();
         String serialized = serializer.toJson(loadGameMessage);
+        sendMessageToAll(gameConnections, serialized);
+    }
+
+    private void sendMessageToAll(GameConnections gameConnections, String serialized) throws IOException {
         if (gameConnections.getWhitePlayer() != null) {
             gameConnections.getWhitePlayer().getRemote().sendString(serialized);
         }
@@ -164,6 +170,14 @@ public class WebSocketHandler implements WsConnectHandler, WsMessageHandler, WsC
         }
     }
 
+    public void notifyActionAll(GameConnections gameConnections, String username, int gameID, WsMessageContext ctx, String action) throws IOException {
+        Session session = ctx.session;
+        var serializer = new Gson();
+        String message = username + " " + action + " " + gameID;
+        NotificationMessage notificationMessage = new NotificationMessage(ServerMessage.ServerMessageType.NOTIFICATION, message);
+        String serialized = serializer.toJson(notificationMessage);
+        sendMessageToAll(gameConnections, serialized);
+    }
 
     @Override
     public void handleClose(@NotNull WsCloseContext ctx) throws Exception {

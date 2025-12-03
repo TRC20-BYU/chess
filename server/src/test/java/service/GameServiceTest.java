@@ -100,7 +100,7 @@ class GameServiceTest {
     }
 
     @Test
-    void makeMoveGood() throws ResponseException, InvalidMoveException {
+    void makeMoveGood() throws ResponseException, InvalidMoveException, SocketException {
         ChessMove chessMove = new ChessMove(new ChessPosition(2, 1), new ChessPosition(3, 1), null);
         DataAccess dataAccess = new DBMemoryAccess();
         dataAccess.deleteDatabase();

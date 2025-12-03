@@ -16,6 +16,8 @@ public class ChessGame {
 
     private TeamColor turn;
     private ChessBoard board;
+    private boolean hasEnded = false;
+    private TeamColor winner;
 
     public ChessGame() {
         turn = TeamColor.WHITE;
@@ -28,6 +30,15 @@ public class ChessGame {
      */
     public TeamColor getTeamTurn() {
         return turn;
+    }
+
+    public boolean getHasEnded() {
+        return hasEnded;
+    }
+
+    public void setHasEnded(boolean hasEnded, TeamColor winner) {
+        this.hasEnded = hasEnded;
+        this.winner = winner;
     }
 
     /**
@@ -134,7 +145,15 @@ public class ChessGame {
         } else {
             throw new InvalidMoveException("Invalid move");
         }
-
+        if (isInCheckmate(TeamColor.WHITE)) {
+            setHasEnded(true, TeamColor.BLACK);
+        }
+        if (isInCheckmate(TeamColor.BLACK)) {
+            setHasEnded(true, TeamColor.WHITE);
+        }
+        if (isInStalemate(TeamColor.WHITE)) {
+            setHasEnded(true, null);
+        }
     }
 
     /**
