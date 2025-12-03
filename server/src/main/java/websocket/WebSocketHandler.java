@@ -4,6 +4,7 @@ import chess.ChessGame;
 import chess.ChessMove;
 import com.google.gson.Gson;
 import datamodel.GameConnections;
+import datamodel.GameData;
 import io.javalin.websocket.*;
 import org.eclipse.jetty.websocket.api.Session;
 import org.jetbrains.annotations.NotNull;
@@ -18,6 +19,7 @@ import websocket.messages.ServerMessage;
 
 import java.io.IOException;
 import java.net.SocketException;
+import java.util.Objects;
 
 public class WebSocketHandler implements WsConnectHandler, WsMessageHandler, WsCloseHandler {
 
@@ -44,34 +46,41 @@ public class WebSocketHandler implements WsConnectHandler, WsMessageHandler, WsC
                 System.out.println("Websocket move received");
                 MakeMoveCommand moveReq = serializer.fromJson(reqJson, MakeMoveCommand.class);
                 ChessGame chessGame = moveHandler(moveReq);
+                GameData gameData = gameService.getGameData(req.getGameID());
                 GameConnections gameConnections = gameService.getConnects(req.getGameID());
                 loadGame(ctx, chessGame, gameConnections);
-                String username = gameService.getGameData(req.getAuthToken());
-
+                String username = gameService.getUsername(req.getAuthToken());
                 notifyAction(gameConnections, username, req.getGameID(), ctx, "has moved " + moveReq.getStart() + " to " + moveReq.getEnd() + " in game");
+                checkCheckMate(gameData, req.getGameID(), gameConnections);
             }
             if (req.getCommandType() == UserGameCommand.CommandType.CONNECT) {
                 System.out.println("Websocket connect received");
                 Session session = ctx.session;
-                ChessGame chessGame = gameService.connectService(req.getAuthToken(), req.getGameID(), session);
-                String username = gameService.getGameData(req.getAuthToken());
-                loadGameSingle(ctx, chessGame);
+                GameData chessGame = gameService.connectService(req.getAuthToken(), req.getGameID(), session);
+                String username = gameService.getUsername(req.getAuthToken());
+                loadGameSingle(ctx, chessGame.chessGame());
                 GameConnections gameConnections = gameService.getConnects(req.getGameID());
-                notifyAction(gameConnections, username, req.getGameID(), ctx, "has joined game");
+                if (Objects.equals(username, chessGame.whiteUsername())) {
+                    notifyAction(gameConnections, username, req.getGameID(), ctx, "has joined game as white");
+                } else if (Objects.equals(username, chessGame.blackUsername())) {
+                    notifyAction(gameConnections, username, req.getGameID(), ctx, "has joined game as black");
+                } else {
+                    notifyAction(gameConnections, username, req.getGameID(), ctx, "is observing game");
+                }
             }
             if (req.getCommandType() == UserGameCommand.CommandType.LEAVE) {
                 System.out.println("Websocket leave received");
                 Session session = ctx.session;
                 gameService.disconnectService(req.getAuthToken(), req.getGameID(), session);
-                String username = gameService.getGameData(req.getAuthToken());
+                String username = gameService.getUsername(req.getAuthToken());
                 GameConnections gameConnections = gameService.getConnects(req.getGameID());
                 notifyAction(gameConnections, username, req.getGameID(), ctx, "has left game");
             }
             if (req.getCommandType() == UserGameCommand.CommandType.RESIGN) {
                 gameService.resign(req.getAuthToken(), req.getGameID());
-                String username = gameService.getGameData(req.getAuthToken());
+                String username = gameService.getUsername(req.getAuthToken());
                 GameConnections gameConnections = gameService.getConnects(req.getGameID());
-                notifyActionAll(gameConnections, username, req.getGameID(), ctx, "has resigned game");
+                notifyActionAll(gameConnections, username, req.getGameID(), "has resigned game");
             }
         } catch (SocketException e) {
             e.printStackTrace();
@@ -87,6 +96,22 @@ public class WebSocketHandler implements WsConnectHandler, WsMessageHandler, WsC
         } catch (Exception e) {
             System.out.println("Error: " + e.getMessage());
             e.printStackTrace();
+        }
+    }
+
+    private void checkCheckMate(GameData chessGame, int gameId, GameConnections gameConnections) throws IOException {
+        if (chessGame.chessGame().isInCheckmate(ChessGame.TeamColor.WHITE)) {
+            String username = chessGame.whiteUsername();
+            notifyActionAll(gameConnections, username, gameId, " is in checkmate as white in game");
+        } else if (chessGame.chessGame().isInCheckmate(ChessGame.TeamColor.BLACK)) {
+            String username = chessGame.blackUsername();
+            notifyActionAll(gameConnections, username, gameId, " is in checkmate as black in game");
+        } else if (chessGame.chessGame().isInCheck(ChessGame.TeamColor.WHITE)) {
+            String username = chessGame.whiteUsername();
+            notifyActionAll(gameConnections, username, gameId, " is in check as white in game");
+        } else if (chessGame.chessGame().isInCheck(ChessGame.TeamColor.BLACK)) {
+            String username = chessGame.whiteUsername();
+            notifyActionAll(gameConnections, username, gameId, " is in check as black in game");
         }
     }
 
@@ -170,8 +195,7 @@ public class WebSocketHandler implements WsConnectHandler, WsMessageHandler, WsC
         }
     }
 
-    public void notifyActionAll(GameConnections gameConnections, String username, int gameID, WsMessageContext ctx, String action) throws IOException {
-        Session session = ctx.session;
+    public void notifyActionAll(GameConnections gameConnections, String username, int gameID, String action) throws IOException {
         var serializer = new Gson();
         String message = username + " " + action + " " + gameID;
         NotificationMessage notificationMessage = new NotificationMessage(ServerMessage.ServerMessageType.NOTIFICATION, message);

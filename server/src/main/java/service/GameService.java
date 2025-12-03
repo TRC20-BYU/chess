@@ -104,12 +104,16 @@ public class GameService {
         connectionManager.reset();
     }
 
-    public String getGameData(String authToken) throws ResponseException {
+    public String getUsername(String authToken) throws ResponseException {
         if (dataAccess.authenticate(authToken)) {
             return dataAccess.getUsername(authToken).username();
         } else {
             throw new ResponseException(ResponseException.Code.authError);
         }
+    }
+
+    public GameData getGameData(int gameID) {
+        return dataAccess.getGame(gameID);
     }
 
     public boolean validateUserColor(String authToken, GameData gameData, ChessMove chessMove) throws ResponseException, SocketException {
@@ -131,7 +135,7 @@ public class GameService {
     }
 
 
-    public ChessGame connectService(String authToken, Integer gameID, Session session) throws SocketException, ResponseException {
+    public GameData connectService(String authToken, Integer gameID, Session session) throws SocketException, ResponseException {
         if (dataAccess.authenticate(authToken)) {
             if (dataAccess.getGame(gameID) != null) {
                 String username = dataAccess.getUsername(authToken).username();
@@ -143,7 +147,7 @@ public class GameService {
                 } else {
                     connectionManager.addObserver(gameID, session);
                 }
-                return dataAccess.getGame(gameID).chessGame();
+                return dataAccess.getGame(gameID);
             } else {
                 throw new SocketException("invalid game ID");
             }
