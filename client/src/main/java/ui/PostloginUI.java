@@ -101,7 +101,7 @@ public class PostloginUI {
         return idnum;
     }
 
-    public void observerGame(String id, String authToken) {
+    public int observerGame(String id, String authToken) {
         int idnum;
         try {
             idnum = gameIds.get(Integer.parseInt(id) - 1);
@@ -109,6 +109,7 @@ public class PostloginUI {
             throw new ServerError("Invalid ID use \"list\" to find valid IDs");
         }
         webSocketUI.connect(idnum, authToken);
+        return idnum;
     }
 
     public void resetTeam() {

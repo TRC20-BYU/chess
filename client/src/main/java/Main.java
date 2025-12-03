@@ -169,7 +169,7 @@ public class Main {
             if (params.length != 2) {
                 System.out.println(EscapeSequences.SET_TEXT_COLOR_RED + "Error: incorrect number of arguments" + EscapeSequences.RESET_TEXT_COLOR);
             } else {
-                postloginUI.observerGame(params[1], authToken);
+                gameID = postloginUI.observerGame(params[1], authToken);
                 loggedIn = 2;
             }
         }
