@@ -8,6 +8,7 @@ import serverfacade.InvalidError;
 import serverfacade.ServerError;
 import serverfacade.websocket.WebSocketFacade;
 
+import java.util.Objects;
 import java.util.Scanner;
 
 public class WebSocketUI {
@@ -66,7 +67,7 @@ public class WebSocketUI {
                 ChessPiece.PieceType promotion = getPromotion();
                 chessMove = new ChessMove(pieceLocal, newPos, promotion);
             }
-            webSocketFacade.makeMove(authToken, gameID, chessMove);
+            webSocketFacade.makeMove(authToken, gameID, chessMove, piece, space);
         } else {
             throw new ServerError(EscapeSequences.SET_TEXT_COLOR_RED + "Error: invalid move" + EscapeSequences.RESET_TEXT_COLOR);
         }
@@ -132,8 +133,20 @@ public class WebSocketUI {
         postloginUI.redrawBoard();
     }
 
-    public void resign(String authToken, int gameID) {
-        webSocketFacade.resign(authToken, gameID);
+    public boolean resign(String authToken, int gameID) {
+        String answer = "";
+        boolean correctAnswer = false;
+        while (!correctAnswer) {
+            System.out.print("Are you sure (y/n): ");
+            Scanner scanner = new Scanner(System.in);
+            answer = scanner.nextLine();
+            correctAnswer = (Objects.equals(answer, "y") || Objects.equals(answer, "n"));
+            if (Objects.equals(answer, "y")) {
+                webSocketFacade.resign(authToken, gameID);
+                return true;
+            }
+        }
+        return false;
     }
 
     public void highlight() {

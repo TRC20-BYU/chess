@@ -42,12 +42,13 @@ public class WebSocketHandler implements WsConnectHandler, WsMessageHandler, WsC
             var req = serializer.fromJson(reqJson, UserGameCommand.class);
             if (req.getCommandType() == UserGameCommand.CommandType.MAKE_MOVE) {
                 System.out.println("Websocket move received");
-                ChessGame chessGame = moveHandler(reqJson);
+                MakeMoveCommand moveReq = serializer.fromJson(reqJson, MakeMoveCommand.class);
+                ChessGame chessGame = moveHandler(moveReq);
                 GameConnections gameConnections = gameService.getConnects(req.getGameID());
                 loadGame(ctx, chessGame, gameConnections);
                 String username = gameService.getGameData(req.getAuthToken());
 
-                notifyAction(gameConnections, username, req.getGameID(), ctx, "has made a move in game");
+                notifyAction(gameConnections, username, req.getGameID(), ctx, "has moved " + moveReq.getStart() + " to " + moveReq.getEnd() + " in game");
             }
             if (req.getCommandType() == UserGameCommand.CommandType.CONNECT) {
                 System.out.println("Websocket connect received");
@@ -89,9 +90,7 @@ public class WebSocketHandler implements WsConnectHandler, WsMessageHandler, WsC
         }
     }
 
-    private ChessGame moveHandler(String reqJson) throws SocketException {
-        var serializer = new Gson();
-        var moveReq = serializer.fromJson(reqJson, MakeMoveCommand.class);
+    private ChessGame moveHandler(MakeMoveCommand moveReq) throws SocketException {
         String authToken = moveReq.getAuthToken();
         int gameId = moveReq.getGameID();
         ChessMove chessMove = moveReq.getMove();

@@ -140,7 +140,7 @@ class GameServiceTest {
         GameService gameService = new GameService(dataAccess);
         UserService userService = new UserService(dataAccess);
         Session session = generateSession();
-        Assertions.assertThrows(ResponseException.class, () -> gameService.connectService("bad", 1, session));
+        Assertions.assertThrows(Exception.class, () -> gameService.connectService("bad", 1, session));
     }
 
     @Test

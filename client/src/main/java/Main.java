@@ -92,7 +92,6 @@ public class Main {
                         "Error: incorrect number of arguments" + EscapeSequences.RESET_TEXT_COLOR);
             } else {
                 webSocketUI.resign(authToken, gameID);
-                loggedIn = 1;
             }
         }
         if (Objects.equals(params[0], "redraw")) {
@@ -171,6 +170,7 @@ public class Main {
                 System.out.println(EscapeSequences.SET_TEXT_COLOR_RED + "Error: incorrect number of arguments" + EscapeSequences.RESET_TEXT_COLOR);
             } else {
                 postloginUI.observerGame(params[1], authToken);
+                loggedIn = 2;
             }
         }
     }

@@ -27,9 +27,9 @@ public class WebSocketFacade extends Endpoint {
 
     }
 
-    public void makeMove(String authToken, int gameID, ChessMove chessMove) {
+    public void makeMove(String authToken, int gameID, ChessMove chessMove, String start, String end) {
         try {
-            MakeMoveCommand command = new MakeMoveCommand(UserGameCommand.CommandType.MAKE_MOVE, authToken, gameID, chessMove);
+            MakeMoveCommand command = new MakeMoveCommand(UserGameCommand.CommandType.MAKE_MOVE, authToken, gameID, chessMove, start, end);
             var serializer = new Gson();
             String commandSerialized = serializer.toJson(command);
             session.getBasicRemote().sendText(commandSerialized);
