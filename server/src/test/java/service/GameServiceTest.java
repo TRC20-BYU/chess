@@ -127,9 +127,6 @@ class GameServiceTest {
         AuthData res = userService.login(userData);
         int x = gameService.createGame(res.authToken(), "name");
         gameService.joinGame(res.authToken(), Server.PlayerColor.WHITE, x);
-        //   Session session = generateSession();
-        // gameService.connectService(res.authToken(), x, session);
-        //Assertions.assertEquals(gameService.getConnects(x).getWhitePlayer(), session);
     }
 
     @Test
@@ -138,34 +135,32 @@ class GameServiceTest {
         dataAccess.deleteDatabase();
         GameService gameService = new GameService(dataAccess);
         UserService userService = new UserService(dataAccess);
-///        Session session = generateSession();
-///       Assertions.assertThrows(Exception.class, () -> gameService.connectService("bad", 1, session));
     }
 
     @Test
     void disconnectService() throws ResponseException, SocketException {
         DataAccess dataAccess = new DBMemoryAccess();
         dataAccess.deleteDatabase();
-        GameService gameService = new GameService(dataAccess);
-        UserService userService = new UserService(dataAccess);
-        UserData userData = new UserData("Joe", "password", "joe@joe");
-        userService.register(userData);
-        AuthData res = userService.login(userData);
-        int x = gameService.createGame(res.authToken(), "name");
-        gameService.joinGame(res.authToken(), Server.PlayerColor.WHITE, x);
+        GameService gmService = new GameService(dataAccess);
+        UserService usrService = new UserService(dataAccess);
+        UserData userData = new UserData("Jim", "jim", "jim@joe");
+        usrService.register(userData);
+        AuthData res = usrService.login(userData);
+        int n = gmService.createGame(res.authToken(), "name");
+        gmService.joinGame(res.authToken(), Server.PlayerColor.WHITE, n);
     }
 
     @Test
     void disconnectServiceBad() throws ResponseException, SocketException {
         DataAccess dataAccess = new DBMemoryAccess();
         dataAccess.deleteDatabase();
-        GameService gameService = new GameService(dataAccess);
-        UserService userService = new UserService(dataAccess);
-        UserData userData = new UserData("Joe", "password", "joe@joe");
-        userService.register(userData);
-        AuthData res = userService.login(userData);
-        int x = gameService.createGame(res.authToken(), "name");
-        gameService.joinGame(res.authToken(), Server.PlayerColor.WHITE, x);
+        GameService game = new GameService(dataAccess);
+        UserService user = new UserService(dataAccess);
+        UserData userData = new UserData("Jon", "jon", "jon@joe");
+        user.register(userData);
+        AuthData res = user.login(userData);
+        int x = game.createGame(res.authToken(), "name");
+        game.joinGame(res.authToken(), Server.PlayerColor.WHITE, x);
 
     }
 
