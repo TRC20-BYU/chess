@@ -56,6 +56,7 @@ public class Server {
 
     private void deleteDatabase(Context ctx) throws ResponseException {
         userService.deleteDatabase();
+        gameService.clearConnects();
     }
 
     private void register(Context ctx) throws ResponseException {

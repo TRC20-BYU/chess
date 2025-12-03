@@ -64,4 +64,8 @@ public class ConnectionManager {
     public GameConnections gameConnections(int gameID) {
         return gameConnectins.get(gameID);
     }
+
+    public void reset() {
+        gameConnectins = new ConcurrentHashMap<>();
+    }
 }

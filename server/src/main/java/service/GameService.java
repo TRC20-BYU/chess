@@ -100,6 +100,10 @@ public class GameService {
         }
     }
 
+    public void clearConnects() {
+        connectionManager.reset();
+    }
+
     public String getGameData(String authToken) throws ResponseException {
         if (dataAccess.authenticate(authToken)) {
             return dataAccess.getUsername(authToken).username();
@@ -144,7 +148,7 @@ public class GameService {
                 throw new SocketException("invalid game ID");
             }
         } else {
-            throw new ResponseException(ResponseException.Code.authError);
+            throw new SocketException("not authorized");
         }
     }
 
