@@ -76,6 +76,7 @@ public class PostloginUI {
         String result = serverFacade.put("game", joinData, authToken);
         System.out.println("Game joined!!!");
         team = color;
+        webSocketUI.connect(idnum, authToken);
     }
 
     public void observerGame(String id, String authToken) {

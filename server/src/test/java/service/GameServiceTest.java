@@ -17,6 +17,7 @@ import server.ResponseException;
 import server.Server;
 
 import java.net.SocketAddress;
+import java.net.SocketException;
 import java.time.Duration;
 import java.util.List;
 
@@ -117,7 +118,7 @@ class GameServiceTest {
     }
 
     @Test
-    void connectService() throws ResponseException {
+    void connectService() throws ResponseException, SocketException {
         DataAccess dataAccess = new DBMemoryAccess();
         dataAccess.deleteDatabase();
         GameService gameService = new GameService(dataAccess);
@@ -143,7 +144,7 @@ class GameServiceTest {
     }
 
     @Test
-    void disconnectService() throws ResponseException {
+    void disconnectService() throws ResponseException, SocketException {
         DataAccess dataAccess = new DBMemoryAccess();
         dataAccess.deleteDatabase();
         GameService gameService = new GameService(dataAccess);
@@ -160,7 +161,7 @@ class GameServiceTest {
     }
 
     @Test
-    void disconnectServiceBad() throws ResponseException {
+    void disconnectServiceBad() throws ResponseException, SocketException {
         DataAccess dataAccess = new DBMemoryAccess();
         dataAccess.deleteDatabase();
         GameService gameService = new GameService(dataAccess);
@@ -177,7 +178,7 @@ class GameServiceTest {
     }
 
     @Test
-    void getConnections() throws ResponseException {
+    void getConnections() throws ResponseException, SocketException {
         DataAccess dataAccess = new DBMemoryAccess();
         dataAccess.deleteDatabase();
         GameService gameService = new GameService(dataAccess);

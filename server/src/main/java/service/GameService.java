@@ -12,6 +12,7 @@ import server.ResponseException;
 import server.Server;
 import websocket.ConnectionManager;
 
+import java.net.SocketException;
 import java.util.List;
 import java.util.Objects;
 
@@ -89,20 +90,30 @@ public class GameService {
         }
     }
 
-    public void connectService(String authToken, Integer gameID, Session session) throws ResponseException {
-        if (dataAccess.authenticate(authToken)) {
-            String username = dataAccess.getUsername(authToken).username();
-            GameData gameData = dataAccess.getGame(gameID);
-            if (Objects.equals(gameData.whiteUsername(), username)) {
-                connectionManager.addWhite(gameID, session);
-            } else if (Objects.equals(gameData.blackUsername(), username)) {
-                connectionManager.addBlack(gameID, session);
+    public ChessGame connectService(String authToken, Integer gameID, Session session) {
+        try {
+            if (dataAccess.authenticate(authToken)) {
+                if (dataAccess.getGame(gameID) != null) {
+                    String username = dataAccess.getUsername(authToken).username();
+                    GameData gameData = dataAccess.getGame(gameID);
+                    if (Objects.equals(gameData.whiteUsername(), username)) {
+                        connectionManager.addWhite(gameID, session);
+                    } else if (Objects.equals(gameData.blackUsername(), username)) {
+                        connectionManager.addBlack(gameID, session);
+                    } else {
+                        connectionManager.addObserver(gameID, session);
+                    }
+                    return dataAccess.getGame(gameID).chessGame();
+                } else {
+                    throw new SocketException("invalid game ID");
+                }
             } else {
-                connectionManager.addObserver(gameID, session);
+                throw new ResponseException(ResponseException.Code.authError);
             }
-        } else {
-            throw new ResponseException(ResponseException.Code.authError);
+        } catch (ResponseException | SocketException e) {
+            System.out.println("there was an error");
         }
+        return null;
     }
 
     public void disconnectService(String authToken, Integer gameID, Session session) throws ResponseException {

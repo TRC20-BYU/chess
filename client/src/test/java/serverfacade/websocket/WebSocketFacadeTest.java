@@ -9,6 +9,7 @@ import datamodel.GameData;
 import datamodel.JoinData;
 import datamodel.UserData;
 import jakarta.websocket.DeploymentException;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import server.Server;
@@ -50,8 +51,8 @@ class WebSocketFacadeTest {
         WebSocketUI webSocketUI = new WebSocketUI(webSocketFacade, "8080");
         ServerFacade serverFacade = new ServerFacade(portLabel);
         PostloginUI postloginUI = new PostloginUI(serverFacade, webSocketUI);
-        webSocketFacade.connect(portLabel, authToken, 1, postloginUI);
-        webSocketFacade.makeMove(authToken, 1, chessMove);
+        Assertions.assertDoesNotThrow(() -> webSocketFacade.connect(portLabel, authToken, 1, postloginUI));
+        Assertions.assertDoesNotThrow(() -> webSocketFacade.makeMove(authToken, 1, chessMove));
     }
 
     String createGame() {
