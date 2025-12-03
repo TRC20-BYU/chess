@@ -88,14 +88,14 @@ public class PostloginUI {
     }
 
     public int joinGame(String authToken, String id, String color) {
-        int idnum = 0;
+        int idnum;
         try {
             idnum = gameIds.get(Integer.parseInt(id) - 1);
         } catch (Exception ex) {
             throw new ServerError("Invalid ID use \"list\" to find valid IDs");
         }
         JoinData joinData = new JoinData(color, idnum);
-        String result = serverFacade.put("game", joinData, authToken);
+        serverFacade.put("game", joinData, authToken);
         System.out.println("Game joined!!!");
         team = color;
         return idnum;
@@ -110,10 +110,6 @@ public class PostloginUI {
         }
         webSocketUI.connect(idnum, authToken);
         return idnum;
-    }
-
-    public void resetTeam() {
-        team = "WHITE";
     }
 
     public void redrawBoard() {
@@ -177,22 +173,29 @@ public class PostloginUI {
             for (int l = 0; l < lines[i].length(); l++) {
                 String color = "";
                 ChessPosition temp = new ChessPosition(8 - i, l + 1);
-                if (pos.contains(temp)) {
-                    color = EscapeSequences.SET_BG_COLOR_GREEN;
-                } else {
-                    if ((l + i) % 2 != 0) {
-                        color = EscapeSequences.SET_BG_COLOR_BLACK;
-                    } else {
-                        color = EscapeSequences.SET_BG_COLOR_WHITE;
-                    }
-                }
-                char symbol = lines[i].charAt(l);
-                String piece = chessPieces(String.valueOf(symbol));
-                boardString += color + " " + piece + " " + EscapeSequences.RESET_BG_COLOR;
+                boardString = highlight(pos, boardString, lines, i, l, temp);
             }
             boardString += EscapeSequences.SET_BG_COLOR_LIGHT_GREY + " " + (8 - i) + " " + EscapeSequences.RESET_BG_COLOR + "\n";
         }
         boardString += header + "\n";
+        return boardString;
+    }
+
+
+    private String highlight(Collection<ChessPosition> pos, String boardString, String[] lines, int i, int l, ChessPosition temp) {
+        String color;
+        if (pos.contains(temp)) {
+            color = EscapeSequences.SET_BG_COLOR_GREEN;
+        } else {
+            if ((l + i) % 2 != 0) {
+                color = EscapeSequences.SET_BG_COLOR_BLACK;
+            } else {
+                color = EscapeSequences.SET_BG_COLOR_WHITE;
+            }
+        }
+        char symbol = lines[i].charAt(l);
+        String piece = chessPieces(String.valueOf(symbol));
+        boardString += color + " " + piece + " " + EscapeSequences.RESET_BG_COLOR;
         return boardString;
     }
 
@@ -219,18 +222,7 @@ public class PostloginUI {
             for (int l = 0; l < lines[i].length(); l++) {
                 String color = "";
                 ChessPosition temp = new ChessPosition(i + 1, 8 - l);
-                if (pos.contains(temp)) {
-                    color = EscapeSequences.SET_BG_COLOR_GREEN;
-                } else {
-                    if ((l + i) % 2 != 0) {
-                        color = EscapeSequences.SET_BG_COLOR_BLACK;
-                    } else {
-                        color = EscapeSequences.SET_BG_COLOR_WHITE;
-                    }
-                }
-                char symbol = lines[i].charAt(l);
-                String piece = chessPieces(String.valueOf(symbol));
-                boardString += color + " " + piece + " " + EscapeSequences.RESET_BG_COLOR;
+                boardString = highlight(pos, boardString, lines, i, l, temp);
             }
             boardString += EscapeSequences.SET_BG_COLOR_LIGHT_GREY + " " + (i + 1) + " " + EscapeSequences.RESET_BG_COLOR + "\n";
         }

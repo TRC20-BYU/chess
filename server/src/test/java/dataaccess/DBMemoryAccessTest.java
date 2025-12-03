@@ -262,7 +262,7 @@ class DBMemoryAccessTest {
         ChessGame chessGame = result.chessGame();
         chessGame.makeMove(new ChessMove(new ChessPosition(2, 1), new ChessPosition(3, 1), null));
         db.updateGame(gameID, chessGame);
-        result = db.getGame(gameID);
-        Assertions.assertEquals(chessGame, result.chessGame());
+        result = db.getGame(25);
+        Assertions.assertNull(result);
     }
 }

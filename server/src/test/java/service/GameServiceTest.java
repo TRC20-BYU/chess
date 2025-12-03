@@ -205,22 +205,18 @@ class GameServiceTest {
         return new Session() {
             @Override
             public void close() {
-
             }
 
             @Override
             public void close(CloseStatus closeStatus) {
-
             }
 
             @Override
             public void close(int i, String s) {
-
             }
 
             @Override
             public void disconnect() {
-
             }
 
             @Override
@@ -310,37 +306,30 @@ class GameServiceTest {
 
             @Override
             public void setIdleTimeout(Duration duration) {
-
             }
 
             @Override
             public void setInputBufferSize(int i) {
-
             }
 
             @Override
             public void setOutputBufferSize(int i) {
-
             }
 
             @Override
             public void setMaxBinaryMessageSize(long l) {
-
             }
 
             @Override
             public void setMaxTextMessageSize(long l) {
-
             }
 
             @Override
             public void setMaxFrameSize(long l) {
-
             }
 
             @Override
             public void setAutoFragment(boolean b) {
-
             }
         };
     }

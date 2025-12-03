@@ -50,7 +50,8 @@ public class WebSocketHandler implements WsConnectHandler, WsMessageHandler, WsC
                 GameConnections gameConnections = gameService.getConnects(req.getGameID());
                 loadGame(ctx, chessGame, gameConnections);
                 String username = gameService.getUsername(req.getAuthToken());
-                notifyAction(gameConnections, username, req.getGameID(), ctx, "has moved " + moveReq.getStart() + " to " + moveReq.getEnd() + " in game");
+                notifyAction(gameConnections, username, req.getGameID(), ctx, "has moved " +
+                        moveReq.getStart() + " to " + moveReq.getEnd() + " in game");
                 checkCheckMate(gameData, req.getGameID(), gameConnections);
             }
             if (req.getCommandType() == UserGameCommand.CommandType.CONNECT) {
@@ -126,7 +127,8 @@ public class WebSocketHandler implements WsConnectHandler, WsMessageHandler, WsC
         }
     }
 
-    public void loadGame(@NotNull WsMessageContext ctx, ChessGame chessGame, GameConnections gameConnections) throws IOException {
+    public void loadGame(@NotNull WsMessageContext ctx, ChessGame chessGame, GameConnections gameConnections)
+            throws IOException {
         System.out.println("Web socket load");
         LoadGameMessage loadGameMessage = new LoadGameMessage(ServerMessage.ServerMessageType.LOAD_GAME, chessGame);
         var serializer = new Gson();
@@ -175,7 +177,8 @@ public class WebSocketHandler implements WsConnectHandler, WsMessageHandler, WsC
     }
 
 
-    public void notifyAction(GameConnections gameConnections, String username, int gameID, WsMessageContext ctx, String action) throws IOException {
+    public void notifyAction(GameConnections gameConnections, String username,
+                             int gameID, WsMessageContext ctx, String action) throws IOException {
         Session session = ctx.session;
         var serializer = new Gson();
         String message = username + " " + action + " " + gameID;
