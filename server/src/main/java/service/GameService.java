@@ -98,7 +98,7 @@ public class GameService {
         }
     }
 
-    public ChessGame connectService(String authToken, Integer gameID, Session session) {
+    public ChessGame connectService(String authToken, Integer gameID, Session session) throws SocketException {
         try {
             if (dataAccess.authenticate(authToken)) {
                 if (dataAccess.getGame(gameID) != null) {
@@ -118,7 +118,7 @@ public class GameService {
             } else {
                 throw new ResponseException(ResponseException.Code.authError);
             }
-        } catch (ResponseException | SocketException e) {
+        } catch (ResponseException e) {
             System.out.println("there was an error");
         }
         return null;

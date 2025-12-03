@@ -11,6 +11,7 @@ import server.ResponseException;
 import service.GameService;
 import websocket.commands.MakeMoveCommand;
 import websocket.commands.UserGameCommand;
+import websocket.messages.ErrorMessage;
 import websocket.messages.LoadGameMessage;
 import websocket.messages.NotificationMessage;
 import websocket.messages.ServerMessage;
@@ -69,10 +70,17 @@ public class WebSocketHandler implements WsConnectHandler, WsMessageHandler, WsC
 //            Session session = ctx.session;
 //            gameService.resignService(req.getAuthToken(), req.getGameID(),session);
             }
-        } catch (Exception e) {
-            System.out.println("Error: " + e.getMessage());
-            e.printStackTrace();
+        } catch (SocketException e) {
+            sendError(e.getMessage(), ctx);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        } catch (ResponseException e) {
+            throw new RuntimeException(e);
         }
+//        catch (Exception e) {
+//            System.out.println("Error: " + e.getMessage());
+//            e.printStackTrace();
+//        }
     }
 
     private ChessGame moveHandler(String reqJson) throws SocketException {
@@ -115,6 +123,19 @@ public class WebSocketHandler implements WsConnectHandler, WsMessageHandler, WsC
         String serializedMessage = serializer.toJson(loadGameMessage);
         try {
             ctx.session.getRemote().sendString(serializedMessage);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public void sendError(String error, WsMessageContext ctx) {
+        Session session = ctx.session;
+        var serializer = new Gson();
+        String message = "Error:" + error;
+        ErrorMessage errorMessage = new ErrorMessage(ServerMessage.ServerMessageType.ERROR, message);
+        String serializedMessage = serializer.toJson(errorMessage);
+        try {
+            session.getRemote().sendString(serializedMessage);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
