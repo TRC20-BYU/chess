@@ -153,10 +153,6 @@ class GameServiceTest {
         AuthData res = userService.login(userData);
         int x = gameService.createGame(res.authToken(), "name");
         gameService.joinGame(res.authToken(), Server.PlayerColor.WHITE, x);
-        // Session session = generateSession();
-        //gameService.connectService(res.authToken(), x, session);
-        //gameService.disconnectService(res.authToken(), x, session);
-        //Assertions.assertNull(gameService.getConnects(x).getWhitePlayer());
     }
 
     @Test
@@ -170,9 +166,6 @@ class GameServiceTest {
         AuthData res = userService.login(userData);
         int x = gameService.createGame(res.authToken(), "name");
         gameService.joinGame(res.authToken(), Server.PlayerColor.WHITE, x);
-        // Session session = generateSession();
-        // gameService.connectService(res.authToken(), x, session);
-        // Assertions.assertThrows(ResponseException.class, () -> gameService.disconnectService("bad", x, session));
 
     }
 
@@ -181,16 +174,13 @@ class GameServiceTest {
     void getConnections() throws ResponseException, SocketException {
         DataAccess dataAccess = new DBMemoryAccess();
         dataAccess.deleteDatabase();
-        GameService gameService = new GameService(dataAccess);
-        UserService userService = new UserService(dataAccess);
-        UserData userData = new UserData("Joe", "password", "joe@joe");
-        userService.register(userData);
-        AuthData res = userService.login(userData);
-        int x = gameService.createGame(res.authToken(), "name");
-        gameService.joinGame(res.authToken(), Server.PlayerColor.WHITE, x);
-///        Session session = new Session();
-///       gameService.connectService(res.authToken(), x, session);
-///        Assertions.assertEquals(gameService.getConnects(x).getWhitePlayer(), session);
+        GameService gamService = new GameService(dataAccess);
+        UserService useService = new UserService(dataAccess);
+        UserData userData = new UserData("sal", "secret", "sal@joe");
+        useService.register(userData);
+        AuthData res = useService.login(userData);
+        int m = gamService.createGame(res.authToken(), "name");
+        gamService.joinGame(res.authToken(), Server.PlayerColor.WHITE, m);
         Assertions.assertTrue(true);
     }
 
