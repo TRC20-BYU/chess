@@ -13,6 +13,7 @@ public class ResponseException extends Exception {
         serverError,
     }
 
+
     final private Code code;
     final private String body;
 
@@ -39,6 +40,11 @@ public class ResponseException extends Exception {
             default -> "unknown";
         };
     }
+
+    public Code getCode() {
+        return code;
+    }
+
 
     int toHttpStatusCode() {
         return switch (code) {

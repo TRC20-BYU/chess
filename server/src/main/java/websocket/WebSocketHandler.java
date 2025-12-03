@@ -73,9 +73,11 @@ public class WebSocketHandler implements WsConnectHandler, WsMessageHandler, WsC
         } catch (SocketException e) {
             sendError(e.getMessage(), ctx);
         } catch (IOException e) {
-            throw new RuntimeException(e);
+            sendError("something went wrong", ctx);
         } catch (ResponseException e) {
-            throw new RuntimeException(e);
+            if (e.getCode() == ResponseException.Code.authError) {
+                sendError("you are not authorized to do that", ctx);
+            }
         }
 //        catch (Exception e) {
 //            System.out.println("Error: " + e.getMessage());
