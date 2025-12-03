@@ -23,7 +23,7 @@ public class Main {
     public static void main(String[] args) {
         System.out.println(EscapeSequences.SET_TEXT_COLOR_BLUE + "Welcome ♕ 240 Chess Client ♕ " +
                 EscapeSequences.SET_TEXT_COLOR_GREEN + "- Type Help for options" + EscapeSequences.RESET_TEXT_COLOR);
-        String commands = "help login register create list join observe logout quit connect move leave";
+        String commands = "help login register create list join observe logout quit move leave redraw resign highlight";
         ServerFacade serverFacade = new ServerFacade(port);
         PreloginUI preloginUI = new PreloginUI(serverFacade);
         WebSocketFacade webSocketFacade = new WebSocketFacade();
@@ -125,6 +125,7 @@ public class Main {
             } else {
                 if (Objects.equals(params[2], "WHITE") | Objects.equals(params[2], "BLACK")) {
                     postloginUI.joinGame(authToken, params[1], params[2]);
+                    loggedIn = 2;
                 } else {
                     System.out.println(EscapeSequences.SET_TEXT_COLOR_RED + "The colors are WHITE and BLACK" + EscapeSequences.RESET_TEXT_COLOR);
                 }

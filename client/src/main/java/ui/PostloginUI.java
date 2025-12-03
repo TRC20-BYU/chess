@@ -13,6 +13,7 @@ import java.util.*;
 
 public class PostloginUI {
 
+    ChessGame chess = new ChessGame();
     ServerFacade serverFacade;
     WebSocketUI webSocketUI;
     List<Integer> gameIds = new ArrayList<>();
@@ -93,7 +94,19 @@ public class PostloginUI {
         team = "WHITE";
     }
 
+    public void redrawBoard() {
+        String board;
+        if (Objects.equals(team, "WHITE")) {
+            board = printBoard(chess);
+            System.out.print(board);
+        } else {
+            board = rotateboard(chess);
+            System.out.print(board);
+        }
+    }
+
     public void drawBoard(ChessGame chessGame) {
+        chess = chessGame;
         String board;
         if (Objects.equals(team, "WHITE")) {
             board = printBoard(chessGame);

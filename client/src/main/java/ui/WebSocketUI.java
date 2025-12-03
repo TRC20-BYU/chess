@@ -12,7 +12,6 @@ import java.util.Scanner;
 public class WebSocketUI {
 
     WebSocketFacade webSocketFacade;
-    ChessGame chessGame;
     String port;
     PostloginUI postloginUI;
 
@@ -26,12 +25,24 @@ public class WebSocketUI {
         this.postloginUI = postloginUI;
     }
 
+    public void help() {
+        //Displays text informing the user what actions they can take.
+        System.out.println("    " + EscapeSequences.SET_TEXT_COLOR_GREEN + "move " + EscapeSequences.SET_TEXT_COLOR_BLUE + "- moves a piece");
+        System.out.println("    " + EscapeSequences.SET_TEXT_COLOR_GREEN + "highlight " + EscapeSequences.SET_TEXT_COLOR_BLUE + "- highlights possible moves for a given piece");
+        System.out.println("    " + EscapeSequences.SET_TEXT_COLOR_GREEN + "redraw " + EscapeSequences.SET_TEXT_COLOR_BLUE + "- redraws the board");
+        System.out.println("    " + EscapeSequences.SET_TEXT_COLOR_GREEN + "leave " + EscapeSequences.SET_TEXT_COLOR_BLUE + "- leaves the game");
+        System.out.println("    " + EscapeSequences.SET_TEXT_COLOR_GREEN + "resign " + EscapeSequences.SET_TEXT_COLOR_BLUE + "- resigns the game");
+        System.out.println("    " + EscapeSequences.SET_TEXT_COLOR_GREEN + "help " + EscapeSequences.SET_TEXT_COLOR_BLUE
+                + "- displays possible commands" + EscapeSequences.RESET_TEXT_COLOR);
+    }
+
     public void connect(int gameID, String authToken) {
         webSocketFacade.connect(port, authToken, gameID, postloginUI);
     }
 
 
     public boolean checkForPromotion(ChessMove chessMove) {
+        ChessGame chessGame = postloginUI.chess;
         if (chessGame.getBoard().getPiece(chessMove.getStartPosition()).getPieceType() == ChessPiece.PieceType.PAWN) {
             return chessMove.getEndPosition().getRow() == 8 || chessMove.getEndPosition().getRow() == 1;
         }
@@ -75,19 +86,19 @@ public class WebSocketUI {
             throw new InvalidError("Not valid chess coordinates");
         } else {
             int row = switch (coord.charAt(0)) {
-                case 'A' -> 1;
-                case 'B' -> 2;
-                case 'C' -> 3;
-                case 'D' -> 4;
-                case 'E' -> 5;
-                case 'F' -> 6;
-                case 'G' -> 7;
-                case 'H' -> 8;
+                case 'A', 'a' -> 1;
+                case 'B', 'b' -> 2;
+                case 'C', 'c' -> 3;
+                case 'D', 'd' -> 4;
+                case 'E', 'e' -> 5;
+                case 'F', 'f' -> 6;
+                case 'G', 'g' -> 7;
+                case 'H', 'h' -> 8;
                 default -> throw new InvalidError("Not valid chess coordinates");
             };
             int col;
             try {
-                col = Integer.parseInt(String.valueOf(coord.charAt(0)));
+                col = Integer.parseInt(String.valueOf(coord.charAt(1)));
                 if (col < 0 || col > 8) {
                     throw new InvalidError("Not valid chess coordinates");
                 }
