@@ -4,6 +4,7 @@ import chess.ChessGame;
 import chess.ChessMove;
 import com.google.gson.Gson;
 import jakarta.websocket.*;
+import ui.EscapeSequences;
 import ui.PostloginUI;
 import websocket.commands.MakeMoveCommand;
 import websocket.commands.UserGameCommand;
@@ -105,11 +106,10 @@ public class WebSocketFacade extends Endpoint {
                 }
                 if (serverMessage.getServerMessageType() == ServerMessage.ServerMessageType.ERROR) {
                     ErrorMessage errorMessage = serializer.fromJson(message, ErrorMessage.class);
-                    System.out.println(errorMessage.getMessage());
+                    System.out.println(EscapeSequences.SET_TEXT_COLOR_RED + errorMessage.getMessage() + EscapeSequences.RESET_TEXT_COLOR);
                 }
                 if (serverMessage.getServerMessageType() == ServerMessage.ServerMessageType.NOTIFICATION) {
                     NotificationMessage notificationMessage = serializer.fromJson(message, NotificationMessage.class);
-                    System.out.println(notificationMessage.getMessage());
                     System.out.println(notificationMessage.getMessage());
                 }
             }

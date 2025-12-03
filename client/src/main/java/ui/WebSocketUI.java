@@ -68,7 +68,7 @@ public class WebSocketUI {
             }
             webSocketFacade.makeMove(authToken, gameID, chessMove);
         } else {
-            throw new ServerError("Error: invalid move");
+            throw new ServerError(EscapeSequences.SET_TEXT_COLOR_RED + "Error: invalid move" + EscapeSequences.RESET_TEXT_COLOR);
         }
     }
 
@@ -88,14 +88,15 @@ public class WebSocketUI {
             case "knight" -> ChessPiece.PieceType.KNIGHT;
             case "bishop" -> ChessPiece.PieceType.BISHOP;
             case "queen" -> ChessPiece.PieceType.QUEEN;
-            default -> throw new InvalidError("Not valid promotion");
+            default ->
+                    throw new InvalidError(EscapeSequences.SET_TEXT_COLOR_RED + "Not valid promotion" + EscapeSequences.RESET_TEXT_COLOR);
         };
     }
 
 
     private static ChessPosition validatePos(String coord) {
         if (coord.length() != 2) {
-            throw new InvalidError("Not valid chess coordinates");
+            throw new InvalidError(EscapeSequences.SET_TEXT_COLOR_RED + "Not valid chess coordinates" + EscapeSequences.RESET_TEXT_COLOR);
         } else {
             int col = switch (coord.charAt(0)) {
                 case 'A', 'a' -> 1;
@@ -106,16 +107,17 @@ public class WebSocketUI {
                 case 'F', 'f' -> 6;
                 case 'G', 'g' -> 7;
                 case 'H', 'h' -> 8;
-                default -> throw new InvalidError("Not valid chess coordinates");
+                default ->
+                        throw new InvalidError(EscapeSequences.SET_TEXT_COLOR_RED + "Not valid chess coordinates" + EscapeSequences.RESET_TEXT_COLOR);
             };
             int row;
             try {
                 row = Integer.parseInt(String.valueOf(coord.charAt(1)));
                 if (row < 1 || row > 8) {
-                    throw new InvalidError("Not valid chess coordinates");
+                    throw new InvalidError(EscapeSequences.SET_TEXT_COLOR_RED + "Not valid chess coordinates" + EscapeSequences.RESET_TEXT_COLOR);
                 }
             } catch (NumberFormatException e) {
-                throw new InvalidError("Not valid chess coordinates");
+                throw new InvalidError(EscapeSequences.SET_TEXT_COLOR_RED + "Not valid chess coordinates" + EscapeSequences.RESET_TEXT_COLOR);
             }
             return new ChessPosition(row, col);
         }
