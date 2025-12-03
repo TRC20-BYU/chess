@@ -124,7 +124,7 @@ public class Main {
                 System.out.println(EscapeSequences.SET_TEXT_COLOR_RED + "Error: incorrect number of arguments" + EscapeSequences.RESET_TEXT_COLOR);
             } else {
                 if (Objects.equals(params[2], "WHITE") | Objects.equals(params[2], "BLACK")) {
-                    postloginUI.joinGame(authToken, params[1], params[2]);
+                    gameID = postloginUI.joinGame(authToken, params[1], params[2]);
                     loggedIn = 2;
                 } else {
                     System.out.println(EscapeSequences.SET_TEXT_COLOR_RED + "The colors are WHITE and BLACK" + EscapeSequences.RESET_TEXT_COLOR);

@@ -5,6 +5,7 @@ import chess.ChessMove;
 import chess.ChessPiece;
 import chess.ChessPosition;
 import serverfacade.InvalidError;
+import serverfacade.ServerError;
 import serverfacade.websocket.WebSocketFacade;
 
 import java.util.Scanner;
@@ -54,17 +55,25 @@ public class WebSocketUI {
         System.out.print("Piece to move: ");
         Scanner scanner = new Scanner(System.in);
         String piece = scanner.nextLine();
-        ChessPosition pieceLocal = validateMove(piece);
+        ChessPosition pieceLocal = validatePos(piece);
         System.out.print("New space: ");
         scanner = new Scanner(System.in);
         String space = scanner.nextLine();
-        ChessPosition newPos = validateMove(space);
+        ChessPosition newPos = validatePos(space);
         ChessMove chessMove = new ChessMove(pieceLocal, newPos, null);
-        if (webSocketUI.checkForPromotion(chessMove)) {
-            ChessPiece.PieceType promotion = getPromotion();
-            chessMove = new ChessMove(pieceLocal, newPos, promotion);
+        if (validateMove(chessMove)) {
+            if (webSocketUI.checkForPromotion(chessMove)) {
+                ChessPiece.PieceType promotion = getPromotion();
+                chessMove = new ChessMove(pieceLocal, newPos, promotion);
+            }
+            webSocketFacade.makeMove(authToken, gameID - 1, chessMove);
+        } else {
+            throw new ServerError("Error: invalid move");
         }
-        webSocketFacade.makeMove(authToken, gameID, chessMove);
+    }
+
+    private boolean validateMove(ChessMove chessMove) {
+        return postloginUI.chess.validMoves(chessMove.getStartPosition()).contains(chessMove);
     }
 
     private static ChessPiece.PieceType getPromotion() {
@@ -81,7 +90,7 @@ public class WebSocketUI {
     }
 
 
-    private static ChessPosition validateMove(String coord) {
+    private static ChessPosition validatePos(String coord) {
         if (coord.length() != 2) {
             throw new InvalidError("Not valid chess coordinates");
         } else {
@@ -105,7 +114,7 @@ public class WebSocketUI {
             } catch (NumberFormatException e) {
                 throw new InvalidError("Not valid chess coordinates");
             }
-            return new ChessPosition(row, col);
+            return new ChessPosition(col, row);
         }
     }
 

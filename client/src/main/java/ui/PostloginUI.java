@@ -66,7 +66,7 @@ public class PostloginUI {
         }
     }
 
-    public void joinGame(String authToken, String id, String color) {
+    public int joinGame(String authToken, String id, String color) {
         int idnum = 0;
         try {
             idnum = gameIds.get(Integer.parseInt(id) - 1);
@@ -78,6 +78,7 @@ public class PostloginUI {
         System.out.println("Game joined!!!");
         team = color;
         webSocketUI.connect(idnum, authToken);
+        return idnum;
     }
 
     public void observerGame(String id, String authToken) {

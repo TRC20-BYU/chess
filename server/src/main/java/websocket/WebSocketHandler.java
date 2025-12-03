@@ -55,7 +55,7 @@ public class WebSocketHandler implements WsConnectHandler, WsMessageHandler, WsC
 //            gameService.resignService(req.getAuthToken(), req.getGameID(),session);
             }
         } catch (Exception e) {
-            System.out.println("Websocket error");
+            System.out.println(e.getMessage());
         }
     }
 
