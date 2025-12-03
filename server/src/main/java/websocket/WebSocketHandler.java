@@ -62,9 +62,9 @@ public class WebSocketHandler implements WsConnectHandler, WsMessageHandler, WsC
                 loadGameSingle(ctx, chessGame.chessGame());
                 GameConnections gameConnections = gameService.getConnects(req.getGameID());
                 if (Objects.equals(username, chessGame.whiteUsername())) {
-                    notifyAction(gameConnections, username, req.getGameID(), ctx, "has joined game as white");
+                    notifyAction(gameConnections, username, req.getGameID(), ctx, "has joined as white game");
                 } else if (Objects.equals(username, chessGame.blackUsername())) {
-                    notifyAction(gameConnections, username, req.getGameID(), ctx, "has joined game as black");
+                    notifyAction(gameConnections, username, req.getGameID(), ctx, "has joined as black in game");
                 } else {
                     notifyAction(gameConnections, username, req.getGameID(), ctx, "is observing game");
                 }
