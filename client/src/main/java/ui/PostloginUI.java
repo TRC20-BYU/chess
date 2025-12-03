@@ -144,20 +144,25 @@ public class PostloginUI {
         boardString += header + "\n";
         for (int i = 0; i < lines.length; i++) {
             boardString += EscapeSequences.SET_BG_COLOR_LIGHT_GREY + " " + (8 - i) + " " + EscapeSequences.RESET_BG_COLOR;
-            for (int l = 0; l < lines[i].length(); l++) {
-                String color = "";
-                if ((l + i) % 2 != 0) {
-                    color = EscapeSequences.SET_BG_COLOR_BLACK;
-                } else {
-                    color = EscapeSequences.SET_BG_COLOR_WHITE;
-                }
-                char symbol = lines[i].charAt(l);
-                String piece = chessPieces(String.valueOf(symbol));
-                boardString += color + " " + piece + " " + EscapeSequences.RESET_BG_COLOR;
-            }
+            boardString = getSquareColor(boardString, lines, i);
             boardString += EscapeSequences.SET_BG_COLOR_LIGHT_GREY + " " + (8 - i) + " " + EscapeSequences.RESET_BG_COLOR + "\n";
         }
         boardString += header + "\n";
+        return boardString;
+    }
+
+    private String getSquareColor(String boardString, String[] lines, int i) {
+        for (int l = 0; l < lines[i].length(); l++) {
+            String color = "";
+            if ((l + i) % 2 != 0) {
+                color = EscapeSequences.SET_BG_COLOR_BLACK;
+            } else {
+                color = EscapeSequences.SET_BG_COLOR_WHITE;
+            }
+            char symbol = lines[i].charAt(l);
+            String piece = chessPieces(String.valueOf(symbol));
+            boardString += color + " " + piece + " " + EscapeSequences.RESET_BG_COLOR;
+        }
         return boardString;
     }
 
@@ -239,17 +244,7 @@ public class PostloginUI {
         boardString += header + "\n";
         for (int i = 0; i < lines.length; i++) {
             boardString += EscapeSequences.SET_BG_COLOR_LIGHT_GREY + " " + (i + 1) + " " + EscapeSequences.RESET_BG_COLOR;
-            for (int l = 0; l < lines[i].length(); l++) {
-                String color = "";
-                if ((l + i) % 2 != 0) {
-                    color = EscapeSequences.SET_BG_COLOR_BLACK;
-                } else {
-                    color = EscapeSequences.SET_BG_COLOR_WHITE;
-                }
-                char symbol = lines[i].charAt(l);
-                String piece = chessPieces(String.valueOf(symbol));
-                boardString += color + " " + piece + " " + EscapeSequences.RESET_BG_COLOR;
-            }
+            boardString = getSquareColor(boardString, lines, i);
             boardString += EscapeSequences.SET_BG_COLOR_LIGHT_GREY + " " + (i + 1) + " " + EscapeSequences.RESET_BG_COLOR + "\n";
         }
         boardString += header + "\n";

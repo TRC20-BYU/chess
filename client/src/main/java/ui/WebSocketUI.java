@@ -29,12 +29,18 @@ public class WebSocketUI {
 
     public void help() {
         //Displays text informing the user what actions they can take.
-        System.out.println("    " + EscapeSequences.SET_TEXT_COLOR_GREEN + "move " + EscapeSequences.SET_TEXT_COLOR_BLUE + "- moves a piece");
-        System.out.println("    " + EscapeSequences.SET_TEXT_COLOR_GREEN + "highlight " + EscapeSequences.SET_TEXT_COLOR_BLUE + "- highlights possible moves for a given piece");
-        System.out.println("    " + EscapeSequences.SET_TEXT_COLOR_GREEN + "redraw " + EscapeSequences.SET_TEXT_COLOR_BLUE + "- redraws the board");
-        System.out.println("    " + EscapeSequences.SET_TEXT_COLOR_GREEN + "leave " + EscapeSequences.SET_TEXT_COLOR_BLUE + "- leaves the game");
-        System.out.println("    " + EscapeSequences.SET_TEXT_COLOR_GREEN + "resign " + EscapeSequences.SET_TEXT_COLOR_BLUE + "- resigns the game");
-        System.out.println("    " + EscapeSequences.SET_TEXT_COLOR_GREEN + "help " + EscapeSequences.SET_TEXT_COLOR_BLUE
+        System.out.println("    " + EscapeSequences.SET_TEXT_COLOR_GREEN + "move "
+                + EscapeSequences.SET_TEXT_COLOR_BLUE + "- moves a piece");
+        System.out.println("    " + EscapeSequences.SET_TEXT_COLOR_GREEN + "highlight "
+                + EscapeSequences.SET_TEXT_COLOR_BLUE + "- highlights possible moves for a given piece");
+        System.out.println("    " + EscapeSequences.SET_TEXT_COLOR_GREEN + "redraw "
+                + EscapeSequences.SET_TEXT_COLOR_BLUE + "- redraws the board");
+        System.out.println("    " + EscapeSequences.SET_TEXT_COLOR_GREEN + "leave "
+                + EscapeSequences.SET_TEXT_COLOR_BLUE + "- leaves the game");
+        System.out.println("    " + EscapeSequences.SET_TEXT_COLOR_GREEN + "resign "
+                + EscapeSequences.SET_TEXT_COLOR_BLUE + "- resigns the game");
+        System.out.println("    " + EscapeSequences.SET_TEXT_COLOR_GREEN + "help "
+                + EscapeSequences.SET_TEXT_COLOR_BLUE
                 + "- displays possible commands" + EscapeSequences.RESET_TEXT_COLOR);
     }
 
@@ -69,7 +75,8 @@ public class WebSocketUI {
             }
             webSocketFacade.makeMove(authToken, gameID, chessMove, piece, space);
         } else {
-            throw new ServerError(EscapeSequences.SET_TEXT_COLOR_RED + "Error: invalid move" + EscapeSequences.RESET_TEXT_COLOR);
+            throw new ServerError(EscapeSequences.SET_TEXT_COLOR_RED + "Error: invalid move"
+                    + EscapeSequences.RESET_TEXT_COLOR);
         }
     }
 
@@ -89,15 +96,16 @@ public class WebSocketUI {
             case "knight" -> ChessPiece.PieceType.KNIGHT;
             case "bishop" -> ChessPiece.PieceType.BISHOP;
             case "queen" -> ChessPiece.PieceType.QUEEN;
-            default ->
-                    throw new InvalidError(EscapeSequences.SET_TEXT_COLOR_RED + "Not valid promotion" + EscapeSequences.RESET_TEXT_COLOR);
+            default -> throw new InvalidError(EscapeSequences.SET_TEXT_COLOR_RED + "Not valid promotion"
+                    + EscapeSequences.RESET_TEXT_COLOR);
         };
     }
 
 
     private static ChessPosition validatePos(String coord) {
         if (coord.length() != 2) {
-            throw new InvalidError(EscapeSequences.SET_TEXT_COLOR_RED + "Not valid chess coordinates" + EscapeSequences.RESET_TEXT_COLOR);
+            throw new InvalidError(EscapeSequences.SET_TEXT_COLOR_RED + "Not valid chess coordinates"
+                    + EscapeSequences.RESET_TEXT_COLOR);
         } else {
             int col = switch (coord.charAt(0)) {
                 case 'A', 'a' -> 1;
@@ -108,17 +116,19 @@ public class WebSocketUI {
                 case 'F', 'f' -> 6;
                 case 'G', 'g' -> 7;
                 case 'H', 'h' -> 8;
-                default ->
-                        throw new InvalidError(EscapeSequences.SET_TEXT_COLOR_RED + "Not valid chess coordinates" + EscapeSequences.RESET_TEXT_COLOR);
+                default -> throw new InvalidError(EscapeSequences.SET_TEXT_COLOR_RED +
+                        "Not valid chess coordinates" + EscapeSequences.RESET_TEXT_COLOR);
             };
             int row;
             try {
                 row = Integer.parseInt(String.valueOf(coord.charAt(1)));
                 if (row < 1 || row > 8) {
-                    throw new InvalidError(EscapeSequences.SET_TEXT_COLOR_RED + "Not valid chess coordinates" + EscapeSequences.RESET_TEXT_COLOR);
+                    throw new InvalidError(EscapeSequences.SET_TEXT_COLOR_RED +
+                            "Not valid chess coordinates" + EscapeSequences.RESET_TEXT_COLOR);
                 }
             } catch (NumberFormatException e) {
-                throw new InvalidError(EscapeSequences.SET_TEXT_COLOR_RED + "Not valid chess coordinates" + EscapeSequences.RESET_TEXT_COLOR);
+                throw new InvalidError(EscapeSequences.SET_TEXT_COLOR_RED +
+                        "Not valid chess coordinates" + EscapeSequences.RESET_TEXT_COLOR);
             }
             return new ChessPosition(row, col);
         }

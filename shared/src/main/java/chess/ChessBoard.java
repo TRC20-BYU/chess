@@ -130,14 +130,6 @@ public class ChessBoard {
         return boardCopy;
     }
 
-//    public ChessPiece[][] getBoard() {
-//        ChessPiece[][] boardCopy = new ChessPiece[8][8];
-//        for (int x = 0; x < board.length; x++) {
-//            boardCopy[x] = board[x].clone();
-//        }
-//        return boardCopy;
-//    }
-
 
     public void setBoard(ChessPiece[][] board) {
         ChessPiece[][] boardCopy = new ChessPiece[8][8];
