@@ -86,6 +86,39 @@ public class Main {
                 loggedIn = 1;
             }
         }
+        if (Objects.equals(params[0], "resign")) {
+            if (params.length != 1) {
+                System.out.println(EscapeSequences.SET_TEXT_COLOR_RED +
+                        "Error: incorrect number of arguments" + EscapeSequences.RESET_TEXT_COLOR);
+            } else {
+                webSocketUI.resign(authToken, gameID);
+                loggedIn = 1;
+            }
+        }
+        if (Objects.equals(params[0], "redraw")) {
+            if (params.length != 1) {
+                System.out.println(EscapeSequences.SET_TEXT_COLOR_RED +
+                        "Error: incorrect number of arguments" + EscapeSequences.RESET_TEXT_COLOR);
+            } else {
+                webSocketUI.redraw();
+            }
+        }
+        if (Objects.equals(params[0], "help")) {
+            if (params.length != 1) {
+                System.out.println(EscapeSequences.SET_TEXT_COLOR_RED +
+                        "Error: incorrect number of arguments" + EscapeSequences.RESET_TEXT_COLOR);
+            } else {
+                webSocketUI.help();
+            }
+        }
+        if (Objects.equals(params[0], "highlight")) {
+            if (params.length != 1) {
+                System.out.println(EscapeSequences.SET_TEXT_COLOR_RED +
+                        "Error: incorrect number of arguments" + EscapeSequences.RESET_TEXT_COLOR);
+            } else {
+                webSocketUI.highlight();
+            }
+        }
     }
 
 

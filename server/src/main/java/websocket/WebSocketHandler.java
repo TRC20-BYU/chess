@@ -73,18 +73,20 @@ public class WebSocketHandler implements WsConnectHandler, WsMessageHandler, WsC
                 notifyActionAll(gameConnections, username, req.getGameID(), ctx, "has resigned game");
             }
         } catch (SocketException e) {
+            e.printStackTrace();
             sendError(e.getMessage(), ctx);
-        } catch (IOException e) {
-            sendError("something went wrong", ctx);
         } catch (ResponseException e) {
             if (e.getCode() == ResponseException.Code.authError) {
+                e.printStackTrace();
                 sendError("you are not authorized to do that", ctx);
             }
+        } catch (IOException e) {
+            e.printStackTrace();
+            sendError("something went wrong", ctx);
+        } catch (Exception e) {
+            System.out.println("Error: " + e.getMessage());
+            e.printStackTrace();
         }
-//        catch (Exception e) {
-//            System.out.println("Error: " + e.getMessage());
-//            e.printStackTrace();
-//        }
     }
 
     private ChessGame moveHandler(String reqJson) throws SocketException {
@@ -95,7 +97,6 @@ public class WebSocketHandler implements WsConnectHandler, WsMessageHandler, WsC
         ChessMove chessMove = moveReq.getMove();
         try {
             return gameService.makeMove(authToken, gameId, chessMove);
-
         } catch (ResponseException e) {
             throw new SocketException("Move failed");
         }

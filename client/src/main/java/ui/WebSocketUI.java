@@ -66,13 +66,16 @@ public class WebSocketUI {
                 ChessPiece.PieceType promotion = getPromotion();
                 chessMove = new ChessMove(pieceLocal, newPos, promotion);
             }
-            webSocketFacade.makeMove(authToken, gameID - 1, chessMove);
+            webSocketFacade.makeMove(authToken, gameID, chessMove);
         } else {
             throw new ServerError("Error: invalid move");
         }
     }
 
     private boolean validateMove(ChessMove chessMove) {
+        if (postloginUI.chess.validMoves(chessMove.getStartPosition()) == null) {
+            return false;
+        }
         return postloginUI.chess.validMoves(chessMove.getStartPosition()).contains(chessMove);
     }
 
@@ -94,7 +97,7 @@ public class WebSocketUI {
         if (coord.length() != 2) {
             throw new InvalidError("Not valid chess coordinates");
         } else {
-            int row = switch (coord.charAt(0)) {
+            int col = switch (coord.charAt(0)) {
                 case 'A', 'a' -> 1;
                 case 'B', 'b' -> 2;
                 case 'C', 'c' -> 3;
@@ -105,16 +108,16 @@ public class WebSocketUI {
                 case 'H', 'h' -> 8;
                 default -> throw new InvalidError("Not valid chess coordinates");
             };
-            int col;
+            int row;
             try {
-                col = Integer.parseInt(String.valueOf(coord.charAt(1)));
-                if (col < 0 || col > 8) {
+                row = Integer.parseInt(String.valueOf(coord.charAt(1)));
+                if (row < 1 || row > 8) {
                     throw new InvalidError("Not valid chess coordinates");
                 }
             } catch (NumberFormatException e) {
                 throw new InvalidError("Not valid chess coordinates");
             }
-            return new ChessPosition(col, row);
+            return new ChessPosition(row, col);
         }
     }
 
@@ -123,4 +126,19 @@ public class WebSocketUI {
     }
 
 
+    public void redraw() {
+        postloginUI.redrawBoard();
+    }
+
+    public void resign(String authToken, int gameID) {
+        webSocketFacade.resign(authToken, gameID);
+    }
+
+    public void highlight() {
+        System.out.print("Piece to highlight: ");
+        Scanner scanner = new Scanner(System.in);
+        String piece = scanner.nextLine();
+        ChessPosition pieceLocal = validatePos(piece);
+        postloginUI.highlight(pieceLocal);
+    }
 }

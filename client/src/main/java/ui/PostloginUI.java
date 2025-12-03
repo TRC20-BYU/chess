@@ -2,6 +2,8 @@ package ui;
 
 import chess.ChessBoard;
 import chess.ChessGame;
+import chess.ChessMove;
+import chess.ChessPosition;
 import com.google.gson.Gson;
 import datamodel.GameList;
 import datamodel.JoinData;
@@ -23,6 +25,25 @@ public class PostloginUI {
         this.serverFacade = serverFacade;
         this.webSocketUI = webSocketUI;
         this.webSocketUI.setPostLoginUI(this);
+    }
+
+    public void highlight(ChessPosition chessPosition) {
+        Collection<ChessMove> moves = chess.validMoves(chessPosition);
+        Collection<ChessPosition> pos = new HashSet<>();
+        pos.add(chessPosition);
+        if (moves != null) {
+            for (ChessMove chessMove : moves) {
+                pos.add(chessMove.getEndPosition());
+            }
+        }
+        String board;
+        if (Objects.equals(team, "WHITE")) {
+            board = highlightBoard(chess, pos);
+            System.out.print(board);
+        } else {
+            board = highlightRotateboard(chess, pos);
+            System.out.print(board);
+        }
     }
 
     public void help() {
@@ -143,6 +164,37 @@ public class PostloginUI {
         return boardString;
     }
 
+    private String highlightBoard(ChessGame chessGame, Collection<ChessPosition> pos) {
+        ChessBoard board = chessGame.getBoard();
+        String boardRep = board.toString();
+        String boardString = "";
+        String header = EscapeSequences.SET_BG_COLOR_LIGHT_GREY + "    a  b  c  d  e  f  g  h    " + EscapeSequences.RESET_BG_COLOR;
+        String[] lines = boardRep.split("\\R");
+        boardString += header + "\n";
+        for (int i = 0; i < lines.length; i++) {
+            boardString += EscapeSequences.SET_BG_COLOR_LIGHT_GREY + " " + (8 - i) + " " + EscapeSequences.RESET_BG_COLOR;
+            for (int l = 0; l < lines[i].length(); l++) {
+                String color = "";
+                ChessPosition temp = new ChessPosition(8 - i, l + 1);
+                if (pos.contains(temp)) {
+                    color = EscapeSequences.SET_BG_COLOR_GREEN;
+                } else {
+                    if ((l + i) % 2 != 0) {
+                        color = EscapeSequences.SET_BG_COLOR_BLACK;
+                    } else {
+                        color = EscapeSequences.SET_BG_COLOR_WHITE;
+                    }
+                }
+                char symbol = lines[i].charAt(l);
+                String piece = chessPieces(String.valueOf(symbol));
+                boardString += color + " " + piece + " " + EscapeSequences.RESET_BG_COLOR;
+            }
+            boardString += EscapeSequences.SET_BG_COLOR_LIGHT_GREY + " " + (8 - i) + " " + EscapeSequences.RESET_BG_COLOR + "\n";
+        }
+        boardString += header + "\n";
+        return boardString;
+    }
+
     String chessPieces(String piece) {
         if (Objects.equals(piece, ".")) {
             return " ";
@@ -152,6 +204,37 @@ public class PostloginUI {
         } else {
             return EscapeSequences.SET_TEXT_COLOR_BLUE + piece + EscapeSequences.RESET_TEXT_COLOR;
         }
+    }
+
+    private String highlightRotateboard(ChessGame chessGame, Collection<ChessPosition> pos) {
+        ChessBoard board = chessGame.getBoard();
+        String boardRep = flipBoard(board.toString());
+        String boardString = "";
+        String header = EscapeSequences.SET_BG_COLOR_LIGHT_GREY + "    h  g  f  e  d  c  b  a    " + EscapeSequences.RESET_BG_COLOR;
+        String[] lines = boardRep.split("\\R");
+        boardString += header + "\n";
+        for (int i = 0; i < lines.length; i++) {
+            boardString += EscapeSequences.SET_BG_COLOR_LIGHT_GREY + " " + (i + 1) + " " + EscapeSequences.RESET_BG_COLOR;
+            for (int l = 0; l < lines[i].length(); l++) {
+                String color = "";
+                ChessPosition temp = new ChessPosition(i + 1, 8 - l);
+                if (pos.contains(temp)) {
+                    color = EscapeSequences.SET_BG_COLOR_GREEN;
+                } else {
+                    if ((l + i) % 2 != 0) {
+                        color = EscapeSequences.SET_BG_COLOR_BLACK;
+                    } else {
+                        color = EscapeSequences.SET_BG_COLOR_WHITE;
+                    }
+                }
+                char symbol = lines[i].charAt(l);
+                String piece = chessPieces(String.valueOf(symbol));
+                boardString += color + " " + piece + " " + EscapeSequences.RESET_BG_COLOR;
+            }
+            boardString += EscapeSequences.SET_BG_COLOR_LIGHT_GREY + " " + (i + 1) + " " + EscapeSequences.RESET_BG_COLOR + "\n";
+        }
+        boardString += header + "\n";
+        return boardString;
     }
 
     private String rotateboard(ChessGame chessGame) {

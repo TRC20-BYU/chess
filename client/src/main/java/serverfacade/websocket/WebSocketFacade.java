@@ -65,6 +65,17 @@ public class WebSocketFacade extends Endpoint {
         }
     }
 
+    public void resign(String authToken, int gameID) {
+        try {
+            UserGameCommand userGameCommand = new UserGameCommand(UserGameCommand.CommandType.RESIGN, authToken, gameID);
+            var serializer = new Gson();
+            String commandSerialized = serializer.toJson(userGameCommand);
+            session.getBasicRemote().sendText(commandSerialized);
+        } catch (IOException e) {
+
+        }
+    }
+
 
     public void ping(String port) throws URISyntaxException, DeploymentException, IOException {
         URI uri = new URI("ws://localhost:" + port + "/ws");
@@ -94,9 +105,11 @@ public class WebSocketFacade extends Endpoint {
                 }
                 if (serverMessage.getServerMessageType() == ServerMessage.ServerMessageType.ERROR) {
                     ErrorMessage errorMessage = serializer.fromJson(message, ErrorMessage.class);
+                    System.out.println(errorMessage.getMessage());
                 }
                 if (serverMessage.getServerMessageType() == ServerMessage.ServerMessageType.NOTIFICATION) {
                     NotificationMessage notificationMessage = serializer.fromJson(message, NotificationMessage.class);
+                    System.out.println(notificationMessage.getMessage());
                     System.out.println(notificationMessage.getMessage());
                 }
             }

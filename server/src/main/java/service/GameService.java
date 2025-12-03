@@ -108,9 +108,12 @@ public class GameService {
         }
     }
 
-    public boolean validateUserColor(String authToken, GameData gameData, ChessMove chessMove) throws ResponseException {
+    public boolean validateUserColor(String authToken, GameData gameData, ChessMove chessMove) throws ResponseException, SocketException {
         String username = dataAccess.getUsername(authToken).username();
         ChessGame.TeamColor teamTurn = gameData.chessGame().getTeamTurn();
+        if (gameData.chessGame().getBoard().getPiece(chessMove.getStartPosition()) == null) {
+            throw new SocketException("invalid move");
+        }
         ChessGame.TeamColor pieceColor = gameData.chessGame().getBoard().getPiece(chessMove.getStartPosition()).getTeamColor();
         if (teamTurn == pieceColor) {
             if (teamTurn == ChessGame.TeamColor.WHITE) {
