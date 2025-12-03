@@ -127,30 +127,25 @@ public class GameService {
     }
 
 
-    public ChessGame connectService(String authToken, Integer gameID, Session session) throws SocketException {
-        try {
-            if (dataAccess.authenticate(authToken)) {
-                if (dataAccess.getGame(gameID) != null) {
-                    String username = dataAccess.getUsername(authToken).username();
-                    GameData gameData = dataAccess.getGame(gameID);
-                    if (Objects.equals(gameData.whiteUsername(), username)) {
-                        connectionManager.addWhite(gameID, session);
-                    } else if (Objects.equals(gameData.blackUsername(), username)) {
-                        connectionManager.addBlack(gameID, session);
-                    } else {
-                        connectionManager.addObserver(gameID, session);
-                    }
-                    return dataAccess.getGame(gameID).chessGame();
+    public ChessGame connectService(String authToken, Integer gameID, Session session) throws SocketException, ResponseException {
+        if (dataAccess.authenticate(authToken)) {
+            if (dataAccess.getGame(gameID) != null) {
+                String username = dataAccess.getUsername(authToken).username();
+                GameData gameData = dataAccess.getGame(gameID);
+                if (Objects.equals(gameData.whiteUsername(), username)) {
+                    connectionManager.addWhite(gameID, session);
+                } else if (Objects.equals(gameData.blackUsername(), username)) {
+                    connectionManager.addBlack(gameID, session);
                 } else {
-                    throw new SocketException("invalid game ID");
+                    connectionManager.addObserver(gameID, session);
                 }
+                return dataAccess.getGame(gameID).chessGame();
             } else {
-                throw new ResponseException(ResponseException.Code.authError);
+                throw new SocketException("invalid game ID");
             }
-        } catch (ResponseException e) {
-            System.out.println("there was an error");
+        } else {
+            throw new ResponseException(ResponseException.Code.authError);
         }
-        return null;
     }
 
     public void disconnectService(String authToken, Integer gameID, Session session) throws ResponseException {

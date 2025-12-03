@@ -47,7 +47,6 @@ public class ChessGame {
      * @param team the team whose turn it is
      */
     public void setTeamTurn(TeamColor team) {
-
         turn = team;
     }
 
@@ -151,7 +150,7 @@ public class ChessGame {
         if (isInCheckmate(TeamColor.BLACK)) {
             setHasEnded(true, TeamColor.WHITE);
         }
-        if (isInStalemate(TeamColor.WHITE)) {
+        if (isInStalemate(TeamColor.BLACK)) {
             setHasEnded(true, null);
         }
     }
@@ -226,12 +225,14 @@ public class ChessGame {
     private boolean hypotheticalCheck(ChessMove move) {
 
         ChessPiece[][] oldBoard = board.getBoard();
+        Collection<ChessPiece> enPassantables = new HashSet<>(board.getEnPassantables());
         ChessPiece piece = board.getPiece(move.getStartPosition());
         boolean moved = piece.hasMoved;
         board.movePiece(move.getStartPosition(), move.getEndPosition(), piece, true);
         boolean valid = !isInCheck(piece.getTeamColor());
         piece.hasMoved = moved;
         board.setBoard(oldBoard);
+        board.setEnPassantables(enPassantables);
         return valid;
 
     }
@@ -294,8 +295,7 @@ public class ChessGame {
      */
     public boolean isInStalemate(TeamColor teamColor) {
         if (!isInCheck(teamColor)) {
-            boolean something = checkMate(teamColor);
-            return !something;
+            return !checkMate(teamColor);
         }
         return false;
     }

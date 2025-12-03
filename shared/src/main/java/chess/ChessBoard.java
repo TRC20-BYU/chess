@@ -16,6 +16,15 @@ import static java.lang.Math.abs;
 public class ChessBoard {
 
     private ChessPiece[][] board;
+
+    public Collection<ChessPiece> getEnPassantables() {
+        return enPassantables;
+    }
+
+    public void setEnPassantables(Collection<ChessPiece> enPassantables) {
+        this.enPassantables = enPassantables;
+    }
+
     private Collection<ChessPiece> enPassantables = new HashSet<>();
 
     public ChessBoard() {
@@ -108,10 +117,27 @@ public class ChessBoard {
     public ChessPiece[][] getBoard() {
         ChessPiece[][] boardCopy = new ChessPiece[8][8];
         for (int x = 0; x < board.length; x++) {
-            boardCopy[x] = board[x].clone();
+            for (int y = 0; y < board[x].length; y++) {
+                ChessPiece piece = board[x][y];
+                if (piece != null) {
+                    ChessPiece copy = new ChessPiece(piece.getTeamColor(), piece.getPieceType(), piece.hasMoved);
+                    boardCopy[x][y] = copy;
+                } else {
+                    boardCopy[x][y] = null;
+                }
+            }
         }
         return boardCopy;
     }
+
+//    public ChessPiece[][] getBoard() {
+//        ChessPiece[][] boardCopy = new ChessPiece[8][8];
+//        for (int x = 0; x < board.length; x++) {
+//            boardCopy[x] = board[x].clone();
+//        }
+//        return boardCopy;
+//    }
+
 
     public void setBoard(ChessPiece[][] board) {
         ChessPiece[][] boardCopy = new ChessPiece[8][8];
