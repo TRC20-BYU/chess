@@ -10,7 +10,9 @@ public class ConnectionManager {
 
     public void addObserver(int gameID, Session session) {
         if (gameConnectins.containsKey(gameID)) {
-            gameConnectins.get(gameID).addObserver(session);
+            if (gameConnectins.get(gameID) != null) {
+                gameConnectins.get(gameID).addObserver(session);
+            }
         } else {
             gameConnectins.put(gameID, new GameConnections());
             gameConnectins.get(gameID).addObserver(session);

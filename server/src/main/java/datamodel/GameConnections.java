@@ -2,12 +2,13 @@ package datamodel;
 
 import org.eclipse.jetty.websocket.api.Session;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class GameConnections {
     Session whitePlayer;
     Session blackPlayer;
-    List<Session> observers;
+    List<Session> observers = new ArrayList<>();
 
     public void addWhitePlayer(Session session) {
         whitePlayer = session;

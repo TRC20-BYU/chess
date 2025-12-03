@@ -97,6 +97,7 @@ public class WebSocketFacade extends Endpoint {
                 }
                 if (serverMessage.getServerMessageType() == ServerMessage.ServerMessageType.NOTIFICATION) {
                     NotificationMessage notificationMessage = serializer.fromJson(message, NotificationMessage.class);
+                    System.out.println(notificationMessage.getMessage());
                 }
             }
         });

@@ -224,7 +224,7 @@ public class DBMemoryAccess implements DataAccess {
         String statement;
         if (rs.next()) {
             String whitePlayerName = rs.getString("whitePlayerName");
-            if (whitePlayerName != null) {
+            if (whitePlayerName != null && username != null) {
                 throw new ResponseException(ResponseException.Code.takenError);
             }
             statement = "UPDATE games Set whitePlayerName=? WHERE gameID=?";
@@ -290,7 +290,7 @@ public class DBMemoryAccess implements DataAccess {
         String statement;
         if (rs.next()) {
             String blackPlayerName = rs.getString("blackPlayerName");
-            if (blackPlayerName != null) {
+            if (blackPlayerName != null && username != null) {
                 throw new ResponseException(ResponseException.Code.takenError);
             }
             statement = "UPDATE games Set blackPlayerName=? WHERE gameID=?";

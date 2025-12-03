@@ -75,6 +75,14 @@ public class GameService {
         }
     }
 
+    public String getGameData(String authToken) throws ResponseException {
+        if (dataAccess.authenticate(authToken)) {
+            return dataAccess.getUsername(authToken).username();
+        } else {
+            throw new ResponseException(ResponseException.Code.authError);
+        }
+    }
+
     public boolean validateUserColor(String authToken, GameData gameData, ChessMove chessMove) throws ResponseException {
         String username = dataAccess.getUsername(authToken).username();
         ChessGame.TeamColor teamTurn = gameData.chessGame().getTeamTurn();
@@ -120,6 +128,12 @@ public class GameService {
         if (dataAccess.authenticate(authToken)) {
             String username = dataAccess.getUsername(authToken).username();
             GameData gameData = dataAccess.getGame(gameID);
+            if (Objects.equals(gameData.whiteUsername(), username)) {
+                dataAccess.setWhite(gameID, null);
+            }
+            if (Objects.equals(gameData.blackUsername(), username)) {
+                dataAccess.setBlack(gameID, null);
+            }
             if (Objects.equals(gameData.whiteUsername(), username)) {
                 connectionManager.removeWhite(gameID, session);
             } else if (Objects.equals(gameData.blackUsername(), username)) {

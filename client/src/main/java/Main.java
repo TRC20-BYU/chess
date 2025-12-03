@@ -83,6 +83,7 @@ public class Main {
                         "Error: incorrect number of arguments" + EscapeSequences.RESET_TEXT_COLOR);
             } else {
                 webSocketUI.leave(authToken, gameID);
+                loggedIn = 1;
             }
         }
     }
@@ -125,6 +126,7 @@ public class Main {
             } else {
                 if (Objects.equals(params[2], "WHITE") | Objects.equals(params[2], "BLACK")) {
                     gameID = postloginUI.joinGame(authToken, params[1], params[2]);
+                    webSocketUI.connect(gameID, authToken);
                     loggedIn = 2;
                 } else {
                     System.out.println(EscapeSequences.SET_TEXT_COLOR_RED + "The colors are WHITE and BLACK" + EscapeSequences.RESET_TEXT_COLOR);
