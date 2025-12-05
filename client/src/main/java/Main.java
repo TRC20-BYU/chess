@@ -1,5 +1,6 @@
 import datamodel.AuthData;
 import datamodel.UserData;
+import serverfacade.InvalidError;
 import serverfacade.ServerError;
 import serverfacade.ServerFacade;
 import serverfacade.websocket.WebSocketFacade;
@@ -74,7 +75,12 @@ public class Main {
                 System.out.println(EscapeSequences.SET_TEXT_COLOR_RED +
                         "Error: incorrect number of arguments" + EscapeSequences.RESET_TEXT_COLOR);
             } else {
-                webSocketUI.getChessMove(webSocketUI, authToken, gameID);
+                try {
+                    webSocketUI.getChessMove(webSocketUI, authToken, gameID);
+                } catch (InvalidError e) {
+                    System.out.println(EscapeSequences.SET_TEXT_COLOR_RED + "Not valid chess coordinates"
+                            + EscapeSequences.RESET_TEXT_COLOR);
+                }
             }
         }
         if (Objects.equals(params[0], "leave")) {

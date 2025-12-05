@@ -58,7 +58,7 @@ public class WebSocketUI {
     }
 
 
-    public void getChessMove(WebSocketUI webSocketUI, String authToken, int gameID) {
+    public void getChessMove(WebSocketUI webSocketUI, String authToken, int gameID) throws InvalidError {
         System.out.print("Piece to move: ");
         Scanner scanner = new Scanner(System.in);
         String piece = scanner.nextLine();
@@ -102,7 +102,7 @@ public class WebSocketUI {
     }
 
 
-    private static ChessPosition validatePos(String coord) {
+    private static ChessPosition validatePos(String coord) throws InvalidError {
         if (coord.length() != 2) {
             throw new InvalidError(EscapeSequences.SET_TEXT_COLOR_RED + "Not valid chess coordinates"
                     + EscapeSequences.RESET_TEXT_COLOR);

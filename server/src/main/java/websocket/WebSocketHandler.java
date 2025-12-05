@@ -138,15 +138,29 @@ public class WebSocketHandler implements WsConnectHandler, WsMessageHandler, WsC
 
     private void sendMessageToAll(GameConnections gameConnections, String serialized) throws IOException {
         if (gameConnections.getWhitePlayer() != null) {
-            gameConnections.getWhitePlayer().getRemote().sendString(serialized);
+            if (gameConnections.getWhitePlayer().isOpen()) {
+                gameConnections.getWhitePlayer().getRemote().sendString(serialized);
+            } else {
+                gameConnections.removeWhitePlayer();
+
+            }
         }
         if (gameConnections.getBlackPlayer() != null) {
-            gameConnections.getBlackPlayer().getRemote().sendString(serialized);
+            if (gameConnections.getBlackPlayer().isOpen()) {
+                gameConnections.getBlackPlayer().getRemote().sendString(serialized);
+            } else {
+                gameConnections.removeBlackPlayer();
+            }
         }
 
         for (Session obs : gameConnections.getObservers()) {
             if (obs != null) {
-                obs.getRemote().sendString(serialized);
+                if (obs.isOpen()) {
+                    obs.getRemote().sendString(serialized);
+                } else {
+                    gameConnections.removeObserver(obs);
+
+                }
             }
         }
     }
@@ -157,7 +171,9 @@ public class WebSocketHandler implements WsConnectHandler, WsMessageHandler, WsC
         var serializer = new Gson();
         String serializedMessage = serializer.toJson(loadGameMessage);
         try {
-            ctx.session.getRemote().sendString(serializedMessage);
+            if (ctx.session.isOpen()) {
+                ctx.session.getRemote().sendString(serializedMessage);
+            }
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
@@ -170,7 +186,9 @@ public class WebSocketHandler implements WsConnectHandler, WsMessageHandler, WsC
         ErrorMessage errorMessage = new ErrorMessage(ServerMessage.ServerMessageType.ERROR, message);
         String serializedMessage = serializer.toJson(errorMessage);
         try {
-            session.getRemote().sendString(serializedMessage);
+            if (ctx.session.isOpen()) {
+                session.getRemote().sendString(serializedMessage);
+            }
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
@@ -185,15 +203,27 @@ public class WebSocketHandler implements WsConnectHandler, WsMessageHandler, WsC
         NotificationMessage notificationMessage = new NotificationMessage(ServerMessage.ServerMessageType.NOTIFICATION, message);
         String serialized = serializer.toJson(notificationMessage);
         if (gameConnections.getWhitePlayer() != session && gameConnections.getWhitePlayer() != null) {
-            gameConnections.getWhitePlayer().getRemote().sendString(serialized);
+            if (gameConnections.getWhitePlayer().isOpen()) {
+                gameConnections.getWhitePlayer().getRemote().sendString(serialized);
+            } else {
+                gameConnections.removeWhitePlayer();
+            }
         }
         if (gameConnections.getBlackPlayer() != session && gameConnections.getBlackPlayer() != null) {
-            gameConnections.getBlackPlayer().getRemote().sendString(serialized);
+            if (gameConnections.getWhitePlayer().isOpen()) {
+                gameConnections.getBlackPlayer().getRemote().sendString(serialized);
+            } else {
+                gameConnections.removeBlackPlayer();
+            }
         }
 
         for (Session obs : gameConnections.getObservers()) {
             if (obs != session && obs != null) {
-                obs.getRemote().sendString(serialized);
+                if (obs.isOpen()) {
+                    obs.getRemote().sendString(serialized);
+                } else {
+                    gameConnections.removeObserver(obs);
+                }
             }
         }
     }
